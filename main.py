@@ -6,10 +6,15 @@ from fastapi import Request
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to FlavorFlow!"}
+
 # Allow frontend to make requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8001"], 
+    allow_origins=["*"], 
+    allow_credentials=True,  # important if sending cookies/auth headers
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -21,7 +26,7 @@ def get_db_connection():
         password=None,
         host="localhost",
         port="5432",
-        cursor_factory=RealDictCursor  #return query as python dictionaries
+        cursor_factory=RealDictCursor   #return query as python dictionaries
     )
     return conn
 

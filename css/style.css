@@ -185,3 +185,60 @@ h2 {
 .auth.signup-mode #signup {     /* slide in from right */
     transform: translateX(0); 
 }         
+
+/* Header*/
+
+.header {
+	position: relative;
+	
+}
+
+.navbar{
+	top: 10px;
+    text-align: center;
+    align-items: center;
+	left: 0;
+	right: 0;
+	color: black;
+	display: flex;
+}
+
+.navbar ul {
+	display: flex;
+	justify-content: center;
+	gap: 15rem;
+	list-style-type: none;
+	color: black;
+	font-size: 18px;
+}
+
+.navbar a img {
+    width: 100px;
+	height: 100px;
+}
+
+.logo a img {
+	width: 40px;
+	height: 40px;
+}
+
+a{
+	color: black;
+	text-decoration: none;
+}
+
+.parallax {
+	align-items: center;	/* Center items vertically*/
+	justify-content: center;	/*Center items horizontally*/
+	color: black;
+}
+
+body {
+    margin: 0px;
+}
+
+.home img {
+	width: 100vw;
+	height: 80%;
+	object-fit: cover;
+}
