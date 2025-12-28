@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Login Page</title>
-<link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
 </head>
+
 <body class="container">
     <div class="auth" id="auth">
         <div id="left-panel">
@@ -29,6 +31,9 @@
                         <p>RECIPES FLOWING AT YOUR FINGERTIPS</p>
                     </div>
                 </div>
+                <div class="register-img">
+                    <img src="../images/auth-r.png">
+                </div>
             </div>
         </div>
         <div id="right-panel">
@@ -41,6 +46,9 @@
                         <h1>FLAVORFLOW</h1>
                         <p>RECIPES FLOWING AT YOUR FINGERTIPS</p>
                     </div>
+                </div>
+                <div class="login-img">
+                    <img src="../images/auth-l.png">
                 </div>
             </div>
             <div id="signup" class="panel-content">
@@ -58,11 +66,11 @@
                 </p>
             </div>
         </div>
-        
-        
+
+
     </div>
-    
-   <script>
+
+    <script>
         function showSignup() {
             document.getElementById("auth").classList.add("signup-mode");
         }
@@ -76,9 +84,9 @@
             .then(users => {
                 const list = document.getElementById("user-list");
                 users.forEach(user => {
-                const li = document.createElement("li");
-                li.textContent = `${user.email} - ${user.username} - ${user.phonenumber} - ${user.password}`;
-                list.appendChild(li);
+                    const li = document.createElement("li");
+                    li.textContent = `${user.email} - ${user.username} - ${user.phonenumber} - ${user.password}`;
+                    list.appendChild(li);
                 });
             })
             .catch(error => console.error("Error fetching users:", error));
@@ -92,14 +100,14 @@
             const password = signupForm.querySelector('input[type="password"]').value;
             const confirmPassword = signupForm.querySelector('input[placeholder="Confirm Password"]').value;
 
-            if(password !== confirmPassword){
+            if (password !== confirmPassword) {
                 alert("Passwords do not match!");
                 return;
             }
             const response = await fetch("http://localhost:8000/signup", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({email, username, phonenumber, password})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, username, phonenumber, password })
             });
             const data = await response.json();
             alert(data.message || data.error);
@@ -113,13 +121,13 @@
 
             const response = await fetch("http://localhost:8000/login", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({username, password})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
             });
             const data = await response.json();
-            if(data.user) {
+            if (data.user) {
                 // redirect to home page
-                window.location.href = "home.html";
+                window.location.href = "../index.html";
             } else {
                 alert(data.error);
             }
@@ -127,4 +135,5 @@
 
     </script>
 </body>
+
 </html>

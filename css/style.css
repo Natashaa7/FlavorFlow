@@ -1,8 +1,25 @@
 .container {
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    display: flex;
+  position: relative;
+  background-image: url("../images/2.jpeg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(239, 238, 238, 0.706); /* adjust opacity here */
+  z-index: 0;
+}
+
+.container > * {
+  position: relative;
+  z-index: 1;
 }
 
 .auth {
@@ -12,6 +29,17 @@
     width: 60em;
     height: 35em;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.login-img img{
+    width: 40rem;
+    height: 45rem;
+}
+
+.register-img img{
+    padding-top: 50px;
+    width: 34rem;
+    height: 25rem;
 }
 
 h2 {
@@ -201,12 +229,12 @@ h2 {
 	right: 0;
 	color: black;
 	display: flex;
+    bottom: 0;
 }
 
 .navbar ul {
 	display: flex;
 	justify-content: center;
-	gap: 15rem;
 	list-style-type: none;
 	color: black;
 	font-size: 18px;
@@ -215,6 +243,7 @@ h2 {
 .navbar a img {
     width: 100px;
 	height: 100px;
+    margin-left: 25px;
 }
 
 .logo a img {
@@ -227,6 +256,38 @@ a{
 	text-decoration: none;
 }
 
+.navbar a{
+	text-align: center;
+	align-items: center;
+	color: #3C3C2E;
+	text-decoration: none;
+}
+
+.navbar a:hover {
+	color: #D9822B;
+}
+
+.redirect {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    font-size: 20px; 
+    font-weight: 500;
+}
+
+.account {
+    margin-left: 11.5rem;
+    gap: 30px;
+}
+
+.account i{
+    font-size: 30px;
+}
+
+/*header*/
+
+
 .parallax {
 	align-items: center;	/* Center items vertically*/
 	justify-content: center;	/*Center items horizontally*/
@@ -237,8 +298,71 @@ body {
     margin: 0px;
 }
 
-.home img {
-	width: 100vw;
-	height: 80%;
-	object-fit: cover;
+/*home page*/
+
+.home {
+    background-image: url("../images/index.jpg");
+    background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+    width: 100vw;
+	height: 100vh;
+}
+
+.home h1 {
+    position: absolute;
+    color: white;
+    text-align: center;
+    top: 30rem;
+    left: 28%;
+    padding: 10px 20px;
+    font-size: 4rem;
+}
+
+.home a {
+    position: absolute;
+	max-width: 40%;
+	text-align: center;
+	background-color: white;
+	opacity: 0.7;
+    top: 250px;
+    border-radius: 50px;
+    left: 30%;
+    transform: translate(75%, 580%);
+    color: black;
+    padding: 30px;
+    font-size: 30px;
+}
+
+
+.home a:hover {
+    color: #e79b50;
+}
+
+
+
+/*About Us*/
+
+.about-us{
+    height: 500px;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.about-us img{
+    opacity: 0.6;
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-us h1 {
+    position: absolute;
+    color: rgb(23, 25, 23);
+    text-align: center;
+    top: 20rem;
+    left: 38%;
+    padding: 10px 20px;
+    font-size: 4rem;
 }

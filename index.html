@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Home Page</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+	<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-chubby/css/uicons-regular-chubby.css'>
+</head>
+
+<body>
+	<div id="header">
+		<header class="header">
+			<nav class="parallax">
+				<div class="navbar">
+					<a href="index.html"><img src="images/logo.png" /></a>
+					<p style="padding-left: 25rem; padding-top: 15px; font-size: 25px; margin-right:125px;">RECIPES
+						FLOWING AT YOUR FINGERTIPS</p>
+					<ul class="account">
+						<li><a href="pages/profile.html"><i class="fi fi-rr-user-pen"></i></a></li>
+						<li><a href="pages/authenticate.html" onclick="return confirmLogout();"><i class="fi fi-rc-leave"></i></a></li>
+					</ul>
+				</div>
+				<div class="navbar">
+					<ul style="gap: 6rem;">
+						<li><a href="index.html" class="redirect"><i class="fi fi-rr-house-chimney-heart"></i>HOME</a></li>
+						<li><a href="pages/generate-recipe.html" class="redirect"><i class="fi fi-rr-magic-wand"></i>GENERATE RECIPE</a></li>
+						<li><a href="pages/share-recipe.html" class="redirect"><i class="fi fi-rr-progress-upload"></i>SHARE RECIPE</a></li>
+						<li><a href="pages/cookbook.html" class="redirect"><i class="fi fi-rr-recipe-book"></i>COOKBOOK</a></li>
+						<li><a href="pages/aboutus.html" class="redirect"><i class="fi fi-rr-info"></i>ABOUT US</a></li>
+						<li><a href="pages/contactus.html" class="redirect"><i class="fi fi-rr-customer-service"></i>CONTACT US</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<script>
+			// Confirm logout dialog
+			function confirmLogout() {
+				return confirm("Are you sure you want to logout?");
+			}
+		</script>
+	</div>
+	<div class="home">
+		<h1>BE YOUR OWN CHEF</h1>
+		<a href="pages/generate-recipe.html">GET STARTED</a>
+	</div>
+	<div>
+
+	</div>
+
+</html>
