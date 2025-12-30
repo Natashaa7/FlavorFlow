@@ -28,6 +28,7 @@ def get_db_connection():
         port="5432",
         cursor_factory=RealDictCursor   #return query as python dictionaries
     )
+    print("Database connected")   # prints when connection is successful
     return conn
 
 @app.get("/users")
