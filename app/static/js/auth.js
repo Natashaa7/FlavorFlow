@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await response.json();
         if (data.user) {
             // redirect to home page
-            window.location.href = "../index.html";
+            window.location.href = "/index";
         } else {
             alert(data.error);
         }

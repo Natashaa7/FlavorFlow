@@ -1,6 +1,6 @@
 .container {
   position: relative;
-  background-image: url("../images/2.jpeg");
+  background-image: url("/static/images/2.jpeg");
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -301,7 +301,7 @@ body {
 /*home page*/
 
 .home {
-    background-image: url("../images/index.jpg");
+    background-image: url("/static/images/index.jpg");
     background-attachment: fixed;
 	background-position: center;
 	background-repeat: no-repeat;

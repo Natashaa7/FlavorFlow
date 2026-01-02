@@ -1,0 +1,32 @@
+.sr-reci {
+    width: 100vw;
+    height: 600px;
+}
+
+.sr-reci img{
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sr-reci h1 {
+    position: absolute;
+    color: black;
+    text-align: center;
+    top: 16rem;
+    left: 4%;
+    padding: 10px 20px;
+    font-size: 6rem;
+    font-family: didot, serif;
+}
+
+.sr-reci h2 {
+    position: absolute;
+    color: black;
+    text-align: center;
+    top: 28rem;
+    left: 26%;
+    padding: 10px 20px;
+    font-size: 6rem;
+    font-family: didot, serif;
+}

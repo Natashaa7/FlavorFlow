@@ -1,14 +1,55 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Request
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to FlavorFlow!"}
+# Mount static folder
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+# Templates folder
+templates = Jinja2Templates(directory="app/templates")
+
+# Login page (first page)
+@app.get("/", response_class=HTMLResponse)
+async def authenticate(request: Request):
+    return templates.TemplateResponse("pages/authenticate.html", {"request": request})
+
+# Home page after login
+@app.get("/index", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/aboutus", response_class=HTMLResponse)
+async def aboutus(request: Request):
+    return templates.TemplateResponse("pages/aboutus.html", {"request": request})
+
+@app.get("/contactus", response_class=HTMLResponse)
+async def contactus(request: Request):
+    return templates.TemplateResponse("pages/contactus.html", {"request": request})
+
+@app.get("/cookbook", response_class=HTMLResponse)
+async def cookbook(request: Request):
+    return templates.TemplateResponse("pages/cookbook.html", {"request": request})
+
+@app.get("/generate-recipe", response_class=HTMLResponse)
+async def generate_recipe(request: Request):
+    return templates.TemplateResponse("pages/generate-recipe.html", {"request": request})
+
+@app.get("/profile", response_class=HTMLResponse)
+async def profile(request: Request):
+    return templates.TemplateResponse("pages/profile.html", {"request": request})
+
+@app.get("/share-recipe", response_class=HTMLResponse)
+async def share_recipe(request: Request):
+    return templates.TemplateResponse("pages/share-recipe.html", {"request": request})
+
+
+
 
 # Allow frontend to make requests
 app.add_middleware(

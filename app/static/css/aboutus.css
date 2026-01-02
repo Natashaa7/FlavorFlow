@@ -1,0 +1,71 @@
+.about-us{
+    height: 500px;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.about-us img{
+    opacity: 0.6;
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-us h1 {
+    position: absolute;
+    color: rgb(23, 25, 23);
+    text-align: center;
+    top: 20rem;
+    left: 38%;
+    padding: 10px 20px;
+    font-size: 4rem;
+}
+
+.info {
+    gap: 90px;
+    padding: 100px;
+    display: flex;
+    background-color: #FBF8EE;
+}
+
+.small {
+    background-color: #8E9B6A;
+    width: 400px;
+    height: 450px;
+    margin-top: 50px;
+    border-radius: 50px;
+    padding: 20px;
+    gap: 10px;
+    color: white;
+}
+
+.big {
+    background-color: #8E9B6A;
+    width: 400px;
+    height: 550px;
+    border-radius: 50px;
+    padding: 20px;
+    gap: 10px;
+    color: white;
+}
+
+.ab-body {
+    height: 600px;
+    background-size: cover;
+    overflow: hidden;
+    background-color: #FBF8EE;
+}
+
+.ab-body img{
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info img {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 50px;
+}

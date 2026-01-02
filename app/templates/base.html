@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}FlavorFlow{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-chubby/css/uicons-regular-chubby.css'>
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+    {% block content %}{% endblock %}
+
+    <script src="/static/js/auth.js"></script>
+</body>
+
+</html>
