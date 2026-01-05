@@ -1,0 +1,22 @@
+.contact {
+    height: 600px;
+    background-color: #FBF8EE;
+    display: flex;
+    padding: 50px;
+    gap: 100px;
+}
+
+.desc {
+    margin: 20px;
+    width: 500px;
+
+}
+
+.c-form {
+    background-color: #D9822B;
+    height: 500px;
+    border-radius: 75px;
+    width: 400px;
+    color: white;
+    text-align: center;
+}

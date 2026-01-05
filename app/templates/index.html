@@ -3,8 +3,25 @@
 {% block title %}Home | FlavorFlow{% endblock %}
 
 {% block content %}
+
 <div class="home">
-  <h1>BE YOUR OWN CHEF</h1>
-  <a href="/generate-recipe">GET STARTED</a>
+    <h1>BE YOUR OWN CHEF</h1>
+    <a href="/generate-recipe">GET STARTED</a>
 </div>
+<h1 style="text-align:center;">Explore Recipes</h1>
+<div class="recipes">
+    {% for recipe in recipes %}
+    <div class="card">
+        <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+        <div>
+            <h3>{{ recipe.title }}</h3>
+            <p>{{ recipe.cook_time }} mins |
+                <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
+            </p>
+            <p>{{ recipe.description }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}
