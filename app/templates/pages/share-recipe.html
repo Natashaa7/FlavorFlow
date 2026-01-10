@@ -14,31 +14,43 @@
     <form class="upload" action="/add-recipe" method="post" enctype="multipart/form-data">
         <div class="details">
             <div class="up-txt">
-                <label>Recipe Title</label>
-                <input type="text" name="title" required>
+                <div class="txt">
+                    <label>Recipe Name</label>
+                    <input type="text" name="title" required>
 
-                <label>Cooking Time (minutes)</label>
-                <input type="number" name="cook_time" min="1" required>
+                    <label>Cooking Time (minutes)</label>
+                    <input type="number" name="cook_time" min="1" required>
+                </div>
 
-                <fieldset class="radio-group">
-					<legend class="radio-title">Difficulty</legend>
-					<label><input type="radio" name="difficulty" value="Easy">Easy</label> 
-					<label><input type="radio"name="difficulty" value="Medium"> Medium</label> 
-					<label><input type="radio" name="difficulty" value="Hard"> Hard</label>
-				</fieldset>
-                <label>Description</label>
-                <textarea name="description" rows="4" required></textarea>
+                <div class="radio-group">
+                    <legend class="radio-title">Difficulty</legend>
+                    <label><input type="radio" name="difficulty" value="Easy">Easy</label>
+                    <label><input type="radio" name="difficulty" value="Medium"> Medium</label>
+                    <label><input type="radio" name="difficulty" value="Hard"> Hard</label>
+                </div>
+                <div class="desc">
+                    <label>Description</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
             </div>
             <div class="up-file">
-                <label>Upload Image</label>
-                <input type="file" name="image" accept="image/*" required>
-
-                <label>Upload File</label>
-                <input type="file" name="file" required>
+                <div class="um">
+                    <label>Upload Image</label>
+                    <label class="file-icon">
+                        <i class="fi fi-rr-images"><input type="file" name="image" accept="image/*" required></i>
+                    </label>
+                    <p>Only JPG, PNG and JPEG are supported</p>
+                </div>
+                <div class="uf">
+                    <label>Upload File</label>
+                    <label class="file-icon">
+                        <i class="fi fi-rr-cloud-upload-alt"><input type="file" name="file" required></i>
+                    </label>
+                    <p>Only JPG, PNG, JPEG and PDF are supported</p>
+                </div>
             </div>
         </div>
-        <button type="submit">UPLOAD</button>
-
+        <button type="submit">SHARE NOW</button>
     </form>
 </div>
 

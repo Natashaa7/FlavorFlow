@@ -33,7 +33,8 @@
 
 .re-form {
     margin: 100px;
-    border-radius: 50px;
+    padding-top: 60px;
+    border-radius: 40px;
     box-shadow: 2px 2px 5px 2px rgba(133, 132, 132, 0.5); /* 2px horizontal/vertical offset, 8px blur, 2px spread, semi-transparent black */
 }
 
@@ -42,20 +43,204 @@
 }
 
 .upload {
-    padding: 30px;
+    padding: 0 80px 60px 80px;
 }
 
 .details {
     display: flex;
-    gap: 20rem;
+    gap: 15rem;
 }
 
 .up-txt {
     display: flex;
     flex-direction: column;
+    gap: 30px;
+}
+
+.up-txt label {
+    color: #3C3C2E;
+    font-size: 20px;
+}
+
+.txt {
+    gap: 13px;
+    display: flex;
+    flex-direction: column;
+}
+
+.txt input {
+    color: #3C3C2E;
+    border-radius: 20px;
+    border-color: #8E9B6A;
+    border-width: 0.05cm;
+    width: 400px;
+    height: 36px;
+    font-size: 17px;
+    padding: 10px;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    color: #3C3C2E;
+    font-size: 20px;
+    border-color: none;
+    gap: 35px;
+}
+
+.desc {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.up-txt textarea {
+    color: #3C3C2E;
+    border-radius: 15px;
+    border-color: #8E9B6A;
+    width: 400px;
+    height: 170px;
+    padding: 15px;
 }
 
 .up-file {
     display: flex;
     flex-direction: column;
+    gap: 30px;
+    margin-top: 25px;
 }
+
+.um {
+    width: 420px;
+    height: 170px;
+    padding: 32px;
+    border-radius: 40px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    gap: 20px;
+
+    /* SVG dashed rounded border */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect x='1.5' y='1.5' width='calc(100%25 - 3px)' height='calc(100%25 - 3px)' rx='40' ry='40' fill='none' stroke='%238fa06a' stroke-width='3' stroke-dasharray='14 10'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.um i{
+    font-size: 50px;
+    color: #8E9B6A;
+}
+
+.um i:hover {
+    color: #D9822B;
+}
+
+.uf {
+    width: 420px;
+    height: 170px;
+    padding: 32px;
+    border-radius: 40px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    gap: 20px;
+
+    /* SVG dashed rounded border */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect x='1.5' y='1.5' width='calc(100%25 - 3px)' height='calc(100%25 - 3px)' rx='40' ry='40' fill='none' stroke='%238fa06a' stroke-width='3' stroke-dasharray='14 10'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.uf i{
+    font-size: 50px;
+    color: #8E9B6A;
+}
+
+.uf i:hover {
+    color: #D9822B;
+}
+
+/* Hide the actual file input */
+.file-icon input[type="file"] {
+    display: none;
+}
+
+/* Style the icon container */
+.file-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 999px; /* pill shape */
+    color: #fff;
+    font-size: 16px;
+    gap: 8px; /* space between icon and text if needed */
+    transition: background 0.2s ease;
+}
+
+/* Content styling */
+.up-file label {
+    display: block;
+    margin: 24px 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.upload {
+    align-items: center;
+}
+
+.upload button {
+    background-color: #8E9B6A;
+    border-radius: 50px;
+    font-size: 18px;
+    text-align: center;
+    width: 150px;
+    height: 50px;
+    color: white;
+    border: none;
+    align-items: center;
+    margin-left: 470px;
+    margin-top: 25px;
+}
+
+.upload button:hover {
+    background-color: #D9822B;
+    cursor: pointer;
+}
+
+
+/*
+
+.up-file label {
+    color: #3C3C2E;
+    font-size: 20px;
+}
+
+.up-file input {
+    width: 400px;
+    height: 150px;
+    border-radius: 50px;
+    padding: 10px;
+    border: none;
+
+    --dash: 14px;
+    --gap: 10px;
+    --stroke: 3px;
+    --color: #819b6a;
+
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            var(--color) 0 var(--dash),
+            transparent var(--dash) calc(var(--dash) + var(--gap))
+        );
+
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+
+    padding: var(--stroke);
+}
+*/

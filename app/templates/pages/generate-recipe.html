@@ -6,7 +6,42 @@
 <link rel="stylesheet" href="/static/css/gr.css">
 <div class="gr-reci">
     <img src="../../static/images/4.jpeg">
-    <h1>IDEAS UNLIMITED</h1> 
+    <h1>IDEAS UNLIMITED</h1>
+</div>
+<div class="up-file">
+    <p>Create custom recipes with your own AI recipe generator</p>
+    <div class="um">
+        <label>Upload Image</label>
+        <label class="file-icon">
+            <i class="fi fi-rr-images"><input type="file" name="image" accept="image/*" required></i>
+        </label>
+        <p>Only JPG, PNG and JPEG are supported</p>
+    </div>
+</div>
+<div class="select">
+    <p style="font-size: 50px; text-align: center; margin: 0;">
+        <hr>SELECT INGREDIENTS
+        <hr>
+    </p>
+    <div class="box">
+        <div class="ing">
+            <p>Flour</p>
+        </div>
+        <div class="ing">
+            <p>Apple</p>
+        </div>
+        <div class="ing">
+            <p>Egg</p>
+        </div>
+    </div>
+</div>
+<div class="prompt-box">
+    <div class="prompt-item">
+        Chicken <input type="text" value="200g" /> <span class="remove">×</span>
+    </div>
+    <div class="prompt-item">
+        Garlic <input type="text" value="2 cloves" /> <span class="remove">×</span>
+    </div>
 </div>
 
 {% endblock %}
