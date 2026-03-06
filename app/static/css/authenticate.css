@@ -1,3 +1,15 @@
+body {
+    margin: 0;
+}
+
+.fa-google {
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
 .container {
   background-image: url("/static/images/2.jpeg");
   background-size: cover;
@@ -74,12 +86,13 @@ h2 {
 }
 
 .log-input button {
-    padding: 10px 20px;
+    padding: 10px 142px;
     border-radius: 50px;
     background-color: #D9822B;
     border: none;
     color: white;
     font-size: 15px;
+    cursor: pointer;
 }
 
 #left-panel,
@@ -116,28 +129,48 @@ h2 {
 .sign-input {
     display: flex;
     flex-direction: column;
-    gap: 17px;
     align-items: center;
 }
 
 .sign-input input {
-    padding: 12px;
+    padding: 10px;
     border-radius: 50px;
     background-color: #EDE7D1;
     border: none;
-    width: 290px;
+    width: 180px;
     height: 20px;
-    font-size: 14px;
+    font-size: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
+.form-split {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.split {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
 .sign-input button {
-    padding: 10px 20px;
+    padding: 10px 180px;
     border-radius: 50px;
     background-color: #D9822B;
     border: none;
     color: white;
     font-size: 15px;
+    cursor: pointer;
+}
+
+span {
+    cursor: pointer;
+}
+
+.logo-button {
+    
 }
 
 .logo img {

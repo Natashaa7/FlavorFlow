@@ -16,77 +16,6 @@ h1, h2, h3 {
     text-transform: uppercase;
 }
 
-/* HEADER */
-.header {
-    background: white;
-    border-bottom: 1px solid #eee;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-body.dark .header {
-    background: #1e1e1e;
-    border-color: #333;
-}
-
-.header-inner {
-    max-width: 1200px;
-    margin: auto;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.tagline {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: gray;
-}
-
-.header-icons span {
-    margin-left: 20px;
-    cursor: pointer;
-}
-
-/* NAVBAR */
-.navbar {
-    background: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-body.dark .navbar {
-    background: #1e1e1e;
-}
-
-.nav-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    padding: 15px 0;
-    margin: 0;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-}
-
-.nav-list li {
-    cursor: pointer;
-}
-
-.nav-list .active {
-    color: #d98632;
-}
-
 /* HERO */
 .hero {
     height: 400px;
@@ -113,7 +42,6 @@ body.dark .hero {
 
 .hero h2 {
     font-size: 50px;
-    color: black;
 }
 
 /* MAIN */
@@ -222,22 +150,6 @@ body.dark .form-left textarea {
     border: none;
     margin-bottom: 10px;
 }
-
-
-/* DARK BUTTON */
-.dark-toggle {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #94a377;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-
 
 /*other page*/
 .sr-reci {

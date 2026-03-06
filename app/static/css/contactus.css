@@ -127,3 +127,16 @@ body.dark .faq-box {
     color: #94A370;
     text-decoration: none;
 }
+
+/* DARK BUTTON */
+.dark-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #94a377;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}

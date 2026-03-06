@@ -49,3 +49,21 @@ body.dark .footer {
     font-size: 12px;
     color: gray;
 }
+
+.dark-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #94a377;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.dark-toggle:hover {
+    transform: scale(1.1);
+}

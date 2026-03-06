@@ -236,21 +236,22 @@ body.dark .recipe-card {
 /* ============================= */
 /*        DARK MODE BUTTON       */
 /* ============================= */
-.dark-mode-btn {
+/* DARK BUTTON 
+.dark-toggle {
     position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    background-color: var(--primary-color);
-    color: #fff;
+    bottom: 30px;
+    right: 30px;
+    background: #94a377;
+    color: white;
     border: none;
+    padding: 12px;
     border-radius: 50%;
-    padding: 0.7rem;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     transition: transform 0.3s;
 }
 
-.dark-mode-btn:hover {
+.dark-toggle:hover {
     transform: scale(1.1);
-}
+}*/
 
