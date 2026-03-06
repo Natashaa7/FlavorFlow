@@ -1,25 +1,106 @@
 {% extends "base.html" %}
 
-{% block title %}Generate Recipe | FlavorFlow{% endblock %}
+{% block title %}FlavorFlow - My Cookbook Gallery{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="/static/css/contactus.css">
-<div class="contact">
-    <div class="desc">
-        <h1>contact us</h1>
-        <p>We’d love to hear from you!<br>Whether you have a question, 
-            feedback, or a suggestion to improve FlavorFlow, feel free to reach out. 
-            Your thoughts help us make the experience better for everyone.
-            <br>Your feedback helps us cook up better experiences.</p>
+
+<head>
+    <title>Contact Us - FlavorFlow</title>
+    <link rel="stylesheet" href="/static/css/contactus.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-overlay">
+        <h2>Contact Us</h2>
     </div>
-    <div class="c-form">
-        <h1>Join us in our journey!</h1>
-        <form class="sign-input">
-            <input type="email" placeholder="Email">
-            <input type="text" placeholder="Username">
-            <input type="tel" placeholder="Phone Number">
-        </form>
+</section>
+
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <div class="contact-grid">
+
+        <!-- LEFT FORM -->
+        <div class="contact-form">
+
+            <h3>Send us a Message</h3>
+
+            <form>
+
+                <label>Recipe Name (Optional Ref)</label>
+                <input type="text" placeholder="Your name">
+
+                <div class="row">
+                    <div>
+                        <label>Email Address</label>
+                        <input type="email" placeholder="email@example.com">
+                    </div>
+                    <div>
+                        <label>Subject</label>
+                        <select>
+                            <option>General Inquiry</option>
+                            <option>Recipe Feedback</option>
+                            <option>Account Support</option>
+                            <option>Business Partnership</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label>How can we help?</label>
+                <textarea rows="5" placeholder="Write your message here..."></textarea>
+
+                <div class="btn-area">
+                    <button type="submit" class="primary-btn">Send Message</button>
+                </div>
+
+            </form>
+        </div>
+
+
+        <!-- RIGHT INFO -->
+        <div class="contact-info">
+
+            <h3>Get in Touch</h3>
+            <p>
+                Have questions about our AI-driven recipes or want to share your
+                culinary masterpieces? Our team is always brewing fresh ideas and
+                we'd love to hear yours.
+            </p>
+
+            <div class="info-box">
+                <span class="material-icons">email</span>
+                <div>
+                    <small>Email us</small>
+                    <p>hello@flavorflow.com</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <span class="material-icons">location_on</span>
+                <div>
+                    <small>Main Kitchen</small>
+                    <p>123 Culinary Lane, Spice District<br>Flavor City, FC 45012</p>
+                </div>
+            </div>
+
+            <div class="faq-box">
+                <h4>FAQ QUICK LINKS</h4>
+                <a href="#">→ How does the generator work?</a>
+                <a href="#">→ Managing your cookbook</a>
+                <a href="#">→ Subscription & Credits</a>
+            </div>
+
+        </div>
+
     </div>
 
-</div>
+</main>
+</body>
+</html>
+
 {% endblock %}

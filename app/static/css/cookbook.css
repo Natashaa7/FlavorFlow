@@ -1,0 +1,256 @@
+/* ============================= */
+/*         VARIABLES             */
+/* ============================= */
+:root {
+    --primary-color: #8B9D77;
+    --secondary-color: #D4923D;
+    --bg-light: #FDFCF9;
+    --bg-dark: #121212;
+    --card-light: #FFFFFF;
+    --card-dark: #1E1E1E;
+    /*--font-display: 'Montserrat', sans-serif;*/
+    /*--font-serif: 'Playfair Display', serif;*/
+    --border-radius: 12px;
+}
+
+/* ============================= */
+/*         BASE STYLES           */
+/* ============================= */
+body {
+    margin: 0;
+    font-family: var(--font-display);
+    background-color: var(--bg-light);
+    background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+    color: #1E293B; /* dark text */
+    min-height: 100vh;
+}
+
+body.dark {
+    background-color: var(--bg-dark);
+    background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
+    color: #E5E7EB;
+}
+
+/* ============================= */
+/*        MAIN TITLE             */
+/* ============================= */
+.main-title {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: black;
+}
+
+.main-subtitle {
+    text-align: center;
+    color: #6B7280;
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+}
+
+/* ============================= */
+/*       SEARCH BAR              */
+/* ============================= */
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.search-bar input {
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    border: 1px solid #E2E8F0;
+    width: 250px;
+    font-size: 1rem;
+}
+
+body.dark .search-bar input {
+    background-color: var(--card-dark);
+    border: 1px solid #27272A;
+    color: #E5E7EB;
+}
+
+/* ============================= */
+/*       FILTER BUTTONS          */
+/* ============================= */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-buttons button {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    border: none;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-buttons .active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.filter-buttons button:not(.active) {
+    background-color: var(--card-light);
+    color: #1E293B;
+    border: 1px solid #E2E8F0;
+}
+
+body.dark .filter-buttons button:not(.active) {
+    background-color: var(--card-dark);
+    color: #E5E7EB;
+    border: 1px solid #27272A;
+}
+
+.filter-buttons button:hover {
+    transform: scale(1.05);
+}
+
+/* ============================= */
+/*        MASONRY GRID           */
+/* ============================= */
+.recipe-grid {
+    display: grid;
+    gap: 1.5rem; /* space between cards */
+    padding: 2.5rem;
+    grid-template-columns: repeat(1, 1fr); /* 1 column by default */
+}
+
+@media (min-width: 768px) {
+    .recipe-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+}
+
+@media (min-width: 1024px) {
+    .recipe-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+    }
+}
+
+.recipe-item {
+    /* no need for break-inside with grid */
+    margin-bottom: 1.5rem;
+}
+
+.recipe-card {
+    background-color: var(--card-light);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid #F1F5F9;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+body.dark .recipe-card {
+    background-color: var(--card-dark);
+    border: 1px solid #27272A;
+}
+
+/* ============================= */
+/*        RECIPE IMAGE           */
+/* ============================= */
+.recipe-image {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.recipe-image:hover img {
+    transform: scale(1.1);
+}
+
+.recipe-image .favorite-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: rgba(255,255,255,0.8);
+    border: none;
+    border-radius: 50%;
+    padding: 0.4rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    color: rgb(196, 30, 30);
+    font-variation-settings: "FILL" 1; /* start as outlined */
+}
+
+.recipe-image .favorite-btn.active {
+    color: #282c25;
+    font-variation-settings: "FILL" 0; 
+    transition: transform 0.3s;
+}
+
+
+/* ============================= */
+/*       RECIPE CONTENT          */
+/* ============================= */
+.recipe-content {
+    padding: 1rem;
+}
+
+.recipe-category {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.recipe-title {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.recipe-description {
+    font-size: 0.9rem;
+    color: #6B7280;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.recipe-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6B7280;
+}
+
+
+/* ============================= */
+/*        DARK MODE BUTTON       */
+/* ============================= */
+.dark-mode-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 0.7rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.dark-mode-btn:hover {
+    transform: scale(1.1);
+}
+

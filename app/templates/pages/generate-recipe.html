@@ -3,6 +3,98 @@
 {% block title %}Generate Recipe | FlavorFlow{% endblock %}
 
 {% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FlavorFlow - Generate Recipe</title>
+    <link rel="stylesheet" href="/static/css/gr.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- LEFT SIDE -->
+    <aside class="sidebar">
+        <h2>Select Ingredients</h2>
+
+        <div class="section">
+            <h3>Vegetables</h3>
+            <div class="button-group">
+                <button class="item active">Tomato</button>
+                <button class="item active">Onion</button>
+                <button class="item">Garlic</button>
+                <button class="item">Carrot</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Proteins</h3>
+            <div class="button-group">
+                <button class="item active">Chicken</button>
+                <button class="item">Beef</button>
+                <button class="item">Egg</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- RIGHT SIDE -->
+    <section class="content">
+
+        <!-- Upload Box -->
+        <div class="upload-box">
+            <h2>Upload your ingredients</h2>
+            <p>Take a photo of your fridge or pantry.</p>
+            <button class="upload-btn">Choose File</button>
+        </div>
+
+        <!-- Basket -->
+        <div class="basket">
+            <h2>Your Basket</h2>
+
+            <div class="basket-item">
+                <span>Tomato (2)</span>
+                <div class="qty-buttons">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+            </div>
+
+            <div class="basket-item">
+                <span>Chicken (500g)</span>
+                <div class="qty-buttons">
+                    <button>-</button>
+                    <button>+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="generate-area">
+            <button class="generate-btn">Generate Recipe</button>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+<!--
 <link rel="stylesheet" href="/static/css/gr.css">
 <div class="gr-reci">
     <img src="../../static/images/4.jpeg">
@@ -42,6 +134,6 @@
     <div class="prompt-item">
         Garlic <input type="text" value="2 cloves" /> <span class="remove">×</span>
     </div>
-</div>
+</div>-->
 
 {% endblock %}

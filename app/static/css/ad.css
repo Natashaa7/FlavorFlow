@@ -1,0 +1,107 @@
+:root {
+    --primary: #4A5D3F;
+    --secondary: #B47321;
+    --bg-light: #FDFCF8;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+}
+
+/* BASIC STYLES */
+body {
+    margin: 0;
+    background-color: var(--bg-light);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+
+/* DASHBOARD BUTTONS */
+.top-actions {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.top-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* METRIC CARDS */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    width: 70%;
+}
+
+.card-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: gray;
+    margin-bottom: 5px;
+}
+
+.card-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* CHART AREA */
+.chart-box {
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chart-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* POPULAR INGREDIENTS */
+.ingredient-list {
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.ingredient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.ingredient-item:last-child {
+    border-bottom: none;
+}

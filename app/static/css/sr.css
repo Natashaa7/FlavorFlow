@@ -1,3 +1,245 @@
+/* GENERAL */
+body {
+    margin: 0;
+    background: #f8f9fa;
+    color: #333;
+}
+
+body.dark {
+    background: #121212;
+    color: #fff;
+}
+
+h1, h2, h3 {
+    font-weight: 300;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+/* HEADER */
+.header {
+    background: white;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+body.dark .header {
+    background: #1e1e1e;
+    border-color: #333;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: auto;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.tagline {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: gray;
+}
+
+.header-icons span {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+/* NAVBAR */
+.navbar {
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+body.dark .navbar {
+    background: #1e1e1e;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 15px 0;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.nav-list li {
+    cursor: pointer;
+}
+
+.nav-list .active {
+    color: #d98632;
+}
+
+/* HERO */
+.hero {
+    height: 400px;
+    background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)),
+    url('/static/images/3.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+body.dark .hero {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url('/static/images/3.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero h1 {
+    font-size: 60px;
+}
+
+.hero h2 {
+    font-size: 50px;
+    color: black;
+}
+
+/* MAIN */
+.main {
+    max-width: 1000px;
+    margin: -80px auto 80px auto;
+    padding: 0 20px;
+}
+
+.form-card {
+    background: white;
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+body.dark .form-card {
+    background: #1e1e1e;
+}
+
+.form-heading {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+/* FORM GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+/* LEFT SIDE */
+.form-left label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.form-left input,
+.form-left textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+body.dark .form-left input,
+body.dark .form-left textarea {
+    background: #2d2d2d;
+    border-color: #444;
+    color: white;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+}
+
+.submit-btn {
+    margin-top: 30px;
+    background: #94a377;
+    color: white;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05);
+}
+
+/* RIGHT SIDE */
+.upload-box {
+    border: 2px dashed #94a377;
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.upload-box:hover {
+    border-color: #94a377;
+}
+
+.upload-icon {
+    font-size: 50px;
+    color: gray;
+    margin-bottom: 20px;
+}
+
+.upload-box button {
+    background: #94a377;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+
+/* DARK BUTTON */
+.dark-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #94a377;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+
+/*other page*/
 .sr-reci {
     width: 100vw;
     height: 600px;
@@ -171,7 +413,7 @@
     cursor: pointer;
     padding: 10px 20px;
     border-radius: 999px; /* pill shape */
-    color: #fff;
+    color: #8E9B6A;
     font-size: 16px;
     gap: 8px; /* space between icon and text if needed */
     transition: background 0.2s ease;

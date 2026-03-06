@@ -4,46 +4,135 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="/static/css/aboutus.css">
-<div class="about-us">
-    <img src="/static/images/1.png">
-    <h1>ABOUT US</h1>
-</div>
-<div class="info">
-    <div class="small">
-        <h1>Our Passion for Flavor</h1>
-        <p>At FlavorFlow, we believe every meal should be an experience. 
-            Our team is dedicated to exploring unique recipes, bringing together diverse ingredients, 
-            and creating flavors that delight your senses. We don’t just cook—we craft memories.</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFlow | About Us</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/css/aboutus.css">
+</head>
+
+<body>
+
+
+<!-- HERO SECTION -->
+<header class="hero">
+    <div class="hero-overlay">
+        <h1>Our Mission</h1>
+        <p>
+            To inspire every kitchen with the flow of flavor through technology and culinary art.
+        </p>
     </div>
-    <div class="big">
-        <h1>Innovation in Every Recipe</h1>
-        <p>From classic favorites to modern culinary twists, FlavorFlow thrives on experimentation. 
-            Our platform combines creativity with science, ensuring each recipe is easy to follow while delivering 
-            extraordinary taste.</p>
+</header>
+
+
+<!-- MISSION DETAIL -->
+<section class="mission">
+    <div class="mission-content">
+        <p style="color: chocolate;">THE HEART OF FLAVORFLOW</p>
+        <h2>Connecting flavor with intuition, and passion<br>
+            with technology.</h2>
+        <p>
+            We believe that cooking should be an effortless expression of creativity. FlavorFlow was born from a <br>
+            simple observation: the best recipes aren't just instructions; they are stories waiting to be told. Our <br>
+            platform bridges the gap between complex culinary techniques and everyday home cooking.
+        </p>
     </div>
-    <div class="small">
-        <h1>Connecting Food Lovers</h1>
-        <p>FlavorFlow isn’t just about recipes—it’s a community. We bring together food enthusiasts, 
-            home cooks, and flavor explorers to share ideas, learn, and inspire one another to create 
-            the perfect dish every time.</p>
+</section>
+
+
+<!-- WHO WE ARE -->
+<section class="two-column">
+    <div class="column-image">
+        <img src="static/images/6.jpeg" alt="Chef image">
     </div>
-</div>
-<div class="ab-body">
-    <img src="static/images/5.png">
-</div>
-<div class="info">
-    <div>
-        <h1>Why FlavorFlow?</h1>
-        <p>FlavorFlow is more than a recipe hub—it’s your culinary companion. 
-            We guide you through the journey of cooking, from simple weeknight dinners to elaborate gourmet creations. 
-            With easy-to-follow instructions, thoughtful tips, and a focus on quality, we make cooking approachable, 
-            exciting, and fun. Whether you’re a beginner or a seasoned chef, FlavorFlow empowers you to explore, experiment, 
-            and enjoy the art of flavor like never before.</p>
+    <div class="column-text">
+        <h3>Who We Are</h3>
+        <p>
+            Founded in 2022 by a team of professional chefs and software engineers,
+            FlavorFlow started as a side project in a small kitchen. We were
+            tired of cluttered recipe sites and rigid instructions that didn't account for
+            what we actually had in our pantries.
+        </p>
+        <p>
+            Today, we are a global team dedicated to building the most intuitive
+cooking assistant in the world. We combine data science with culinary
+expertise to help you discover flavors you never knew existed.
+        </p>
     </div>
-    <div>
-        <img src="static/images/6.jpeg">
+</section>
+
+
+<!-- VISION -->
+<section class="vision">
+    <div class="vision-content">
+        <div class="column-text">
+            <h3>The Vision</h3>
+            <p>
+Our vision is to revolutionize recipe discovery through AI and community
+sharing. We're building a world where the 'What's for dinner?' question is
+answered with excitement rather than stress.</p>
+
+            <ul>
+                <li>Personalized flavor profiles using machine learning.</li>
+                <li>A global community of foodies sharing authentic home-cooked
+traditions.</li>
+                <li>Sustainability-first recipe suggestions that reduce food waste.</li>
+            </ul>
+        </div>
+
+        <div class="column-image">
+            <img src="static/images/5.png" alt="Food image">
+        </div>
     </div>
-</div>
+</section>
+
+
+<!-- TEAM -->
+<section class="team">
+    <h2>Meet the Team</h2>
+
+    <div class="team-grid">
+
+        <div class="team-card">
+            <img src=".jpg" alt="a">
+            <h4>a</h4>
+            <p>Founder & Lead Chef</p>
+        </div>
+
+        <div class="team-card">
+            <img src=".jpg" alt="b">
+            <h4>b</h4>
+            <p>CTO & Data Architect</p>
+        </div>
+
+        <div class="team-card">
+            <img src="t.jpg" alt="c">
+            <h4>c</h4>
+            <p>Creative Director</p>
+        </div>
+
+        <div class="team-card">
+            <img src=".jpg" alt="d">
+            <h4>d</h4>
+            <p>Community Growth</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta">
+    <h2>Ready to join the flow?</h2>
+    <p>Start your culinary journey today.</p>
+
+    <div class="cta-buttons">
+        <button class="secondary-btn">Browse Recipes</button>
+    </div>
+</section>
 
 {% endblock %}

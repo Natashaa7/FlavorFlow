@@ -1,7 +1,153 @@
 {% extends "base.html" %}
 
-{% block title %}Generate Recipe | FlavorFlow{% endblock %}
+{% block title %}FlavorFlow - My Cookbook Gallery{% endblock %}
 
 {% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorFlow - My Cookbook Gallery</title>
+    <link rel="stylesheet" href="/static/css/cookbook.css">
+    <!--<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <main>
+        <h2 class="main-title">My Premium Cookbook</h2>
+        <p class="main-subtitle">Your curated collection of culinary masterpieces, saved and organized for your next
+            kitchen adventure.</p>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search your recipes...">
+            <span class="material-symbols-outlined">search</span>
+        </div>
+
+        <!--<div class="filter-buttons">
+            <button class="active">All</button>
+            <button>Breakfast</button>
+            <button>Lunch</button>
+            <button>Dinner</button>
+            <button>Desserts</button>
+        </div>-->
+
+        <div class="recipe-grid">
+            <div class="recipe-item">
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="static/images/5.png" alt="Classic Italian Tiramisu">
+                        <button class="favorite-btn"><span class="material-symbols-outlined">favorite</span></button>
+                    </div>
+                    <div class="recipe-content">
+                        <div class="recipe-category">Dessert
+                            <button title="Download PDF"><span
+                                    class="material-symbols-outlined">picture_as_pdf</span></button>
+                        </div>
+                        <h3 class="recipe-title">Classic Italian Tiramisu</h3>
+                        <p class="recipe-description">A delicate layering of espresso-soaked ladyfingers and rich
+                            mascarpone cream, dusted with premium cocoa.</p>
+                        <div class="recipe-info">
+                            <span><span class="material-symbols-outlined">schedule</span> 45 mins</span>
+                            <span><span class="material-symbols-outlined">restaurant</span> Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-item">
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="static/images/5.png" alt="Classic Italian Tiramisu">
+                        <button class="favorite-btn"><span class="material-symbols-outlined">favorite</span></button>
+                    </div>
+                    <div class="recipe-content">
+                        <div class="recipe-category">Dessert
+                            <button title="Download PDF"><span
+                                    class="material-symbols-outlined">picture_as_pdf</span></button>
+                        </div>
+                        <h3 class="recipe-title">Classic Italian Tiramisu</h3>
+                        <p class="recipe-description">A delicate layering of espresso-soaked ladyfingers and rich
+                            mascarpone cream, dusted with premium cocoa.</p>
+                        <div class="recipe-info">
+                            <span><span class="material-symbols-outlined">schedule</span> 45 mins</span>
+                            <span><span class="material-symbols-outlined">restaurant</span> Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-item">
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="static/images/5.png" alt="Classic Italian Tiramisu">
+                        <button class="favorite-btn"><span class="material-symbols-outlined">favorite</span></button>
+                    </div>
+                    <div class="recipe-content">
+                        <div class="recipe-category">Dessert
+                            <button title="Download PDF"><span
+                                    class="material-symbols-outlined">picture_as_pdf</span></button>
+                        </div>
+                        <h3 class="recipe-title">Classic Italian Tiramisu</h3>
+                        <p class="recipe-description">A delicate layering of espresso-soaked ladyfingers and rich
+                            mascarpone cream, dusted with premium cocoa.</p>
+                        <div class="recipe-info">
+                            <span><span class="material-symbols-outlined">schedule</span> 45 mins</span>
+                            <span><span class="material-symbols-outlined">restaurant</span> Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-item">
+                <div class="recipe-card">
+                    <div class="recipe-image">
+                        <img src="static/images/5.png" alt="Classic Italian Tiramisu">
+                        <button class="favorite-btn"><span class="material-symbols-outlined">favorite</span></button>
+                    </div>
+                    <div class="recipe-content">
+                        <div class="recipe-category">Dessert
+                            <button title="Download PDF"><span
+                                    class="material-symbols-outlined">picture_as_pdf</span></button>
+                        </div>
+                        <h3 class="recipe-title">Classic Italian Tiramisu</h3>
+                        <p class="recipe-description">A delicate layering of espresso-soaked ladyfingers and rich
+                            mascarpone cream, dusted with premium cocoa.</p>
+                        <div class="recipe-info">
+                            <span><span class="material-symbols-outlined">schedule</span> 45 mins</span>
+                            <span><span class="material-symbols-outlined">restaurant</span> Intermediate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+    <button class="dark-mode-btn" onclick="document.body.classList.toggle('dark')">
+        <span class="material-symbols-outlined">dark_mode</span>
+    </button>
+
+</body>
+
+<script>
+    const favoriteButtons = document.querySelectorAll('.favorite-btn');
+
+    favoriteButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active'); // toggle filled state
+        });
+    });
+
+</script>
+
+</html>
+
 
 {% endblock %}

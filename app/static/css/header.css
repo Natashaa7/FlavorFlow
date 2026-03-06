@@ -1,0 +1,79 @@
+/* Header*/
+
+.header {
+	position: sticky;
+    background: white;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar{
+	top: 10px;
+    text-align: center;
+    align-items: center;
+	left: 0;
+	right: 0;
+	color: black;
+	display: flex;
+    bottom: 0;
+}
+
+.navbar ul {
+	display: flex;
+	justify-content: center;
+	list-style-type: none;
+	color: black;
+	font-size: 18px;
+}
+
+.navbar a img {
+    width: 100px;
+	height: 100px;
+    margin-left: 25px;
+}
+
+.logo a img {
+	width: 40px;
+	height: 40px;
+}
+
+a{
+	color: black;
+	text-decoration: none;
+}
+
+.navbar a{
+	text-align: center;
+	align-items: center;
+	color: #3C3C2E;
+	text-decoration: none;
+}
+
+.navbar a:hover {
+	color: #D9822B;
+}
+
+.redirect {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    font-size: 20px; 
+    font-weight: 500;
+}
+
+a.active{
+    color: #D9822B;
+    border-bottom-width: 2px;
+    border-color: #D9822B;
+    padding-bottom: 0.5rem;
+}
+
+.account {
+    margin-left: 11.5rem;
+    gap: 30px;
+}
+
+.account i{
+    font-size: 30px;
+}

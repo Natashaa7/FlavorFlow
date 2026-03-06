@@ -1,71 +1,118 @@
-.about-us{
-    height: 500px;
-    background-size: cover;
-    overflow: hidden;
+body {
+    margin: 0;
+    background: #f8f7f5;
+    color: #2d3a22;
 }
 
-.about-us img{
-    opacity: 0.6;
-    width: 100vw;
-    height: 100%;
-    object-fit: cover;
+body.dark {
+    background: #221910;
+    color: white;
 }
 
-.about-us h1 {
-    position: absolute;
-    color: rgb(23, 25, 23);
-    text-align: center;
-    top: 20rem;
-    left: 38%;
-    padding: 10px 20px;
-    font-size: 4rem;
+h2 {
+    color: black;
 }
 
-.info {
-    gap: 90px;
-    padding: 100px;
+/* HERO */
+.hero {
+    height: 60vh;
+    background: url('/static/images/1.png') center/cover no-repeat;
     display: flex;
-    background-color: #FBF8EE;
+    align-items: center;
+    justify-content: center;
 }
 
-.small {
-    background-color: #8E9B6A;
-    width: 400px;
-    height: 450px;
-    margin-top: 50px;
-    border-radius: 50px;
-    padding: 20px;
-    gap: 10px;
+.hero-overlay {
+    text-align: center;
     color: white;
+    background: rgba(0,0,0,0.5);
+    padding: 40px;
 }
 
-.big {
-    background-color: #8E9B6A;
+/* MISSION */
+.mission {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+/* TWO COLUMN */
+.two-column {
+    display: flex;
+    padding: 80px 100px;
+    gap: 17rem;
+}
+
+.column-image img {
     width: 400px;
-    height: 550px;
-    border-radius: 50px;
-    padding: 20px;
-    gap: 10px;
-    color: white;
-}
-
-.ab-body {
-    height: 600px;
-    background-size: cover;
+    height: 500px;
+    object-fit: cover;
     overflow: hidden;
-    background-color: #FBF8EE;
+    border-radius: 15px;
 }
 
-.ab-body img{
-    width: 100vw;
+.column-text {
+    width: 100%;
+    max-width: 40rem;
+}
+
+/* VISION */
+.vision {
+    background: #f48c2510;
+    padding: 80px 80px;
+}
+
+.vision-content {
+    display: flex;
+    gap: 15rem;
+}
+
+.vision-content img {
+    width: 80%;
     height: 100%;
     object-fit: cover;
 }
 
-.info img {
-    width: 300px;
-    height: 400px;
-    object-fit: cover;
-    overflow: hidden;
-    border-radius: 50px;
+/* TEAM */
+.team {
+    padding: 80px 40px;
+    text-align: center;
 }
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 30px;
+}
+
+.team-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+.team-card img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* CTA */
+.cta {
+    padding: 80px 20px;
+    text-align: center;
+    background: #f48c2510;
+}
+
+.cta-buttons {
+    margin-top: 30px;
+}
+
+.secondary-btn {
+    padding: 10px 25px;
+    border: 1px solid #f48c25;
+    background: white;
+    border-radius: 30px;
+    margin-left: 15px;
+}
+

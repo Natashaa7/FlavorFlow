@@ -1,0 +1,113 @@
+/* Colors */
+:root {
+    --primary: #D97706;
+    --light-bg: #F9F8F3;
+    --green: #92A278;
+}
+
+/* Body */
+body {
+    background-color: var(--light-bg);
+    margin: 0;
+}
+
+
+/* Main */
+.main {
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-card {
+    background: white;
+    width: 600px;
+    border-radius: 15px;
+    padding: 30px;
+}
+
+/* Profile Top */
+.profile-top {
+    text-align: center;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+
+.profile-name {
+    font-family: 'Playfair Display', serif;
+}
+
+.member-date {
+    color: gray;
+}
+
+/* Stats */
+.profile-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    background: #f3f3f3;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.stat-box {
+    text-align: center;
+}
+
+/* Info */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-info input,
+.profile-info textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+}
+
+/* Deactivate */
+.deactivate {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.deactivate-btn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+}
+
+
+.profile-info button {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100px;
+    align-items: center;
+}
+
+.profile-info button:hover {
+    background-color: #D97706;
+    cursor: pointer;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100px;
+    align-items: center;
+}
+

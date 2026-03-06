@@ -1,22 +1,129 @@
-.contact {
-    height: 600px;
-    background-color: #FBF8EE;
-    display: flex;
-    padding: 50px;
-    gap: 100px;
+/* GENERAL */
+body {
+    margin: 0;
+    background: #FDFBF7;
+    color: #333;
 }
 
-.desc {
-    margin: 20px;
-    width: 500px;
-
-}
-
-.c-form {
-    background-color: #D9822B;
-    height: 500px;
-    border-radius: 75px;
-    width: 400px;
+body.dark {
+    background: #121212;
     color: white;
+}
+
+h1, h2, h3, h4 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* HERO */
+.hero {
+    height: 250px;
+    background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)),
+    url('/static/images/7.png');
+}
+
+.hero-overlay {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+}
+
+.line {
+    width: 100px;
+    height: 4px;
+    background: #D97706;
+    margin-top: 10px;
+}
+
+/* MAIN */
+.main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 60px 20px;
+}
+
+.contact-grid {
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+/* FORM */
+.contact-form {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+}
+
+body.dark .contact-form {
+    background: #1e1e1e;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.row {
+    display: flex;
+    gap: 50px;
+}
+
+.btn-area {
     text-align: center;
+}
+
+.primary-btn {
+    background: #D97706;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.primary-btn:hover {
+    transform: scale(1.05);
+}
+
+/* INFO */
+.contact-info p {
+    color: #666;
+}
+
+.info-box {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.faq-box {
+    background: #f3f3f3;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+body.dark .faq-box {
+    background: #222;
+}
+
+.faq-box a {
+    display: block;
+    margin-top: 8px;
+    color: #94A370;
+    text-decoration: none;
 }

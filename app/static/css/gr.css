@@ -1,4 +1,4 @@
-.gr-reci {
+/*.gr-reci {
     width: 100vw;
     height: 600px;
 }
@@ -42,7 +42,7 @@
     font-family: system-ui, sans-serif;
     gap: 20px;
 
-    /* SVG dashed rounded border */
+    /* SVG dashed rounded border 
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect x='1.5' y='1.5' width='calc(100%25 - 3px)' height='calc(100%25 - 3px)' rx='40' ry='40' fill='none' stroke='%238fa06a' stroke-width='3' stroke-dasharray='14 10'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -61,26 +61,26 @@
     font-size: 20px;
 }
 
-/* Hide the actual file input */
+/* Hide the actual file input 
 .file-icon input[type="file"] {
     display: none;
 }
 
-/* Style the icon container */
+/* Style the icon container *
 .file-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 10px 20px;
-    border-radius: 999px; /* pill shape */
+    border-radius: 999px; /* pill shape *
     color: #fff;
     font-size: 16px;
-    gap: 8px; /* space between icon and text if needed */
+    gap: 8px; /* space between icon and text if needed *
     transition: background 0.2s ease;
 }
 
-/* Content styling */
+/* Content styling *
 .up-file label {
     display: block;
     margin: 24px 0 8px;
@@ -106,4 +106,109 @@
     border-radius: 20px;
     padding-top: 1px;
     margin-top: 30px;
+}*/
+
+/* GENERAL */
+body {
+    margin: 0;
+    background-color: #FAFAFA;
+    color: #333;
+}
+
+
+
+/* MAIN LAYOUT */
+.main {
+    display: flex;
+    padding: 40px;
+    gap: 40px;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 30%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.item {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+}
+
+.item.active {
+    background-color: #8B9D77;
+    color: white;
+    border: none;
+}
+
+/* CONTENT */
+.content {
+    width: 70%;
+}
+
+/* UPLOAD BOX */
+.upload-box {
+    background-color: #DEE5D4;
+    padding: 40px;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.upload-btn {
+    padding: 10px 20px;
+    background-color: white;
+    border: 2px solid #8B9D77;
+    border-radius: 20px;
+    color: #8B9D77;
+    cursor: pointer;
+}
+
+/* BASKET */
+.basket {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.basket-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.qty-buttons button {
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+/* GENERATE BUTTON */
+.generate-area {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.generate-btn {
+    padding: 15px 40px;
+    background-color: #D4923D;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
 }

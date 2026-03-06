@@ -1,0 +1,224 @@
+{% extends "pages/ad-base.html" %}
+
+{% block title %}FlavorFlow - User Management{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin User Management - FlavorFlow</title>
+    <link rel="stylesheet" href="/static/css/user-manage.css">
+
+    <!-- Google Fonts -->
+    <!--<link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">-->
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+
+<body>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- ADD USER MODAL -->
+        <div class="modal">
+            <div class="modal-box">
+
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title">Add New User</h2>
+                        <p class="modal-subtitle">Create a new account manually.</p>
+                    </div>
+                    <button class="close-btn" id="closeModal">X</button>
+                </div>
+
+                <form class="user-form" action="/add-users" method="post">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" placeholder="john@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="username" placeholder="johndoe88" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phonenumber" placeholder="98...." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" placeholder="********" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" name="confirm_password" placeholder="********" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="cancel-btn" id="cancelModal">Cancel</button>
+                        <button type="submit" class="submit-btn">Create User</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="page-top">
+            <div>
+                <h2 class="page-title">User Management</h2>
+                <p class="page-sub">Manage registered users and control access.</p>
+            </div>
+
+            <input type="text" class="search-box" placeholder="Search users...">
+            <button id="openModal" class="submit-btn">Add User</button>
+        </div>
+
+
+        <!-- STATS -->
+        <div class="stats">
+            <div class="stat-card">
+                <p>Total Users</p>
+                <h3>1,248</h3>
+            </div>
+
+            <div class="stat-card">
+                <p>Active Today</p>
+                <h3>412</h3>
+            </div>
+
+            <div class="stat-card">
+                <p>New This Week</p>
+                <h3>56</h3>
+            </div>
+
+            <div class="stat-card highlight">
+                <p>Pending Reports</p>
+                <h3>3</h3>
+            </div>
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-box">
+            <table class="user-table">
+                <!--<thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Join Date</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>-->
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phonenumber }}</td>
+                        <td>
+                            <button class="action-btn">Update</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+                <!--<tbody>
+                    <tr>
+                        <td>John Smith</td>
+                        <td>john@example.com</td>
+                        <td>Oct 12, 2023</td>
+                        <td><span class="role editor">Admin</span></td>
+                        <td>
+                            <button class="action-btn">Update</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Alice Wong</td>
+                        <td>alice@example.com</td>
+                        <td>Nov 05, 2023</td>
+                        <td><span class="role member">User</span></td>
+                        <td>
+                            <button class="action-btn">Update</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+
+                    <tr class="active">
+                        <td>Emma Miller</td>
+                        <td>emma@example.com</td>
+                        <td>Feb 14, 2024</td>
+                        <td><span class="role suspended">User</span></td>
+                        <td>
+                            <button class="action-btn">Update</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+
+                </tbody>-->
+            </table>
+        </div>
+
+    </main>
+
+
+    <script>
+        const modal = document.querySelector(".modal");
+        const openBtn = document.getElementById("openModal");
+        const closeBtn = document.getElementById("closeModal");
+        const cancelBtn = document.getElementById("cancelModal");
+
+        openBtn.addEventListener("click", function () {
+            modal.style.display = "flex";
+        });
+
+        closeBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        cancelBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    </script>
+
+    <!--<script>
+        const btn = document.getElementById("themeBtn");
+        btn.onclick = function () {
+            document.body.classList.toggle("dark");
+        };
+    </script>-->
+
+</body>
+
+</html>
+
+
+{% endblock %}

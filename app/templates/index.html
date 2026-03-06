@@ -3,17 +3,134 @@
 {% block title %}Home | FlavorFlow{% endblock %}
 
 {% block content %}
+<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="/static/css/style.css">
 
-<div class="home">
+<!-- Hero Section -->
+<section class="hero">
+    <img class="hero-bg" src="/static/images/index.jpg" alt="Gourmet Background">
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+        <span>Master the Art of Cooking</span>
+        <h1>BE YOUR OWN CHEF</h1>
+        <div class="hero-buttons">
+            <button class="primary-btn"><a href="/generate-recipe">GET STARTED</a></button>
+            <button class="secondary-btn">Explore Menu</button>
+        </div>
+    </div>
+    <!--<div class="hero-scroll">
+        <span class="material-symbols-outlined">expand_more</span>
+    </div>-->
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-text">
+                <span>Innovation in the Kitchen</span>
+                <h2>Your AI-Powered Kitchen Assistant</h2>
+                <p>FlavorFlow helps you reduce food waste by generating recipes based on your ingredients.</p>
+                <p>Share your culinary masterpieces, get inspired, and save favorites in your personal cookbook.</p>
+                <button class="learn-more">Learn more about our mission <span
+                        class="material-symbols-outlined">arrow_right_alt</span></button>
+            </div>
+            <div class="feature-cards">
+                <div class="card">
+                    <div class="icon"><span class="material-symbols-outlined">eco</span></div>
+                    <h4>Reduce Waste</h4>
+                    <p>Use what you have with smart ingredient-to-recipe mapping.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><span class="material-symbols-outlined">psychology</span></div>
+                    <h4>AI Generation</h4>
+                    <p>Create gourmet meals instantly with our AI chef engine.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><span class="material-symbols-outlined">menu_book</span></div>
+                    <h4>Personal Cookbook</h4>
+                    <p>Save and refine your favorite recipes easily.</p>
+                </div>
+                <div class="card">
+                    <div class="icon"><span class="material-symbols-outlined">group</span></div>
+                    <h4>Community Hub</h4>
+                    <p>Connect with cooks worldwide and share your secrets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Community Section -->
+<section class="community">
+    <div class="container">
+        <div class="community-header">
+            <h2>Community Creations</h2>
+            <div class="carousel-controls">
+                <button class="carousel-btn"><span class="material-symbols-outlined">chevron_left</span></button>
+                <button class="carousel-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+            </div>
+        </div>
+        {% for recipe in recipes %}
+        <div class="community-cards">
+            <div class="recipe-card">
+                    
+                    <div class="card">
+                        
+                        <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+                        <div class="recipe-info">
+                            <h3>{{ recipe.title }}</h3>
+                            <div class="recipe-meta">
+                            <p>{{ recipe.cook_time }} mins |
+                                <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
+                            </p>
+                            <span>{{ recipe.description }}</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Recipes Section -->
+<section class="recipes">
+    <div class="container">
+        <div class="recipes-header">
+            <h2>Discover More</h2>
+            <div class="recipe-filters">
+                <button class="filter-btn active">All Recipes</button>
+                <button class="filter-btn">Breakfast</button>
+                <button class="filter-btn">Desserts</button>
+                <button class="filter-btn">Healthy</button>
+            </div>
+            <div class="recipe-search">
+                <input type="text" placeholder="Search recipes...">
+                <span class="material-symbols-outlined">search</span>
+            </div>
+        </div>
+        <div class="recipe-list">
+            <!-- Add recipe cards here -->
+        </div>
+    </div>
+</section>
+
+
+<!--<div class="home">
     <h1>BE YOUR OWN CHEF</h1>
     <a href="/generate-recipe">GET STARTED</a>
-</div>
+</div>-->
 <h1 style="text-align:center;">Explore Recipes</h1>
 <div class="recipes">
     {% for recipe in recipes %}
     <div class="card">
         <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
-        <div>
+        <div class="desc">
             <h3>{{ recipe.title }}</h3>
             <p>{{ recipe.cook_time }} mins |
                 <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>

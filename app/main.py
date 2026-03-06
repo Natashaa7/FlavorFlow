@@ -6,12 +6,15 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from fastapi.middleware.cors import CORSMiddleware
 import os, shutil, uuid
-
+from passlib.context import CryptContext
+import bcrypt
 
 app = FastAPI()
 
 # Mount static folder
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Templates folder
 templates = Jinja2Templates(directory="app/templates")
@@ -66,8 +69,50 @@ async def profile(request: Request):
 async def share_recipe(request: Request):
     return templates.TemplateResponse("pages/share-recipe.html", {"request": request})
 
+@app.get("/admin-dashboard", response_class=HTMLResponse)
+async def admin_dashboard(request: Request):
+    return templates.TemplateResponse("pages/admin-dashboard.html", {"request": request})
+
+@app.get("/ad-base", response_class=HTMLResponse)
+async def ad_base(request: Request):
+    return templates.TemplateResponse("pages/ad-base.html", {"request": request})
+
+"""@app.get("/user-manage", response_class=HTMLResponse)
+async def ingredient_manage(request: Request):
+    return templates.TemplateResponse("pages/user-manage.html", {"request": request})"""
+    
+@app.get("/user-manage", response_class=HTMLResponse)
+async def user_manage(request: Request):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id, email, username, phonenumber
+        FROM users
+        ORDER BY id DESC
+    """)
+
+    users = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    print(users)  # 👈 add this temporarily to debug
+
+    return templates.TemplateResponse(
+        "pages/user-manage.html",
+        {"request": request, "users": users}
+    )
 
 
+
+@app.get("/ingredient-manage", response_class=HTMLResponse)
+async def ingredient_manage(request: Request):
+    return templates.TemplateResponse("pages/ingredient-manage.html", {"request": request})
+
+@app.get("/ad-profile", response_class=HTMLResponse)
+async def ad_base(request: Request):
+    return templates.TemplateResponse("pages/ad-profile.html", {"request": request})
 
 # Allow frontend to make requests
 app.add_middleware(
@@ -100,59 +145,49 @@ def read_users():
     conn.close()
     return users
 
+# --- SIGNUP ---
 @app.post("/signup")
-async def signup(request: Request):
-    data = await request.json()
-
-    email = data.get("email")
-    username = data.get("username")
-    phone = data.get("phonenumber")
-    password = data.get("password")
-
-    if not all([email, username, phone, password]):
-        return {"error": "All fields are required"}
-
-    hashed_password = pwd_context.hash(password)
+async def signup(
+    email: str = Form(...),
+    username: str = Form(...),
+    phonenumber: str = Form(...),
+    password: str = Form(...)
+):
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
 
     conn = get_db_connection()
     cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO users (email, username, phonenumber, password) VALUES (%s, %s, %s, %s)",
+        (email, username, phonenumber, hashed_password)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
 
-    try:
-        cur.execute(
-            """
-            INSERT INTO users (email, username, phonenumber, password)
-            VALUES (%s, %s, %s, %s)
-            """,
-            (email, username, phone, hashed_password)
-        )
-        conn.commit()
-    except psycopg2.errors.UniqueViolation:
-        conn.rollback()
-        return {"error": "Email, username, or phone already exists"}
-    finally:
-        cur.close()
-        conn.close()
-
-    return {"message": "User registered successfully"}
-
+    return RedirectResponse(url="/?success=signup", status_code=303)
 
 @app.post("/login")
-async def login(request: Request):
-    data = await request.json()
-    username = data["username"]
-    password = data["password"]
-
+async def login(
+    username: str = Form(...),
+    password: str = Form(...)
+):
     conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT username, password FROM users WHERE username=%s", (username,))
     user = cur.fetchone()
     cur.close()
     conn.close()
 
-    if user:
-        return {"message": "Login successful", "user": user}
-    else:
-        return {"error": "Invalid username or password"}
+    if not user:
+        return RedirectResponse(url="/?error=login", status_code=303)
+
+    if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
+        return RedirectResponse(url="/?error=login", status_code=303)
+
+    redirect_url = "/admin-dashboard" if user["username"].lower() == "admin" else "/index"
+    return RedirectResponse(url=redirect_url, status_code=303)
+
 
 
 # --- ensure folders exist ---
@@ -173,7 +208,7 @@ async def add_recipe(
     file: UploadFile = File(...)
 ):
     # --- basic validation ---
-    if difficulty not in ["Easy", "Medium", "Hard"]:
+    if difficulty not in ["Easy", "Intermediate", "Hard"]:
         raise HTTPException(status_code=400, detail="Invalid difficulty")
 
     # --- create unique filenames ---
@@ -226,3 +261,54 @@ async def add_recipe(
 
     # --- redirect back to share page with success ---
     return RedirectResponse(url="/share-recipe?success=1", status_code=303)
+
+
+
+# add users
+
+@app.post("/add-users")
+async def add_users(
+    email: str = Form(...),
+    username: str = Form(...),
+    phonenumber: str = Form(...),
+    password: str = Form(...),
+    confirm_password: str = Form(...)
+):
+    
+    # ✅ Check passwords match
+    if password != confirm_password:
+        return RedirectResponse(
+            url="/?error=password-mismatch",
+            status_code=303
+        )
+
+    hashed_password = bcrypt.hashpw(
+        password.encode('utf-8'),
+        bcrypt.gensalt()
+    ).decode()
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Optional but recommended: check if email exists
+    cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+    existing_user = cur.fetchone()
+
+    if existing_user:
+        cur.close()
+        conn.close()
+        return RedirectResponse(
+            url="/?error=email-exists",
+            status_code=303
+        )
+
+    cur.execute(
+        "INSERT INTO users (email, username, phonenumber, password) VALUES (%s, %s, %s, %s)",
+        (email, username, phonenumber, hashed_password)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse(url="/user-manage?success=added", status_code=303)

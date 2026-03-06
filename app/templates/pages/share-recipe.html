@@ -3,55 +3,85 @@
 {% block title %}Share Recipe | FlavorFlow{% endblock %}
 
 {% block content %}
+
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <link rel="stylesheet" href="/static/css/sr.css">
-<div class="sr-reci">
-    <img src="/static/images/3.jpg">
-    <h1>YOUR KITCHEN</h1>
-    <h2> YOUR ART</h2>
-</div>
-<div class="re-form">
-    <h2>SHARE YOUR RECIPES</h2>
-    <form class="upload" action="/add-recipe" method="post" enctype="multipart/form-data">
-        <div class="details">
-            <div class="up-txt">
-                <div class="txt">
+
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Your Kitchen</h1>
+            <h2>Your Art</h2>
+        </div>
+    </section>
+
+
+    <!-- MAIN FORM -->
+    <main class="main">
+        <div class="form-card">
+
+            <h3 class="form-heading">Share Your Recipes</h3>
+
+            <form class="form-grid" action="/add-recipe" method="post" enctype="multipart/form-data">
+
+                <!-- LEFT SIDE -->
+                <div class="form-left">
+
                     <label>Recipe Name</label>
                     <input type="text" name="title" required>
 
-                    <label>Cooking Time (minutes)</label>
-                    <input type="number" name="cook_time" min="1" required>
+                    <label>Time</label>
+                    <input type="text" name="cook_time" min="1" required>
+
+                    <label>Difficulty Level</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="difficulty" value="Easy">Easy</label>
+                        <label><input type="radio" name="difficulty" value="Intermediate"> Intermediate</label>
+                        <label><input type="radio" name="difficulty" value="Hard"> Hard</label>
+                    </div>
+
+                    <label>Description</label>
+                    <textarea name="description" rows="6" required></textarea>
+
+                    <button class="submit-btn" type="submit">SHARE NOW</button>
                 </div>
 
-                <div class="radio-group">
-                    <legend class="radio-title">Difficulty</legend>
-                    <label><input type="radio" name="difficulty" value="Easy">Easy</label>
-                    <label><input type="radio" name="difficulty" value="Medium"> Medium</label>
-                    <label><input type="radio" name="difficulty" value="Hard"> Hard</label>
+                <!-- RIGHT SIDE -->
+                <div class="form-right">
+                    <div class="upload-box">
+                        <label>Upload Image</label>
+                        <label class="file-icon">
+                            <i class="fi fi-rr-images"><input type="file" name="image" accept="image/*" required></i>
+                        </label>
+                        <p>Only JPG, PNG and JPEG are supported</p>
+                    </div>
+                    <div class="upload-box">
+                        <label>Upload File</label>
+                        <label class="file-icon">
+                            <i class="fi fi-rr-cloud-upload-alt"><input type="file" name="file" required></i>
+                        </label>
+                        <p>Only JPG, PNG, JPEG and PDF are supported</p>
+                    </div>
                 </div>
-                <div class="desc">
-                    <label>Description</label>
-                    <textarea name="description" rows="4" required></textarea>
-                </div>
-            </div>
-            <div class="up-file">
-                <div class="um">
-                    <label>Upload Image</label>
-                    <label class="file-icon">
-                        <i class="fi fi-rr-images"><input type="file" name="image" accept="image/*" required></i>
-                    </label>
-                    <p>Only JPG, PNG and JPEG are supported</p>
-                </div>
-                <div class="uf">
-                    <label>Upload File</label>
-                    <label class="file-icon">
-                        <i class="fi fi-rr-cloud-upload-alt"><input type="file" name="file" required></i>
-                    </label>
-                    <p>Only JPG, PNG, JPEG and PDF are supported</p>
-                </div>
-            </div>
+
+            </form>
+
         </div>
-        <button type="submit">SHARE NOW</button>
-    </form>
-</div>
+    </main>
+
+    <!-- DARK MODE BUTTON 
+    <button class="dark-toggle" onclick="document.body.classList.toggle('dark')">
+        <span class="material-icons">dark_mode</span>
+    </button> -->
+
+</body>
+
+</html>
+
 
 {% endblock %}
