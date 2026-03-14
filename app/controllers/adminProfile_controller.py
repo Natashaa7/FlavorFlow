@@ -52,7 +52,6 @@ async def update_profile(
     password: str = Form(None),
     confirm_password: str = Form(None)
 ):
-
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
 
@@ -62,49 +61,54 @@ async def update_profile(
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    # get existing user
-    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    # Fetch user including password for verification
+    cur.execute(
+        "SELECT name, email, username, phonenumber, dob, password, created_at FROM users WHERE id=%s",
+        (user_id,)
+    )
     user = cur.fetchone()
+    if not user:
+        cur.close()
+        conn.close()
+        return RedirectResponse(url="/", status_code=303)
 
     stored_password = user["password"]
 
     # -------------------------
     # Password Change Handling
     # -------------------------
-
     if password:  # user wants to change password
-
-        # check current password entered
         if not current_password:
+            cur.close()
+            conn.close()
             return templates.TemplateResponse(
                 "pages/ad-profile.html",
-                {"request": request, "user": user, "error": "Please enter current password"}
+                {"request": request, "user": user, "error": "Please enter your current password"}
             )
 
         if not bcrypt.checkpw(current_password.encode(), stored_password.encode()):
+            cur.close()
+            conn.close()
             return templates.TemplateResponse(
                 "pages/ad-profile.html",
                 {"request": request, "user": user, "error": "Current password is incorrect"}
             )
 
         if password != confirm_password:
+            cur.close()
+            conn.close()
             return templates.TemplateResponse(
                 "pages/ad-profile.html",
-                {"request": request, "user": user, "error": "Passwords do not match"}
+                {"request": request, "user": user, "error": "New passwords do not match"}
             )
 
-        hashed_password = bcrypt.hashpw(
-            password.encode('utf-8'), bcrypt.gensalt()
-        ).decode()
-
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
     else:
-        # keep old password
         hashed_password = stored_password
 
     # -------------------------
     # Update Profile
     # -------------------------
-
     cur.execute(
         """
         UPDATE users
@@ -113,22 +117,23 @@ async def update_profile(
         """,
         (name, username, email, phonenumber, dob, hashed_password, user_id)
     )
-
     conn.commit()
 
-    # fetch updated user
+    # fetch updated user (exclude password from template)
     cur.execute(
-        "SELECT name, email, username, phonenumber, dob, password, created_at FROM users WHERE id=%s",
+        "SELECT name, email, username, phonenumber, dob, created_at FROM users WHERE id=%s",
         (user_id,)
     )
-    user = cur.fetchone()
+    updated_user = cur.fetchone()
+    cur.close()
+    conn.close()
 
     return templates.TemplateResponse(
         "pages/ad-profile.html",
         {
             "request": request,
-            "user": user,
-            "error": "Current password is incorrect"
+            "user": updated_user,
+            "success": "Profile updated successfully!"
         }
     )
 

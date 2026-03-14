@@ -36,6 +36,11 @@
         </div>
 
         <!-- User Info -->
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
 
         <form class="profile-info" method="POST" action="/update-profile">
             <label>Full Name</label>
@@ -83,12 +88,6 @@
 
             <button type="submit">SAVE</button>
         </form>
-        {% if error %}
-        <div class="error-message">
-            {{ error }}
-        </div>
-        {% endif %}
-
 
         <div class="deactivate">
             <button class="deactivate-btn">Delete Account</button>

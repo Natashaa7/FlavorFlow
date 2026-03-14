@@ -34,8 +34,13 @@
         </div>
 
         <!-- User Info -->
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
 
-        <form class="profile-info" method="POST" action="/update-profile">
+        <form class="profile-info" method="POST" action="/upd-profile">
             <label>Full Name</label>
             <input type="text" name="name" value="{{ user.name }}" required>
 
@@ -51,11 +56,33 @@
             <label>Date of birth</label>
             <input type="date" name="dob" value="{{ user.dob }}" required>
 
-            <label>Password</label>
-            <input type="password" name="password" value="{{ user.password }}">
-            <input type="password" name="password" placeholder="NEW PASSWORD">
+            <label>Current Password</label>
+            <div class="password-box">
+                <input type="password" id="currentPassword" name="current_password"
+                    placeholder="Enter current password">
+                <span class="toggle-password" onclick="togglePassword('currentPassword')"><span
+                        class="material-symbols-outlined">
+                        visibility
+                    </span></span>
+            </div>
 
-            <input type="password" name="confirm_password" placeholder="CONFIRM PASSWORD">
+            <label>New Password</label>
+            <div class="password-box">
+                <input type="password" id="newPassword" name="password" placeholder="Enter new password">
+                <span class="toggle-password" onclick="togglePassword('newPassword')"><span
+                        class="material-symbols-outlined">
+                        visibility
+                    </span></span>
+            </div>
+
+            <label>Confirm Password</label>
+            <div class="password-box">
+                <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm new password">
+                <span class="toggle-password" onclick="togglePassword('confirmPassword')"><span
+                        class="material-symbols-outlined">
+                        visibility
+                    </span></span>
+            </div>
 
             <button type="submit">SAVE</button>
         </form>
@@ -68,4 +95,16 @@
     </div>
 
 </main>
+
+<script>
+    function togglePassword(id) {
+        const field = document.getElementById(id);
+
+        if (field.type === "password") {
+            field.type = "text";
+        } else {
+            field.type = "password";
+        }
+    }
+</script>
 {% endblock %}

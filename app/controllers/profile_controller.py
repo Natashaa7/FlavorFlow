@@ -11,42 +11,33 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request):
-    # Get session token from cookie
     session_token = request.cookies.get("session_id")
     if not session_token:
         return RedirectResponse(url="/", status_code=303)
 
-    # Decode session token to get user_id
     user_id = read_session(session_token)
     if not user_id:
         return RedirectResponse(url="/", status_code=303)
 
-    # Fetch user info from DB
     conn = get_db_connection()
-
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute(
-        "SELECT name, email, username, phonenumber, dob, password, created_at FROM users WHERE id=%s",
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
+        "SELECT name, email, username, phonenumber, dob, created_at FROM users WHERE id=%s",
         (user_id,)
     )
-    user = cursor.fetchone()
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
 
-    user_data = {
-        "name": user["name"],
-        "email": user["email"],
-        "username": user["username"],
-        "phonenumber": user["phonenumber"],
-        "dob": user["dob"],
-        "password": user["password"],
-        "created_at": user["created_at"]
-    }
+    if not user:
+        return RedirectResponse(url="/", status_code=303)
 
     return templates.TemplateResponse(
         "pages/profile.html",
-        {"request": request, "user": user_data}
+        {"request": request, "user": user}
     )
 
-@router.post("/update-profile", response_class=HTMLResponse)
+@router.post("/upd-profile", response_class=HTMLResponse)
 async def update_profile(
     request: Request,
     name: str = Form(...),
@@ -57,7 +48,6 @@ async def update_profile(
     password: str = Form(None),
     confirm_password: str = Form(None)
 ):
-    # Get user_id from session cookie
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
     if not user_id:
@@ -66,23 +56,31 @@ async def update_profile(
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    # Check if passwords match
-    if password and password != confirm_password:
-        cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
-        user = cur.fetchone()
+    # Fetch current user info
+    cur.execute(
+        "SELECT name, email, username, phonenumber, dob, password, created_at FROM users WHERE id=%s",
+        (user_id,)
+    )
+    user = cur.fetchone()
+    if not user:
         cur.close()
         conn.close()
-        return templates.TemplateResponse(
-            "pages/profile.html",
-            {"request": request, "user": user, "error": "Passwords do not match!"}
-        )
+        return RedirectResponse(url="pages/profile.html", status_code=303)
 
-    # Hash new password if provided, otherwise keep old password
+    stored_password = user["password"]
+
+    # Password update logic
     if password:
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+        if password != confirm_password:
+            cur.close()
+            conn.close()
+            return templates.TemplateResponse(
+                "pages/profile.html",
+                {"request": request, "user": user, "error": "Passwords do not match!"}
+            )
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
     else:
-        cur.execute("SELECT password FROM users WHERE id=%s", (user_id,))
-        hashed_password = cur.fetchone()["password"]
+        hashed_password = stored_password
 
     # Update user
     cur.execute(
@@ -95,8 +93,11 @@ async def update_profile(
     )
     conn.commit()
 
-    # Fetch updated user
-    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    # Fetch updated user (exclude password for template)
+    cur.execute(
+        "SELECT name, email, username, phonenumber, dob, created_at FROM users WHERE id=%s",
+        (user_id,)
+    )
     updated_user = cur.fetchone()
     cur.close()
     conn.close()

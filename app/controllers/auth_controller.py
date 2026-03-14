@@ -91,7 +91,7 @@ async def signup(
     )
     user_id = cur.fetchone()["id"]
 
-    cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user["id"]))
+    cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id))
     conn.commit()
     cur.close()
     conn.close()
@@ -151,8 +151,9 @@ async def login(
         "pages/authenticate.html", {"request": request}  # Temporary, cookie will redirect
     )
     session_token = create_session(user["id"])
-    response.set_cookie(key="session_id", value=session_token, httponly=True)
-    return RedirectResponse(url=redirect_url, status_code=303)
+    redirect_response = RedirectResponse(url=redirect_url, status_code=303)
+    redirect_response.set_cookie(key="session_id", value=session_token, httponly=True)
+    return redirect_response
 
 # --- OAuth setup (placeholders) ---
 
