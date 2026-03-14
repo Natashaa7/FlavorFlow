@@ -169,10 +169,6 @@ oauth.register(
     }
 )
 
-print(os.getenv("GOOGLE_CLIENT_ID"))
-print(os.getenv("GOOGLE_CLIENT_SECRET"))
-
-
 # --- OAuth PLACEHOLDERS ---
 @router.get("/auth/google")
 async def google_login(request: Request):
