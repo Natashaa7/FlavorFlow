@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, validator
 from datetime import date
+from app.utils.validation_utils import validate_password, validate_phone, validate_email, validate_dob
 
 class SignupForm(BaseModel):
     name: str
@@ -10,11 +11,10 @@ class SignupForm(BaseModel):
     password: str
     confirm_password: str
 
-    @validator('password')
-    def password_length(cls, v):
-        if len(v) < 6:
-            raise ValueError('Password must be at least 6 characters')
-        return v
+    val_pw = validator("password", allow_reuse=True)(validate_password)
+    val_ph = validator("phonenumber", allow_reuse=True)(validate_phone)
+    val_dob = validator("dob", allow_reuse=True)(validate_dob)
+    val_email = validator("email", allow_reuse=True)(validate_email)
 
     @validator('confirm_password')
     def passwords_match(cls, v, values):

@@ -13,8 +13,8 @@
         <!-- Profile Top -->
         <div class="profile-top">
             <img src="profile.jpg" class="profile-image">
-            <h1 class="profile-name">Alex Thompson</h1>
-            <p class="member-date">Member since October 2023</p>
+            <h1 class="profile-name">{{ user.name }}</h1>
+            <p class="member-date">Member since {{ user.created_at.strftime('%B %Y') }}</p>
         </div>
 
         <!-- Stats -->
@@ -34,23 +34,32 @@
         </div>
 
         <!-- User Info -->
-        
-        <form class="profile-info">
+
+        <form class="profile-info" method="POST" action="/update-profile">
             <label>Full Name</label>
-            <input type="text" value="Alex Thompson" required>
+            <input type="text" name="name" value="{{ user.name }}" required>
+
+            <label>Username</label>
+            <input type="text" name="username" value="{{ user.username }}" required>
 
             <label>Email Address</label>
-            <input type="email" value="alex.thompson@example.com" required>
+            <input type="email" name="email" value="{{ user.email }}" required>
 
-            <!--<label>Short Bio</label>
-            <textarea rows="5" placeholder="Write your message here..."></textarea>-->
-            
+            <label>Phone Number</label>
+            <input type="tel" name="phonenumber" value="{{ user.phonenumber }}" required>
+
+            <label>Date of birth</label>
+            <input type="date" name="dob" value="{{ user.dob }}" required>
+
             <label>Password</label>
-            <input type="password" placeholder="PASSWORD" required>
-            <input type="password" placeholder="CONFIRM PASSWORD" required>
+            <input type="password" name="password" value="{{ user.password }}">
+            <input type="password" name="password" placeholder="NEW PASSWORD">
+
+            <input type="password" name="confirm_password" placeholder="CONFIRM PASSWORD">
 
             <button type="submit">SAVE</button>
         </form>
+
 
         <div class="deactivate">
             <button class="deactivate-btn">Delete Account</button>

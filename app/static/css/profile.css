@@ -111,3 +111,28 @@ body {
     align-items: center;
 }
 
+.password-box{
+    position: relative;
+}
+
+.password-box input{
+    width:100%;
+    padding-right:40px;
+}
+
+.toggle-password{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+}
+
+.error-message{
+    background:#ffe0e0;
+    color:#b30000;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:10px;
+}
+

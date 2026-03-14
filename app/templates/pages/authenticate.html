@@ -9,18 +9,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
+<!--<style>
+    .hidden {
+        display: none;
+    }
+</style>-->
 
 <body class="container">
     <div class="auth" id="auth">
         <div id="left-panel">
             <div id="login" class="panel-content">
                 <h2 style="margin-top: 50px;">Welcome Cooks</h2>
-                <form class="log-input" id="login-form" action="/login" method="POST">
-                    <input type="text" name="username" placeholder="Username" required>
+                <form class="log-input {% if active_form == 'signup' %}hidden{% endif %}" id="login-form"
+                    action="/login" method="POST">
+                    <!-- Display login errors -->
+                    {% if errors and active_form=='login' %}
+                    <div class="error-messages">
+                        {% for err in errors %}
+                        <p style="color:red;">{{ err }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <input type="text" name="username"
+                        value="{{ form_data.username if form_data and form_data.username }}" placeholder="Username"
+                        required>
                     <input type="password" name="password" placeholder="Password" required>
                     <button type="submit">Login</button>
                 </form>
-                <p>Forgotten password?</p>
+                <p><a href="/forgot-password">Forgotten password?</a></p>
                 <p>Don't have an account?
                     <span onclick="showSignup()">Sign Up</span>
                 </p>
@@ -57,31 +73,55 @@
             </div>
             <div id="signup" class="panel-content">
                 <h2 style="margin-top: 50px;">Create Account</h2>
-                <form class="sign-input" id="signup-form" action="/signup" method="POST">
+                <!-- Display signup errors -->
+                {% if errors and active_form=='signup' %}
+                <div class="error-messages">
+                    {% for err in errors %}
+                    <p style="color:red;">{{ err }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <form class="sign-input {% if active_form == 'login' %}hidden{% endif %}" id="signup-form"
+                    action="/signup" method="POST">
                     <div class="form-split">
                         <div class="split">
-                            <input type="text" name="name" placeholder="Full Name" required>
-                            <input type="text" name="username" placeholder="Username" required>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="tel" name="phonenumber" placeholder="Phone Number">
+                            <input type="text" name="name" value="{{ form_data.name if form_data else '' }}"
+                                placeholder="Full Name" required>
+                            <input type="text" name="username" value="{{ form_data.username if form_data else '' }}"
+                                placeholder="Username" required>
+                            <input type="email" name="email" value="{{ form_data.email if form_data else '' }}"
+                                placeholder="Email" required>
+                            <input type="tel" name="phonenumber"
+                                value="{{ form_data.phonenumber if form_data else '' }}" placeholder="Phone Number"
+                                required>
                         </div>
                         <div class="split">
-                            <input type="date" name="dob" required>
+                            <input type="date" name="dob" value="{{ form_data.dob if form_data else '' }}" required>
                             <input type="password" name="password" placeholder="Password" required>
                             <input type="password" name="confirm_password" placeholder="Confirm Password" required>
                         </div>
                     </div>
                     <button type="submit">Sign Up</button>
+                    {% if request.query_params.get("success") == "account_created" %}
+                    <p class="success">Account created successfully! Please login.</p>
+                    {% endif %}
+
                 </form>
                 <p>Already have an account?
                     <span onclick="showLogin()">Login</span>
                 </p>
                 <div class="logo-button">
-                    <button><i class="fab fa-google fa-1x"></i> Continue with Google</button>
-                    <button><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</button>
+                    <a href="/auth/google"><button><i class="fab fa-google fa-1x"></i> Continue with Google</button></a>
+                    <a href="/auth/apple"><button><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</button></a>
                 </div>
             </div>
         </div>
+    </div>
 
 
     </div>

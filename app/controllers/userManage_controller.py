@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from app.database.connection import get_db_connection
 from app.models.user_model import SignupForm
+import bcrypt
 
 router = APIRouter()
 
@@ -15,7 +16,7 @@ async def user_manage(request: Request):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT id, email, username, phonenumber
+        SELECT id, email, username, phonenumber, dob, name
         FROM users
         ORDER BY id DESC
     """)
@@ -72,8 +73,8 @@ async def add_users(
         )
 
     cur.execute(
-        "INSERT INTO users (email, username, phonenumber, password) VALUES (%s, %s, %s, %s)",
-        (email, username, phonenumber, hashed_password)
+        "INSERT INTO users (email, username, phonenumber, dob, name, password) VALUES (%s, %s, %s, %s, %s, %s)",
+        (email, username, phonenumber, dob, name, hashed_password)
     )
 
     conn.commit()

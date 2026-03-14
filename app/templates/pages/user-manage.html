@@ -54,8 +54,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" placeholder="john doe" required>
+                        </div>
+
+                        <div class="form-group">
                             <label>Phone Number</label>
                             <input type="tel" name="phonenumber" placeholder="98...." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob" required>
                         </div>
 
                         <div class="form-group">
@@ -129,8 +139,10 @@
                 <thead>
                     <tr>
                         <th>Username</th>
+                        <th>Full Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Date of Birth</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -138,8 +150,10 @@
                     {% for user in users %}
                     <tr>
                         <td>{{ user.username }}</td>
+                        <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.phonenumber }}</td>
+                        <td>{{ user.dob }}</td>
                         <td>
                             <button class="action-btn">Update</button>
                             <button class="delete-btn">Delete</button>

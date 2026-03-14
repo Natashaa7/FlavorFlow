@@ -1,5 +1,7 @@
 from itsdangerous import URLSafeSerializer
 from fastapi import Request
+from app.database.connection import get_db_connection
+from psycopg2.extras import RealDictCursor
 
 SECRET_KEY = "your-super-secret-key"
 serializer = URLSafeSerializer(SECRET_KEY, salt="session")
@@ -16,6 +18,17 @@ def read_session(session_cookie: str):
 
 def get_current_user(request: Request):
     session_cookie = request.cookies.get("session_id")
-    if session_cookie:
-        return read_session(session_cookie)
-    return None
+    if not session_cookie:
+        return None
+
+    user_id = read_session(session_cookie)  # decode the signed session cookie
+    if not user_id:
+        return None
+
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT * FROM users WHERE id=%s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+    return user
