@@ -8,8 +8,11 @@ from app.utils.session_utils import create_session
 from pydantic import ValidationError
 from datetime import datetime
 from app.models.user_model import SignupForm
+import os
+from dotenv import load_dotenv
 from authlib.integrations.starlette_client import OAuth
 import secrets
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -152,16 +155,23 @@ async def login(
     return RedirectResponse(url=redirect_url, status_code=303)
 
 # --- OAuth setup (placeholders) ---
+
+load_dotenv("/Users/natashababu/Documents/FYP/flavorflow/app/secret.env")
+
 oauth = OAuth()
 oauth.register(
     name='google',
-    client_id='886022788560-qt4p6sifve957aks3mhmjuaj7rbldims.apps.googleusercontent.com',
-    client_secret='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',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={
         'scope': 'openid email profile'
     }
 )
+
+print(os.getenv("GOOGLE_CLIENT_ID"))
+print(os.getenv("GOOGLE_CLIENT_SECRET"))
+
 
 # --- OAuth PLACEHOLDERS ---
 @router.get("/auth/google")
