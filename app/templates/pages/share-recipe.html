@@ -5,6 +5,7 @@
 {% block content %}
 
 <link rel="stylesheet" href="/static/css/sr.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <body>
 
@@ -66,12 +67,171 @@
                 </div>
 
             </form>
+            {% if request.query_params.get('success') %}
+            <p class="success-msg">Recipe shared successfully!</p>
+            {% endif %}
 
+
+        </div>
+        <!-- TABLE -->
+        <div class="card">
+
+            <h3>Your Shared Recipes</h3>
+
+            <table class="recipe-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Recipe Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for recipe in recipes %}
+                    <tr>
+                        <td>{{ recipe.id }}</td>
+                        <td><img src="{{ recipe.image_path }}" width="80"></td>
+                        <td>{{ recipe.title }}</td>
+                        <td>{{ recipe.created_at.strftime('%b %d, %Y') }}</td>
+                        <td><span class="status difficulty">{{ recipe.difficulty }}</span></td>
+                        <td>
+                            <button type="button" class="edit" data-id="{{ recipe.id }}" data-title="{{ recipe.title }}"
+                                data-description="{{ recipe.description }}" data-time="{{ recipe.cook_time }}"
+                                data-difficulty="{{ recipe.difficulty }}">
+                                <i class="fi fi-rr-edit"></i>
+                            </button>
+
+                            <button type="button" class="delete"><i class="fi fi-rr-trash"></i></button>
+                        </td>
+
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">No recipes shared yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="modal" id="editModal">
+            <div class="modal-box">
+
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title">Edit Recipe</h2>
+                        <p class="modal-subtitle">Update recipe details.</p>
+                    </div>
+                    <button class="close-btn" id="closeEditModal">X</button>
+                </div>
+
+                <form class="user-form" action="/update-recipe" method="post" enctype="multipart/form-data">
+
+                    <!-- Hidden recipe ID -->
+                    <input type="hidden" name="id" id="edit-id">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Recipe Name</label>
+                            <input type="text" name="title" id="edit-title" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cook Time (minutes)</label>
+                            <input type="number" name="cook_time" id="edit-time" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Difficulty</label>
+                            <select name="difficulty" id="edit-difficulty">
+                                <option>Easy</option>
+                                <option>Intermediate</option>
+                                <option>Hard</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" id="edit-description"
+                                placeholder="Enter recipe instructions..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Change Image</label>
+                            <input type="file" name="image" accept="image/*">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Change File (PDF, DOC, etc.)</label>
+                            <input type="file" name="file">
+                        </div>
+
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="cancel-btn" id="cancelEditModal">
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="submit-btn">
+                            Update Recipe
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
     </main>
 </body>
 
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const editModal = document.getElementById("editModal");
+        const closeEditBtn = document.getElementById("closeEditModal");
+        const cancelEditBtn = document.getElementById("cancelEditModal");
+
+        // ===== OPEN MODAL + PREFILL =====
+        document.querySelectorAll(".edit").forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                document.getElementById("edit-id").value = btn.dataset.id;
+                document.getElementById("edit-title").value = btn.dataset.title;
+                document.getElementById("edit-time").value = btn.dataset.time;
+                document.getElementById("edit-difficulty").value = btn.dataset.difficulty;
+                document.getElementById("edit-description").value = btn.dataset.description;
+
+                editModal.classList.add("show");
+            });
+        });
+
+        // ===== CLOSE FUNCTIONS =====
+        function closeModal() {
+            editModal.classList.remove("show");
+        }
+
+        closeEditBtn.onclick = closeModal;
+        cancelEditBtn.onclick = closeModal;
+
+        // Click outside modal
+        window.onclick = (e) => {
+            if (e.target === editModal) closeModal();
+        };
+
+        // ESC key
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") closeModal();
+        });
+
+    });
+</script>
 
 
 {% endblock %}

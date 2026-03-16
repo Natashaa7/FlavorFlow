@@ -242,6 +242,10 @@ body.dark .form-left textarea {
     gap: 35px;
 }
 
+body.dark .radio-group label {
+    color: #94a377;
+}
+
 .desc {
     gap: 10px;
     display: flex;
@@ -362,6 +366,277 @@ body.dark .form-left textarea {
     cursor: pointer;
 }
 
+/* CARD */
+.card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 30px;
+    margin-top: 40px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* TABLE */
+
+body.dark .card {
+    background: #1e1e1e;
+}
+
+.recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recipe-table thead,
+.recipe-table tbody tr {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.recipe-table th,
+.recipe-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.recipe-table td {
+    padding-left: 60px;
+}
+
+.recipe-table img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 15px;
+}
+
+.status.difficulty {
+    background: #eaf3e2;
+    color: #94a377;
+}
+
+.edit {
+	color: #155724;
+	background-color: #d4edda;
+	border-radius: 5px;
+    border: none;
+}
+
+.edit:hover {
+    color: white;
+    background-color: #487653;
+}
+
+.delete {
+    color: #571515;
+    background-color: #deaeb2;
+    border-radius: 5px;
+    border: none;
+}
+
+.delete:hover {
+    color: white;
+    background-color: #8c3f3f;
+}
+
+.edit button:hover {
+	color: #155724;
+	background-color: #d4edda;
+	border-radius: 5px;
+	border: 1 px solid #f8d7da;
+}
+
+tr button {
+	width: 40px;
+	height: 40px;
+	font-size: 20px;
+	color: black;
+}
+
+.error-message {
+	background-color: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+	padding: 12px;
+	border-radius: 5px;
+	font-size: 15px;
+	margin: 0 50px 20px 50px;
+}
+
+.success-message {
+	background-color: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+	padding: 12px;
+	border-radius: 5px;
+	font-size: 15px;
+	margin: 0 50px 20px 50px;
+}
+
+/* ===== MODAL ===== */
+/* ===== MODAL BACKDROP ===== */
+.modal {
+    display: none;                 /* hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show modal using flex */
+.modal.show {
+    display: flex;
+}
+
+/* ===== MODAL BOX ===== */
+.modal-box {
+    background: #ffffff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    animation: modalFade 0.25s ease;
+}
+
+/* Smooth pop animation */
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== HEADER ===== */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.modal-subtitle {
+    margin: 2px 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Close button */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: #f1f1f1;
+}
+
+/* ===== FORM ===== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Full width items */
+.form-group textarea,
+.form-group input[type="file"] {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+/* ===== BUTTONS ===== */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background: #e5e7eb;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.cancel-btn:hover {
+    background: #d1d5db;
+}
+
+.submit-btn {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.submit-btn:hover {
+    background: #4338ca;
+}
 
 /*
 
