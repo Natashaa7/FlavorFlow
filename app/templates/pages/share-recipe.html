@@ -24,16 +24,20 @@
 
             <h3 class="form-heading">Share Your Recipes</h3>
 
+            {% if request.query_params.get('success') %}
+            <p class="success-message">Recipe shared successfully!</p>
+            {% endif %}
+
             <form class="form-grid" action="/add-recipe" method="post" enctype="multipart/form-data">
 
                 <!-- LEFT SIDE -->
                 <div class="form-left">
 
                     <label>Recipe Name</label>
-                    <input type="text" name="title" required>
+                    <input type="text" name="title" placeholder="Chocolate Cookie" required>
 
                     <label>Time</label>
-                    <input type="text" name="cook_time" min="1" required>
+                    <input type="text" name="cook_time" min="1" placeholder="in minutes">
 
                     <label>Difficulty Level</label>
                     <div class="radio-group">
@@ -67,10 +71,6 @@
                 </div>
 
             </form>
-            {% if request.query_params.get('success') %}
-            <p class="success-msg">Recipe shared successfully!</p>
-            {% endif %}
-
 
         </div>
         <!-- TABLE -->
@@ -84,8 +84,9 @@
                         <th>ID</th>
                         <th>Image</th>
                         <th>Recipe Name</th>
-                        <th>Date</th>
-                        <th>Status</th>
+                        <th>Time (mins)</th>
+                        <th>Level</th>
+                        <th>Created Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -96,16 +97,24 @@
                         <td>{{ recipe.id }}</td>
                         <td><img src="{{ recipe.image_path }}" width="80"></td>
                         <td>{{ recipe.title }}</td>
+                        <td>{{ recipe.cook_time }}</td>
+                        <td><span class="level difficulty">{{ recipe.difficulty }}</span></td>
                         <td>{{ recipe.created_at.strftime('%b %d, %Y') }}</td>
-                        <td><span class="status difficulty">{{ recipe.difficulty }}</span></td>
-                        <td>
+                        <td style="display: flex; padding: 10px;">
                             <button type="button" class="edit" data-id="{{ recipe.id }}" data-title="{{ recipe.title }}"
                                 data-description="{{ recipe.description }}" data-time="{{ recipe.cook_time }}"
-                                data-difficulty="{{ recipe.difficulty }}">
+                                data-difficulty="{{ recipe.difficulty }}" data-image="{{ recipe.image_path }}"
+                                data-file="{{ recipe.file_path }}">
                                 <i class="fi fi-rr-edit"></i>
                             </button>
 
-                            <button type="button" class="delete"><i class="fi fi-rr-trash"></i></button>
+                            <button type="button" class="delete" data-id="{{ recipe.id }}">
+                                <i class="fi fi-rr-trash"></i>
+                            </button>
+                            <button type="button" class="download" data-file="{{ recipe.file_path }}">
+                                <i class="fi fi-rr-file-download"></i>
+                            </button>
+
                         </td>
 
                     </tr>
@@ -133,7 +142,7 @@
                     <!-- Hidden recipe ID -->
                     <input type="hidden" name="id" id="edit-id">
 
-                    <div class="form-grid">
+                    <div class="modal-grid">
 
                         <div class="form-group">
                             <label>Recipe Name</label>
@@ -161,14 +170,26 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Change Image</label>
-                            <input type="file" name="image" accept="image/*">
+                            <label>Current Image</label><br>
+
+                            <!-- 🔹 Show existing image -->
+                            <img id="current-image" src="" width="120" style="margin-bottom:10px; border-radius: 20px;">
+
+                            <!-- 🔹 Upload new image -->
+                            <input type="file" name="image" id="edit-image" accept="image/*">
+
+                            <small>Leave empty to keep current image</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Current File</label><br>
+
+                            <a id="current-file" href="" target="_blank">View Current File</a><br><br>
+
+                            <input type="file" name="file" id="edit-file">
+
+                            <small>Leave empty to keep current file</small>
                         </div>
 
-                        <div class="form-group">
-                            <label>Change File (PDF, DOC, etc.)</label>
-                            <input type="file" name="file">
-                        </div>
 
                     </div>
 
@@ -181,9 +202,7 @@
                             Update Recipe
                         </button>
                     </div>
-
                 </form>
-
             </div>
         </div>
     </main>
@@ -207,7 +226,8 @@
                 document.getElementById("edit-time").value = btn.dataset.time;
                 document.getElementById("edit-difficulty").value = btn.dataset.difficulty;
                 document.getElementById("edit-description").value = btn.dataset.description;
-
+                document.getElementById("current-image").src = btn.dataset.image;
+                document.getElementById("current-file").href = btn.dataset.file;
                 editModal.classList.add("show");
             });
         });
@@ -228,6 +248,87 @@
         // ESC key
         document.addEventListener("keydown", e => {
             if (e.key === "Escape") closeModal();
+        });
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.querySelectorAll(".delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const recipeId = btn.dataset.id;
+
+            Swal.fire({
+                title: "Delete this recipe?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e63946",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "Cancel",
+                background: "#1f1f1f",
+                color: "#fff"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    // Create hidden form to submit POST
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "/delete-recipe";
+
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "id";
+                    input.value = recipeId;
+
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // Download button confirmation
+        document.querySelectorAll(".download").forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                const fileUrl = btn.dataset.file; // path to recipe file
+
+                Swal.fire({
+                    title: "Download this recipe?",
+                    text: "The recipe file will be downloaded to your computer.",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1d3557",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "Yes, download",
+                    cancelButtonText: "Cancel",
+                    background: "#1f1f1f",
+                    color: "#fff"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create hidden link to trigger download
+                        const a = document.createElement("a");
+                        a.href = fileUrl;
+                        a.download = fileUrl.split("/").pop(); // filename
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                });
+
+            });
         });
 
     });

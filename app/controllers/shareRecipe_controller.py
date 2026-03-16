@@ -7,6 +7,7 @@ from psycopg2.extras import RealDictCursor
 import os
 import shutil
 import uuid
+from typing import Optional
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -130,6 +131,8 @@ async def add_recipe(
     return RedirectResponse(url="/share-recipe?success=1", status_code=303)
 
 
+from typing import Optional
+
 @router.post("/update-recipe")
 async def update_recipe(
     request: Request,
@@ -137,7 +140,9 @@ async def update_recipe(
     title: str = Form(...),
     description: str = Form(...),
     cook_time: int = Form(...),
-    difficulty: str = Form(...)
+    difficulty: str = Form(...),
+    image: Optional[UploadFile] = File(None),
+    file: Optional[UploadFile] = File(None)
 ):
 
     session_token = request.cookies.get("session_id")
@@ -145,21 +150,92 @@ async def update_recipe(
     if not user_id:
         return RedirectResponse(url="/", status_code=303)
 
+    if difficulty not in ["Easy", "Intermediate", "Hard"]:
+        return templates.TemplateResponse(
+            "pages/share-recipe.html",
+            {"request": request, "error": "Invalid difficulty level!"}
+        )
+
     conn = get_db_connection()
     cur = conn.cursor()
 
-    try:
-        cur.execute(
-            """
-            UPDATE recipe
-            SET title=%s, description=%s, cook_time=%s, difficulty=%s
-            WHERE id=%s AND user_id=%s
-            """,
-            (title, description, cook_time, difficulty, id, user_id)
-        )
-        conn.commit()
-    finally:
-        cur.close()
-        conn.close()
+    # 🔹 Base fields (always updated)
+    fields = [
+        "title=%s",
+        "description=%s",
+        "cook_time=%s",
+        "difficulty=%s"
+    ]
+    values = [title, description, cook_time, difficulty]
+
+    # =========================
+    # IMAGE — only if uploaded
+    # =========================
+    if image and image.filename:
+
+        image_name = f"{uuid.uuid4()}_{os.path.basename(image.filename)}"
+        image_path = f"uploads/images/{image_name}"
+
+        with open(image_path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+
+        fields.append("image_path=%s")
+        values.append("/" + image_path)
+
+    # =========================
+    # FILE — only if uploaded
+    # =========================
+    if file and file.filename:
+
+        file_name = f"{uuid.uuid4()}_{os.path.basename(file.filename)}"
+        file_path = f"uploads/files/{file_name}"
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        fields.append("file_path=%s")
+        values.append("/" + file_path)
+
+    # WHERE clause
+    values.extend([id, user_id])
+
+    cur.execute(
+        f"""
+        UPDATE recipe
+        SET {', '.join(fields)}
+        WHERE id=%s AND user_id=%s
+        """,
+        values
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     return RedirectResponse(url="/share-recipe", status_code=303)
+
+@router.post("/delete-recipe")
+async def delete_recipe(
+    request: Request,
+    id: int = Form(...)
+):
+    session_token = request.cookies.get("session_id")
+    user_id = read_session(session_token)
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM recipe WHERE id=%s AND user_id=%s",
+        (id, user_id)
+    )
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return RedirectResponse(url="/share-recipe", status_code=303)
+
