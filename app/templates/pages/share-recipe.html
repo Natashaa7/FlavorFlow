@@ -270,8 +270,12 @@
                 cancelButtonColor: "#6c757d",
                 confirmButtonText: "Yes, delete it",
                 cancelButtonText: "Cancel",
-                background: "#1f1f1f",
-                color: "#fff"
+                background: "#4f261c",
+                color: "#fff",
+
+                didOpen: (popup) => {
+                    popup.style.borderRadius = "30px";
+                }
             }).then((result) => {
 
                 if (result.isConfirmed) {
@@ -314,8 +318,12 @@
                     cancelButtonColor: "#6c757d",
                     confirmButtonText: "Yes, download",
                     cancelButtonText: "Cancel",
-                    background: "#1f1f1f",
-                    color: "#fff"
+                    background: "white",
+                    color: "black",
+
+                    didOpen: (popup) => {
+                        popup.style.borderRadius = "30px";
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Create hidden link to trigger download

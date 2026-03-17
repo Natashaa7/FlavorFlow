@@ -2,6 +2,26 @@ body {
     margin: 0;
 }
 
+.success-msg {
+    background: #e8f5e9;        /* soft green */
+    color: #1b5e20;             /* dark green text */
+    border: 1px solid #66bb6a;  /* medium green border */
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.error-message {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+    padding: 0px 25px;
+	border-radius: 10px;
+	font-weight: 500;
+    text-align: center;
+}
+
 .fa-google {
   background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
   -webkit-background-clip: text;
@@ -67,7 +87,7 @@ h2 {
 }   
 
 .log-input {
-    padding-top: 30px;
+    padding-top: 15px;
     display: flex;
     flex-direction: column;
     gap: 30px;

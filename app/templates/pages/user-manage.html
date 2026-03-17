@@ -28,7 +28,7 @@
     <main class="main">
 
         <!-- ADD USER MODAL -->
-        <div class="modal">
+        <div class="modal" id="addUserModal">
             <div class="modal-box">
 
                 <div class="modal-header">
@@ -36,31 +36,31 @@
                         <h2 class="modal-title">Add New User</h2>
                         <p class="modal-subtitle">Create a new account manually.</p>
                     </div>
-                    <button class="close-btn" id="closeModal">X</button>
+                    <button class="close-btn" id="closeAddModal">X</button>
                 </div>
 
                 <form class="user-form" action="/add-users" method="post">
 
-                    <div class="form-grid">
+                    <div class="modal-grid">
 
                         <div class="form-group">
                             <label>Email Address</label>
-                            <input type="email" name="email" placeholder="john@email.com" required>
+                            <input type="email" name="email" required>
                         </div>
 
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" name="username" placeholder="johndoe88" required>
+                            <input type="text" name="username" required>
                         </div>
 
                         <div class="form-group">
                             <label>Full Name</label>
-                            <input type="text" name="name" placeholder="john doe" required>
+                            <input type="text" name="name" required>
                         </div>
 
                         <div class="form-group">
                             <label>Phone Number</label>
-                            <input type="tel" name="phonenumber" placeholder="98...." required>
+                            <input type="tel" name="phonenumber" required>
                         </div>
 
                         <div class="form-group">
@@ -70,24 +70,25 @@
 
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" name="password" placeholder="********" required>
+                            <input type="password" name="password" required>
                         </div>
 
                         <div class="form-group">
                             <label>Confirm Password</label>
-                            <input type="password" name="confirm_password" placeholder="********" required>
+                            <input type="password" name="confirm_password" required>
                         </div>
 
                     </div>
 
                     <div class="form-buttons">
-                        <button type="button" class="cancel-btn" id="cancelModal">Cancel</button>
+                        <button type="button" class="cancel-btn" id="cancelAddModal">Cancel</button>
                         <button type="submit" class="submit-btn">Create User</button>
                     </div>
 
                 </form>
             </div>
         </div>
+
 
         <div class="page-top">
             <div>
@@ -125,114 +126,223 @@
 
 
         <!-- TABLE -->
-        <div class="table-box">
-            <table class="user-table">
-                <!--<thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Join Date</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>-->
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Date of Birth</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.phonenumber }}</td>
-                        <td>{{ user.dob }}</td>
-                        <td>
-                            <button class="action-btn">Update</button>
-                            <button class="delete-btn">Delete</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Phone</th>
+                    <th>Full Name</th>
+                    <th>DOB</th>
+                    <th>Last Login</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% if user.is_admin %}
+                        <span class="role admin">Admin</span>
+                        {% else %}
+                        <span class="role user">User</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.phonenumber }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.dob }}</td>
+                    <td>
+                        {% if user.last_login %}
+                        {{ user.last_login.strftime('%b %d, %Y') }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
 
-                <!--<tbody>
-                    <tr>
-                        <td>John Smith</td>
-                        <td>john@example.com</td>
-                        <td>Oct 12, 2023</td>
-                        <td><span class="role editor">Admin</span></td>
-                        <td>
-                            <button class="action-btn">Update</button>
-                            <button class="delete-btn">Delete</button>
-                        </td>
-                    </tr>
+                    <td>
+                        <button type="button" class="edit" data-id="{{ user.id }}" data-email="{{ user.email }}"
+                            data-username="{{ user.username }}" data-name="{{ user.name }}"
+                            data-phn="{{ user.phonenumber }}" data-dob="{{ user.dob }}">
+                            <i class="fi fi-rr-edit"></i>
+                        </button>
 
-                    <tr>
-                        <td>Alice Wong</td>
-                        <td>alice@example.com</td>
-                        <td>Nov 05, 2023</td>
-                        <td><span class="role member">User</span></td>
-                        <td>
-                            <button class="action-btn">Update</button>
-                            <button class="delete-btn">Delete</button>
-                        </td>
-                    </tr>
+                        <button type="button" class="delete" data-id="{{ user.id }}">
+                            <i class="fi fi-rr-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-                    <tr class="active">
-                        <td>Emma Miller</td>
-                        <td>emma@example.com</td>
-                        <td>Feb 14, 2024</td>
-                        <td><span class="role suspended">User</span></td>
-                        <td>
-                            <button class="action-btn">Update</button>
-                            <button class="delete-btn">Delete</button>
-                        </td>
-                    </tr>
+        <div class="modal" id="editModal">
+            <div class="modal-box">
 
-                </tbody>-->
-            </table>
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title">Add New User</h2>
+                        <p class="modal-subtitle">Create a new account manually.</p>
+                    </div>
+                    <button class="close-btn" id="closeEditModal">X</button>
+                </div>
+
+                <form class="user-form" action="/update-users" method="post">
+
+                    <!-- Hidden recipe ID -->
+                    <input type="hidden" name="id" id="edit-id">
+
+                    <div class="modal-grid">
+
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="username" id="edit-username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" id="edit-name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" id="edit-email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phonenumber" id="edit-phn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dob" id="edit-dob" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="cancel-btn" id="cancelEditModal">Cancel</button>
+                        <button type="submit" class="submit-btn">Create User</button>
+                    </div>
+
+                </form>
+            </div>
         </div>
-
     </main>
 
-
-    <script>
-        const modal = document.querySelector(".modal");
-        const openBtn = document.getElementById("openModal");
-        const closeBtn = document.getElementById("closeModal");
-        const cancelBtn = document.getElementById("cancelModal");
-
-        openBtn.addEventListener("click", function () {
-            modal.style.display = "flex";
-        });
-
-        closeBtn.addEventListener("click", function () {
-            modal.style.display = "none";
-        });
-
-        cancelBtn.addEventListener("click", function () {
-            modal.style.display = "none";
-        });
-
-        
-    </script>
-
-    <script>
-        const btn = document.getElementById("themeBtn");
-        btn.onclick = function () {
-            document.body.classList.toggle("dark");
-        };
-    </script>
-
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const addModal = document.getElementById("addUserModal");
+        const closeAddBtn = document.getElementById("closeAddModal");
+        const cancelAddBtn = document.getElementById("cancelAddModal");
+        const openAddBtn = document.getElementById("openModal");
+
+        openAddBtn.addEventListener("click", () => {
+            addModal.style.display = "flex";
+        });
+
+        closeAddBtn.onclick = () => addModal.style.display = "none";
+        cancelAddBtn.onclick = () => addModal.style.display = "none";
+
+        const editModal = document.getElementById("editModal");
+        const closeEditBtn = document.getElementById("closeEditModal");
+        const cancelEditBtn = document.getElementById("cancelEditModal");
+
+        closeEditBtn.onclick = () => editModal.classList.remove("show");
+        cancelEditBtn.onclick = () => editModal.classList.remove("show");
+
+        // ===== OPEN MODAL + PREFILL =====
+        document.querySelectorAll(".edit").forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                document.getElementById("edit-id").value = btn.dataset.id;
+                document.getElementById("edit-username").value = btn.dataset.username;
+                document.getElementById("edit-name").value = btn.dataset.name;
+                document.getElementById("edit-email").value = btn.dataset.email;
+                document.getElementById("edit-phn").value = btn.dataset.phn;
+                document.getElementById("edit-dob").src = btn.dataset.dob;
+                editModal.classList.add("show");
+            });
+        });
+
+        // ===== CLOSE FUNCTIONS =====
+        function closeModal() {
+            editModal.classList.remove("show");
+        }
+
+        closeEditBtn.onclick = closeModal;
+        cancelEditBtn.onclick = closeModal;
+
+        // Click outside modal
+        window.onclick = (e) => {
+            if (e.target === editModal) closeModal();
+        };
+
+        // ESC key
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") closeModal();
+        });
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.querySelectorAll(".delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const userId = btn.dataset.id;
+
+            Swal.fire({
+                title: "Delete this user?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e63946",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Yes, delete it",
+                cancelButtonText: "Cancel",
+                background: "#4f261c",
+                color: "#fff",
+
+                didOpen: (popup) => {
+                    popup.style.borderRadius = "30px";
+                }
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    // Create hidden form to submit POST
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "/delete-users";
+
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "id";
+                    input.value = userId;
+
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
+            });
+        });
+    });
+</script>
+
 
 </html>
 

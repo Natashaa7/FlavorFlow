@@ -24,10 +24,16 @@
                     action="/login" method="POST">
                     <!-- Display login errors -->
                     {% if errors and active_form=='login' %}
-                    <div class="error-messages">
+                    <div class="error-message">
                         {% for err in errors %}
-                        <p style="color:red;">{{ err }}</p>
+                        <p>{{ err }}</p>
                         {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if request.query_params.get("logout") == "success" %}
+                    <div id="logout-success" class="success-msg">
+                        You have been logged out successfully.
                     </div>
                     {% endif %}
                     <input type="text" name="username"
@@ -117,7 +123,8 @@
                 </p>
                 <div class="logo-button">
                     <a href="/auth/google"><button><i class="fab fa-google fa-1x"></i> Continue with Google</button></a>
-                    <a href="/auth/apple"><button><i class="fa fa-apple" aria-hidden="true"></i> Continue with Apple</button></a>
+                    <a href="/auth/apple"><button><i class="fa fa-apple" aria-hidden="true"></i> Continue with
+                            Apple</button></a>
                 </div>
             </div>
         </div>
@@ -135,6 +142,17 @@
                 document.getElementById("auth").classList.remove("signup-mode");
             };
         });
+
+        const msg = document.getElementById("logout-success");
+
+        if (msg) {
+            setTimeout(() => {
+                msg.style.opacity = "0";
+                msg.style.transition = "opacity 0.5s";
+
+                setTimeout(() => msg.remove(), 500);
+            }, 5000); // 5 seconds
+        }
     </script>
 
 </body>

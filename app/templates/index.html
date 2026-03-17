@@ -3,11 +3,17 @@
 {% block title %}Home | FlavorFlow{% endblock %}
 
 {% block content %}
-<meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
 <link rel="stylesheet" href="/static/css/style.css">
+
+{% if request.query_params.get("login") == "success" %}
+<div id="login-popup" class="login-popup">
+    Welcome back to FlavorFlow. You’re logged in. <br>Time to create delicious magic ✨
+</div>
+{% endif %}
 
 <!-- Hero Section -->
 <section class="hero">
@@ -77,20 +83,20 @@
         {% for recipe in recipes %}
         <div class="community-cards">
             <div class="recipe-card">
-                    
-                    <div class="card">
-                        
-                        <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
-                        <div class="recipe-info">
-                            <h3>{{ recipe.title }}</h3>
-                            <div class="recipe-meta">
+
+                <div class="card">
+
+                    <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+                    <div class="recipe-info">
+                        <h3>{{ recipe.title }}</h3>
+                        <div class="recipe-meta">
                             <p>{{ recipe.cook_time }} mins |
                                 <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
                             </p>
                             <span>{{ recipe.description }}</span>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -140,5 +146,18 @@
     </div>
     {% endfor %}
 </div>
+
+<script>
+    const popup = document.getElementById("login-popup");
+
+    if (popup) {
+        setTimeout(() => {
+            popup.style.opacity = "0";
+            popup.style.transition = "opacity 0.5s";
+
+            setTimeout(() => popup.remove(), 500);
+        }, 5000); // 5 seconds
+    }
+</script>
 
 {% endblock %}

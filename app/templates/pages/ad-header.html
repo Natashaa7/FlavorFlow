@@ -6,7 +6,10 @@
                 FLOWING AT YOUR FINGERTIPS</p>
             <ul class="account">
                 <li><a href="/ad-profile"><i class="fi fi-rr-user-pen"></i></a></li>
-                <li><a href="/" onclick="return confirmLogout();"><i class="fi fi-rc-leave"></i></a>
+                <li>
+                    <a href="/" class="logout-btn">
+                        <i class="fi fi-rc-leave"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -32,9 +35,7 @@
             link.classList.add('active');
         }
     });
-    
-    // Confirm logout dialog
-    function confirmLogout() {
-        return confirm("Are you sure you want to logout?");
-    }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/logout.js"></script>

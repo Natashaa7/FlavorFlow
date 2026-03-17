@@ -4,73 +4,86 @@
 
 {% block content %}
 
-<head>
-    <title>FlavorFlow Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/css/ad.css">
-</head>
+<title>FlavorFlow Admin Dashboard</title>
+<link rel="stylesheet" href="/static/css/ad.css">
 
-<body>
 
-    <main style="padding: 20px 30px;">
-        <!-- Top Actions 
+{% if request.query_params.get("login") == "success" %}
+<div id="login-popup" class="login-popup">
+    Welcome back to FlavorFlow. You’re logged in. <br>Time to create delicious magic ✨
+</div>
+{% endif %}
+<main style="padding: 20px 30px;">
+    <!-- Top Actions 
         <div class="top-actions">
             <button class="btn-primary">Export Report</button>
             <button>Notifications</button>
         </div> -->
 
-        <!-- Metrics Cards -->
-        <div class="card-container">
-            <div class="card">
-                <div class="card-title">Total Users</div>
-                <div class="card-value">12,482</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Total Recipes</div>
-                <div class="card-value">4,892</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Ingredients</div>
-                <div class="card-value">850</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Top Recipe</div>
-                <div class="card-value">Tiramisu Fusion</div>
-            </div>
+    <!-- Metrics Cards -->
+    <div class="card-container">
+        <div class="card">
+            <div class="card-title">Total Users</div>
+            <div class="card-value">12,482</div>
         </div>
-
-        <!-- Chart Area -->
-        <div class="chart-box">
-            <div class="chart-title">Engagement Activity</div>
-            <p> canvas or SVG </p>
+        <div class="card">
+            <div class="card-title">Total Recipes</div>
+            <div class="card-value">4,892</div>
         </div>
-
-        <!-- Popular Ingredients -->
-        <div class="ingredient-list">
-            <h3 style="margin-bottom:15px;">Popular Pantry</h3>
-            <div class="ingredient-item">
-                <span>Tomato</span>
-                <span>+4%</span>
-            </div>
-            <div class="ingredient-item">
-                <span>Onion</span>
-                <span>+2%</span>
-            </div>
-            <div class="ingredient-item">
-                <span>Garlic</span>
-                <span>0%</span>
-            </div>
-            <div class="ingredient-item">
-                <span>Basil</span>
-                <span>-1%</span>
-            </div>
-            <div class="ingredient-item">
-                <span>Lemon</span>
-                <span>+8%</span>
-            </div>
+        <div class="card">
+            <div class="card-title">Ingredients</div>
+            <div class="card-value">850</div>
         </div>
+        <div class="card">
+            <div class="card-title">Top Recipe</div>
+            <div class="card-value">Tiramisu Fusion</div>
+        </div>
+    </div>
 
-    </main>
+    <!-- Chart Area -->
+    <div class="chart-box">
+        <div class="chart-title">Engagement Activity</div>
+        <p> canvas or SVG </p>
+    </div>
 
-</body>
+    <!-- Popular Ingredients -->
+    <div class="ingredient-list">
+        <h3 style="margin-bottom:15px;">Popular Pantry</h3>
+        <div class="ingredient-item">
+            <span>Tomato</span>
+            <span>+4%</span>
+        </div>
+        <div class="ingredient-item">
+            <span>Onion</span>
+            <span>+2%</span>
+        </div>
+        <div class="ingredient-item">
+            <span>Garlic</span>
+            <span>0%</span>
+        </div>
+        <div class="ingredient-item">
+            <span>Basil</span>
+            <span>-1%</span>
+        </div>
+        <div class="ingredient-item">
+            <span>Lemon</span>
+            <span>+8%</span>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    const popup = document.getElementById("login-popup");
+
+    if (popup) {
+        setTimeout(() => {
+            popup.style.opacity = "0";
+            popup.style.transition = "opacity 0.5s";
+
+            setTimeout(() => popup.remove(), 500);
+        }, 5000); // 5 seconds
+    }
+</script>
 
 {% endblock %}

@@ -143,9 +143,9 @@ async def login(
 
     # Decide redirect based on role
     if user["is_admin"]:
-        redirect_url = "/admin-dashboard"
+        redirect_url = "/admin-dashboard?login=success"
     else:
-        redirect_url = "/index"
+        redirect_url = "/index?login=success"
 
     response = templates.TemplateResponse(
         "pages/authenticate.html", {"request": request}  # Temporary, cookie will redirect

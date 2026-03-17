@@ -404,6 +404,10 @@ thead th {
     z-index: 1;
 }
 
+.dark th {
+    background-color: #121212;
+}
+
 .recipe-table thead,
 .recipe-table tbody tr {
 	table-layout: fixed;
@@ -429,6 +433,13 @@ tr:hover {
     cursor: pointer;
 }
 
+.dark tr:hover {
+    background-color: #686868;
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+
 .recipe-table tr td {
     align-items: center;
     justify-content: center;
@@ -447,8 +458,8 @@ tr:hover {
 }
 
 .level.difficulty {
-    background: #eaf3e2;
-    color: #94a377;
+    background: #f6dabf;
+    color: #f9870e;
 }
 
 .edit {
@@ -505,7 +516,6 @@ tr button {
 	width: 40px;
 	height: 40px;
 	font-size: 20px;
-	color: black;
 }
 
 .error-message {

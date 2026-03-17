@@ -1,7 +1,5 @@
 
 /*header*/
-
-
 .parallax {
 	align-items: center;	/* Center items vertically*/
 	justify-content: center;	/*Center items horizontally*/
@@ -10,6 +8,32 @@
 
 body {
     margin: 0px;
+}
+
+.login-popup {
+    position: fixed;
+    top: 90px;                 /* below navbar */
+    right: 20px;
+    background: #1e2a22;       /* dark green theme */
+    color: #b9f6ca;
+    border: 1px solid #4caf50;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    z-index: 9999;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /*home page*/
