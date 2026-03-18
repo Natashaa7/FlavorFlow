@@ -70,37 +70,37 @@
     </div>
 </section>
 
-<!-- Community Section -->
+<!-- ===== PAGE HEADER ===== -->
+<section class="page-header">
+    <h1>Community Creations</h1>
+    <p>Discover recipes shared by home chefs around the world</p>
+</section>
+
+
+<!-- ===== COMMUNITY SECTION ===== -->
 <section class="community">
-    <div class="container">
-        <div class="community-header">
-            <h2>Community Creations</h2>
-            <div class="carousel-controls">
-                <button class="carousel-btn"><span class="material-symbols-outlined">chevron_left</span></button>
-                <button class="carousel-btn"><span class="material-symbols-outlined">chevron_right</span></button>
-            </div>
-        </div>
+
+    <div class="community-grid">
+
+        <!-- CARD 1 -->
         {% for recipe in recipes %}
-        <div class="community-cards">
-            <div class="recipe-card">
+        <div class="community-card">
+            <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+            <div class="card-content">
+                <h3>{{ recipe.title }}</h3>
+                <p>{{ recipe.description }}</p>
+                <!--<p>{{ recipe.cook_time }} mins |
+                        <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
+                    </p>-->
 
-                <div class="card">
-
-                    <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
-                    <div class="recipe-info">
-                        <h3>{{ recipe.title }}</h3>
-                        <div class="recipe-meta">
-                            <p>{{ recipe.cook_time }} mins |
-                                <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
-                            </p>
-                            <span>{{ recipe.description }}</span>
-                        </div>
-                    </div>
-
+                <div class="card-footer">
+                    <span>By {{ recipe.user_id }}</span>
+                    <button class="btn-small">View</button>
                 </div>
             </div>
         </div>
         {% endfor %}
+
     </div>
 </section>
 
@@ -146,6 +146,67 @@
     </div>
     {% endfor %}
 </div>
+
+
+
+<!-- ===== RECIPES SECTION ===== -->
+<section class="recipes">
+
+    <div class="recipes-header">
+        <h2>Trending Recipes</h2>
+        <button class="btn-primary">Explore All</button>
+    </div>
+
+    <div class="recipe-list">
+
+        <!-- RECIPE ITEM -->
+        <div class="recipe-item">
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
+            <div class="recipe-info">
+                <h3>Healthy Buddha Bowl</h3>
+                <p>A balanced meal packed with nutrients and flavor.</p>
+
+                <div class="recipe-meta">
+                    <span>⏱ 25 mins</span>
+                    <span>⭐ Easy</span>
+                </div>
+            </div>
+
+            <button class="btn-outline">Cook Now</button>
+        </div>
+
+        <div class="recipe-item">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836">
+            <div class="recipe-info">
+                <h3>Spaghetti Bolognese</h3>
+                <p>Traditional Italian favorite with rich sauce.</p>
+
+                <div class="recipe-meta">
+                    <span>⏱ 45 mins</span>
+                    <span>⭐ Medium</span>
+                </div>
+            </div>
+
+            <button class="btn-outline">Cook Now</button>
+        </div>
+
+        <div class="recipe-item">
+            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061">
+            <div class="recipe-info">
+                <h3>Blueberry Pancakes</h3>
+                <p>Perfect breakfast treat for the whole family.</p>
+
+                <div class="recipe-meta">
+                    <span>⏱ 20 mins</span>
+                    <span>⭐ Easy</span>
+                </div>
+            </div>
+
+            <button class="btn-outline">Cook Now</button>
+        </div>
+
+    </div>
+</section>
 
 <script>
     const popup = document.getElementById("login-popup");

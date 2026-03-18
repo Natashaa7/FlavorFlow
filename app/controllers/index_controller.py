@@ -15,7 +15,7 @@ def home(request: Request):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT title, description, cook_time, difficulty, image_path
+        SELECT title, description, cook_time, difficulty, image_path, user_id
         FROM recipe
         ORDER BY created_at DESC
     """)
