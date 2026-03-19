@@ -19,25 +19,25 @@ def home(request: Request):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Fetch recipes and whether they are favorited by this user
+    # Fetch recipes, username, and whether they are favorited by this user
     cur.execute("""
-        SELECT r.id, r.title, r.description, r.cook_time, r.difficulty, r.image_path, r.user_id,
+        SELECT r.id, r.title, r.description, r.cook_time, r.difficulty, r.image_path, u.username,
                CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorited
         FROM recipe r
+        JOIN users u ON r.user_id = u.id
         LEFT JOIN favorite f
         ON r.id = f.recipe_id AND f.user_id = %s
         ORDER BY r.created_at DESC
     """, (user_id,))
 
-    recipes = cur.fetchall()  # RealDictCursor ensures you get dicts
+    recipes = cur.fetchall()  # Use RealDictCursor if you want dicts
 
     cur.close()
     conn.close()
 
     return templates.TemplateResponse(
         "index.html", {"request": request, "recipes": recipes}
-    )
-    
+    )   
 
 @router.post("/toggle-favorite/{recipe_id}")
 def toggle_favorite(recipe_id: int, request: Request):

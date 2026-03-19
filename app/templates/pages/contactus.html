@@ -31,17 +31,18 @@
 
             <form>
 
-                <label>Recipe Name (Optional Ref)</label>
-                <input type="text" placeholder="Your name">
+                <label>Full Name (Optional Ref)</label>
+                <input type="text" placeholder="Your name" name="full_name" required>
 
                 <div class="row">
                     <div>
                         <label>Email Address</label>
-                        <input type="email" placeholder="email@example.com">
+                        <input type="email" placeholder="email@example.com" name="email" required>
                     </div>
                     <div>
                         <label>Subject</label>
-                        <select>
+                        <select name="subject" required>
+                            <option value="">Select Subject</option>
                             <option>General Inquiry</option>
                             <option>Recipe Feedback</option>
                             <option>Account Support</option>
@@ -51,7 +52,7 @@
                 </div>
 
                 <label>How can we help?</label>
-                <textarea rows="5" placeholder="Write your message here..."></textarea>
+                <textarea rows="5" placeholder="Write your message here..." name="message" required></textarea>
 
                 <div class="btn-area">
                     <button type="submit" class="primary-btn">Send Message</button>
@@ -100,8 +101,33 @@
 
 </main>
 
-<button class="dark-toggle" onclick="document.body.classList.toggle('dark')">
-    <span class="material-icons">dark_mode</span>
-</button>
+<script>
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = {
+            full_name: form.full_name.value,
+            email: form.email.value,
+            subject: form.subject.value,
+            message: form.message.value
+        };
+
+        const response = await fetch('/send-message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            document.getElementById('successPopup').style.display = 'block';
+            form.reset();  // Clear the form
+            setTimeout(() => document.getElementById('successPopup').style.display = 'none', 5000);
+        } else {
+            alert("Failed to send message. Try again.");
+        }
+    });
+</script>
+
 
 {% endblock %}
