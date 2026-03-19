@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} | FlavorFlow{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 50px auto; text-align:center;">
+    <h1>{{ recipe.title }}</h1>
+    <p>{{ recipe.description }}</p>
+    
+    <!-- Display PDF -->
+    <embed src="{{ recipe.file_path }}" type="application/pdf" width="100%" height="700px" />
+
+    <div style="margin-top: 20px;">
+        <a href="{{ recipe.file_path }}" download class="btn-primary">Download PDF</a>
+    </div>
+</div>
+{% endblock %}

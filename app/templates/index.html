@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
-<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/index.css">
 
 {% if request.query_params.get("login") == "success" %}
 <div id="login-popup" class="login-popup">
@@ -74,6 +74,11 @@
 <section class="page-header">
     <h1>Community Creations</h1>
     <p>Discover recipes shared by home chefs around the world</p>
+
+    <div class="recipes-header">
+        <h2>Top 3 Trending Recipes</h2>
+        <button class="btn-primary">Explore All</button>
+    </div>
 </section>
 
 
@@ -86,6 +91,8 @@
         {% for recipe in recipes %}
         <div class="community-card">
             <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+            <button class="favorite-btn {% if recipe.is_favorited %}active{% endif %}" data-id="{{ recipe.id }}"><span
+                    class="material-symbols-outlined">favorite</span></button>
             <div class="card-content">
                 <h3>{{ recipe.title }}</h3>
                 <p>{{ recipe.description }}</p>
@@ -95,7 +102,7 @@
 
                 <div class="card-footer">
                     <span>By {{ recipe.user_id }}</span>
-                    <button class="btn-small">View</button>
+                    <a href="/view-recipe/{{ recipe.id }}" class="btn-small">View</a>
                 </div>
             </div>
         </div>
@@ -121,92 +128,30 @@
             </div>
         </div>
         <div class="recipe-list">
-            <!-- Add recipe cards here -->
+            {% for recipe in recipes %}
+            <div class="recipe-item">
+                <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
+                <div class="recipe-info">
+                    <h3>{{ recipe.title }}</h3>
+                    <p class="recipe-description">{{ recipe.description[:80] }}...</p>
+                    <div class="recipe-meta">
+                        <span>⏱ {{ recipe.cook_time }} mins</span>
+                        <span>⭐ {{ recipe.difficulty }}</span>
+                    </div>
+                </div>
+                <button class="favorite-btn {% if recipe.is_favorited %}active{% endif %}" data-id="{{ recipe.id }}">
+                    <span class="material-symbols-outlined">favorite</span>
+                </button>
+                <button class="btn-outline">Cook Now</button>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
-
-
-<!--<div class="home">
-    <h1>BE YOUR OWN CHEF</h1>
-    <a href="/generate-recipe">GET STARTED</a>
-</div>-->
-<h1 style="text-align:center;">Explore Recipes</h1>
-<div class="recipes">
-    {% for recipe in recipes %}
-    <div class="card">
-        <img src="{{ recipe.image_path }}" alt="{{ recipe.title }}">
-        <div class="desc">
-            <h3>{{ recipe.title }}</h3>
-            <p>{{ recipe.cook_time }} mins |
-                <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
-            </p>
-            <p>{{ recipe.description }}</p>
-        </div>
-    </div>
-    {% endfor %}
+<div style="text-align:center; margin-top:20px;">
+    <button id="load-more-btn" class="btn-primary">Load More</button>
 </div>
 
-
-
-<!-- ===== RECIPES SECTION ===== -->
-<section class="recipes">
-
-    <div class="recipes-header">
-        <h2>Trending Recipes</h2>
-        <button class="btn-primary">Explore All</button>
-    </div>
-
-    <div class="recipe-list">
-
-        <!-- RECIPE ITEM -->
-        <div class="recipe-item">
-            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
-            <div class="recipe-info">
-                <h3>Healthy Buddha Bowl</h3>
-                <p>A balanced meal packed with nutrients and flavor.</p>
-
-                <div class="recipe-meta">
-                    <span>⏱ 25 mins</span>
-                    <span>⭐ Easy</span>
-                </div>
-            </div>
-
-            <button class="btn-outline">Cook Now</button>
-        </div>
-
-        <div class="recipe-item">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836">
-            <div class="recipe-info">
-                <h3>Spaghetti Bolognese</h3>
-                <p>Traditional Italian favorite with rich sauce.</p>
-
-                <div class="recipe-meta">
-                    <span>⏱ 45 mins</span>
-                    <span>⭐ Medium</span>
-                </div>
-            </div>
-
-            <button class="btn-outline">Cook Now</button>
-        </div>
-
-        <div class="recipe-item">
-            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061">
-            <div class="recipe-info">
-                <h3>Blueberry Pancakes</h3>
-                <p>Perfect breakfast treat for the whole family.</p>
-
-                <div class="recipe-meta">
-                    <span>⏱ 20 mins</span>
-                    <span>⭐ Easy</span>
-                </div>
-            </div>
-
-            <button class="btn-outline">Cook Now</button>
-        </div>
-
-    </div>
-</section>
 
 <script>
     const popup = document.getElementById("login-popup");
@@ -219,6 +164,70 @@
             setTimeout(() => popup.remove(), 500);
         }, 5000); // 5 seconds
     }
+</script>
+
+<script>
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+
+        btn.addEventListener('click', async () => {
+
+            const recipeId = btn.dataset.id;
+            console.log("Recipe ID:", recipeId);
+
+            const response = await fetch(`/toggle-favorite/${recipeId}`, {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+
+            // Toggle appearance
+            if (data.status === "added") {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+
+        });
+
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const recipes = document.querySelectorAll('.recipe-item');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+
+        const ROWS_PER_CLICK = 3;        // 3 rows per click
+        const COLS = 2;                  // 2 columns
+        const ITEMS_PER_BATCH = ROWS_PER_CLICK * COLS; // 6 recipes per batch
+
+        let visibleCount = 0;
+
+        function showNextBatch() {
+            const nextCount = visibleCount + ITEMS_PER_BATCH;
+            recipes.forEach((recipe, index) => {
+                if (index < nextCount) {
+                    recipe.style.display = 'flex';
+                }
+            });
+            visibleCount += ITEMS_PER_BATCH;
+
+            // Hide button if all recipes are visible
+            if (visibleCount >= recipes.length) {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // Initially hide all recipes
+        recipes.forEach(recipe => recipe.style.display = 'none');
+
+        // Show first batch
+        showNextBatch();
+
+        // Load more on click
+        loadMoreBtn.addEventListener('click', showNextBatch);
+    });
+
 </script>
 
 {% endblock %}

@@ -187,12 +187,12 @@ body.dark .recipe-card {
     cursor: pointer;
     transition: transform 0.3s;
     color: rgb(196, 30, 30);
-    font-variation-settings: "FILL" 1; /* start as outlined */
+    font-variation-settings: "FILL" 0;
 }
 
 .recipe-image .favorite-btn.active {
-    color: #282c25;
-    font-variation-settings: "FILL" 0; 
+    color: rgb(196, 30, 30);
+    font-variation-settings: "FILL" 1;
     transition: transform 0.3s;
 }
 
