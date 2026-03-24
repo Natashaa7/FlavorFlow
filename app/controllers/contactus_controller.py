@@ -13,6 +13,8 @@ class MessageSchema(BaseModel):
 
 @router.post("/send-message")
 def send_message(message: MessageSchema):
+    print(message)  # DEBUG
+
     conn = get_db_connection()
     cur = conn.cursor()
 
@@ -26,3 +28,4 @@ def send_message(message: MessageSchema):
     conn.close()
 
     return JSONResponse({"status": "success"})
+

@@ -29,7 +29,7 @@
 
             <h3>Send us a Message</h3>
 
-            <form>
+            <form id="contactForm">
 
                 <label>Full Name (Optional Ref)</label>
                 <input type="text" placeholder="Your name" name="full_name" required>
@@ -59,6 +59,13 @@
                 </div>
 
             </form>
+        </div>
+        <div id="successPopup" class="popup">
+            <div class="popup-content">
+                <span class="popup-icon">✓</span>
+                <h3>Message Sent!</h3>
+                <p>Thank you for contacting us. We'll get back to you soon.</p>
+            </div>
         </div>
 
 
@@ -106,6 +113,7 @@
         e.preventDefault();
 
         const form = e.target;
+
         const formData = {
             full_name: form.full_name.value,
             email: form.email.value,
@@ -113,21 +121,33 @@
             message: form.message.value
         };
 
-        const response = await fetch('/send-message', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
+        try {
+            const response = await fetch('/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-        if (response.ok) {
-            document.getElementById('successPopup').style.display = 'block';
-            form.reset();  // Clear the form
-            setTimeout(() => document.getElementById('successPopup').style.display = 'none', 5000);
-        } else {
-            alert("Failed to send message. Try again.");
+            if (response.ok) {
+                // Reset form
+                form.reset();
+
+                // Show popup
+                const popup = document.getElementById('successPopup');
+                popup.classList.add('show');
+
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    popup.classList.remove('show');
+                }, 3000);
+            } else {
+                alert("Failed to send message. Please try again.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong. Please try again.");
         }
     });
 </script>
-
 
 {% endblock %}

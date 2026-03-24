@@ -1,41 +1,45 @@
-<header class="header">
-    <div class="parallax">
-        <div class="navbar">
-            <a href="/admin-dashboard"><img src="/static/images/logo.png" /></a>
-            <p style="padding-left: 25rem; padding-top: 15px; font-size: 25px; margin-right:125px;">RECIPES
-                FLOWING AT YOUR FINGERTIPS</p>
-            <ul class="account">
-                <li><a href="/ad-profile"><i class="fi fi-rr-user-pen"></i></a></li>
-                <li>
-                    <a href="/" class="logout-btn">
-                        <i class="fi fi-rc-leave"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <nav class="navbar">
-            <ul style="gap: 22rem;">
-                <li><a href="/admin-dashboard" class="redirect"><i class="fi fi-rr-house-chimney-heart"></i>DASHBOARD</a>
-                </li>
-                <li><a href="/user-manage" class="redirect"><i class="fi fi-rr-magic-wand"></i>USER MANAGEMENT</a></li>
-                <li><a href="/ingredient-manage" class="redirect"><i class="fi fi-rr-progress-upload"></i>INGREDIENT MANAGEMENT</a></li>
-            </ul>
-        </nav>
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h1>FlavorFlow</h1>
+        <p>Management Suite</p>
     </div>
-</header>
+    <ul class="sidebar-links">
+        <a href="/admin-dashboard"><i class="fi fi-rr-square-poll-vertical"></i> Dashboard</a>
+        <a href="/messages" class="active"><i class="fi fi-rr-envelope"></i> Inquiries</a>
+        <a href="/share"><i class="fi fi-rr-share"></i> Share Recipe</a>
+        <a href="/user-manage"><i class="fi fi-rr-user-gear"></i> User Management</a>
+        <a href="/ingredient-manage"><i class="fi fi-rr-recipe"></i> Ingredient Management</a>
+        <a href="/ad-profile"><i class="fi fi-rr-user-pen"></i>Profile</a>
+    </ul>
+    <a href="/authenticate" class="logout-btn">
+        <button class="log-btn"><i class="fi fi-rc-leave"></i>Logout</button></a>
+</nav>
+
 <script>
     // Get the current path (e.g., "/index", "/aboutus", etc.)
     const currentPath = window.location.pathname;
 
-    // Select all nav links
-    const navLinks = document.querySelectorAll('.navbar a.redirect');
+    // Select all sidebar links
+    const navLinks = document.querySelectorAll('.sidebar-links a');
 
+    // Loop through links
     navLinks.forEach(link => {
+        // Remove active class from all links first
+        link.classList.remove('active');
+
+        // Add active class if href matches current path
         if (link.getAttribute('href') === currentPath) {
             link.classList.add('active');
         }
+
+        // Add click listener to update active dynamically
+        link.addEventListener('click', () => {
+            navLinks.forEach(l => l.classList.remove('active')); // remove from all
+            link.classList.add('active'); // add to clicked
+        });
     });
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/static/js/logout.js"></script>

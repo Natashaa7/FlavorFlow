@@ -97,3 +97,78 @@ body.dark a.active{
 .account i{
     font-size: 30px;
 }
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #f8f8f8;
+    padding: 2rem 1rem;
+    padding: 0;
+}
+
+.sidebar-header h1 {
+    font-family: 'Newsreader', serif;
+    font-size: 1.5rem;
+    color: #064e3b;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-header p {
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.sidebar-links {
+    list-style: none;
+    margin-top: 2rem;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 0;
+    margin-bottom: 24rem;
+}
+
+.sidebar-links a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    border-radius: 0 50px 50px 0;
+    transition: all 0.3s ease;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.sidebar-links a.active,
+.sidebar-links a:hover {
+    background-color: #064e3b;
+    color: #fff;
+}
+
+.sidebar-links span {
+    margin-right: 0.5rem;
+}
+
+.log-btn {
+    padding: 0.75rem 1rem;
+    margin-left: 10px;
+    margin-top: auto;
+    background-color: #064e3b;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    width: 230px;
+    text-align: center;
+}

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from psycopg2.extras import RealDictCursor
 import bcrypt
@@ -27,7 +27,7 @@ def read_users():
     conn.close()
     return users
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/authenticate", response_class=HTMLResponse)
 async def authenticate(request: Request):
     return templates.TemplateResponse(
         "pages/authenticate.html",
@@ -37,9 +37,9 @@ async def authenticate(request: Request):
         }
     )
 
-@router.post("/signup", response_class=HTMLResponse)
+@router.post("/signup")
 async def signup(
-    request: Request,
+    request: Request,  # Needed for TemplateResponse
     name: str = Form(...),
     username: str = Form(...),
     email: str = Form(...),
@@ -48,6 +48,7 @@ async def signup(
     password: str = Form(...),
     confirm_password: str = Form(...)
 ):
+    # 1️⃣ Validate form
     try:
         form = SignupForm(
             name=name,
@@ -59,51 +60,58 @@ async def signup(
             confirm_password=confirm_password
         )
     except ValidationError as e:
-        # Collect all error messages as a list
+        # Collect all error messages
         error_messages = [err['msg'] for err in e.errors()]
+
+        # 2️⃣ Log JSON response in backend
+        json_error = {"errors": error_messages}
+        print(JSONResponse(status_code=422, content=json_error).body)  # backend log
+
+        # 3️⃣ Return HTML page to user
         return templates.TemplateResponse(
-            "pages/authenticate.html",
+            "pages/authenticate.html",  # your signup form template
             {
                 "request": request,
-                "errors": error_messages,  # list of error strings
-                "form_data": {
-                    "name": name,
-                    "username": username,
-                    "email": email,
-                    "phonenumber": phonenumber,
-                    "dob": dob
-                },
-                "active_form": "signup"  # must always be present
-            }
+                "errors": error_messages,
+                "name": name,
+                "username": username,
+                "email": email,
+                "phonenumber": phonenumber,
+                "dob": dob
+            },
+            status_code=422
         )
-        
+
+    # 4️⃣ Hash password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
 
+    # 5️⃣ Insert into database
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute(
-        """
-        INSERT INTO users (name, email, username, phonenumber, dob, password, is_admin, oauth_provider)
-        VALUES (%s, %s, %s, %s, %s, %s, FALSE, %s)
-        RETURNING id
-        """,
-        (name, email, username, phonenumber, dob, hashed_password, 'local')
-    )
-    user_id = cur.fetchone()["id"]
+    try:
+        cur.execute(
+            """
+            INSERT INTO users (name, email, username, phonenumber, dob, password, is_admin, oauth_provider)
+            VALUES (%s, %s, %s, %s, %s, %s, FALSE, %s)
+            RETURNING id
+            """,
+            (name, email, username, phonenumber, dob, hashed_password, 'local')
+        )
+        user_id = cur.fetchone()["id"]
 
-    cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id))
-    conn.commit()
-    cur.close()
-    conn.close()
-    
-    # Show success message on form page
+        cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id))
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
+
+    # 6️⃣ Return success HTML page or JSON
     return templates.TemplateResponse(
-        "pages/authenticate.html",
-        {
-            "request": request,
-            "success": "Account created successfully!"
-        }
+        "pages/authenticate.html",  # your success template
+        {"request": request, "user_id": user_id, "message": "Account created successfully!"},
+        status_code=201
     )
+
     
 @router.post("/login")
 async def login(

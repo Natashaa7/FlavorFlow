@@ -140,3 +140,42 @@ body.dark .faq-box {
     border-radius: 50%;
     cursor: pointer;
 }
+
+/* Popup hidden by default */
+.popup {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+}
+
+.popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1.05);
+}
+
+.popup-icon {
+    font-size: 2rem;
+    color: green;
+}
+
+/* TEXT */
+.popup-content h3 {
+    margin: 10px 0;
+    font-size: 22px;
+}
+
+.popup-content p {
+    font-size: 14px;
+    color: #666;
+}

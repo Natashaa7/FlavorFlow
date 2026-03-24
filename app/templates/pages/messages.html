@@ -1,0 +1,134 @@
+{% extends "pages/ad-base.html" %}
+
+{% block title %}FlavorFlow - My Cookbook Gallery{% endblock %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Admin Panel</title>
+    <link rel="stylesheet" href="static/css/messages.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,700;1,400;1,700&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Content Area -->
+    <div class="content">
+        <div class="header-section">
+            <h2>User Inquiries</h2>
+            <p>Manage incoming messages and feedback from the culinary community. Use the curated view to prioritize
+                high-impact responses.</p>
+            <div class="header-actions">
+                <div class="new-count"><span class="material-symbols-outlined">pending</span> 12 New</div>
+                <div class="filter-btn"><span class="material-symbols-outlined">filter_list</span> Filter</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="inquiry-table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in messages %}
+                <tr>
+                    <td>{{ msg.full_name }}</td>
+                    <td>{{ msg.email }}</td>
+                    <td>{{ msg.subject }}</td>
+                    <td>{{ msg.message }}</td>
+                    <td>{{ msg.created_at.strftime('%b %d, %Y %I:%M %p') }}</td>
+                    <td>
+                        <button type="button" class="delete" data-id="{{ msg.id }}">
+                            <i class="fi fi-rr-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="deletePopup" class="popup">
+            <div class="popup-content">
+                <span class="popup-icon">🗑️</span>
+                <h3>Message Deleted</h3>
+                <p>The message has been removed successfully.</p>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <span>Showing 4 of 128 Inquiries</span>
+            <div class="pages">
+                <button class="page-btn">&lt;</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">&gt;</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.querySelectorAll(".delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            const msgId = btn.dataset.id;
+
+            Swal.fire({
+                title: "Delete this message?",
+                text: "This cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e63946",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Yes, delete it",
+                background: "#4f261c",
+                color: "#fff"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = "/delete-message";
+
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "id";
+                    input.value = msgId;
+
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
+            });
+        });
+    });
+
+    if (urlParams.get("success") === "deleted") {
+        const popup = document.getElementById("deletePopup");
+        popup.classList.add("show");
+
+        setTimeout(() => {
+            popup.classList.remove("show");
+        }, 2000);
+
+        // remove query param so it doesn't repeat
+        window.history.replaceState({}, document.title, "/messages");
+    }
+</script>
+
+{% endblock %}

@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from app.controllers import auth_controller, adminDb_controller, adminProfile_controller, cookbook_controller, generateRecipe_controller, index_controller, ingredManage_controller, userManage_controller, shareRecipe_controller, page_controller, profile_controller, forgotpw_controller,  resetpw_controller, viewRecipe_controller, contactus_controller
+from app.controllers import auth_controller, adminDb_controller, adminProfile_controller, cookbook_controller, generateRecipe_controller, index_controller, ingredManage_controller, userManage_controller, shareRecipe_controller, page_controller, profile_controller, forgotpw_controller,  resetpw_controller, viewRecipe_controller, contactus_controller, messages_controller
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
 
 app.add_middleware(SessionMiddleware, secret_key="flavorflowsecret")
-
 
 # Mount static folder
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -42,10 +41,8 @@ app.include_router(forgotpw_controller.router)
 app.include_router(resetpw_controller.router)
 app.include_router(viewRecipe_controller.router)
 app.include_router(contactus_controller.router)
+app.include_router(messages_controller.router)
 # Login page (first page)
-
-
-
 
 
 

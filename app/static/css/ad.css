@@ -6,6 +6,10 @@
     --text-dark: #333333;
 }
 
+main {
+    margin-left: 250px;
+}
+
 .login-popup {
     position: fixed;
     top: 90px;                 /* below navbar */

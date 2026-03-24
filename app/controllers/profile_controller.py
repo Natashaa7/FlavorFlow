@@ -51,7 +51,7 @@ async def update_profile(
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
     if not user_id:
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(url="/authenticate", status_code=303)
 
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)

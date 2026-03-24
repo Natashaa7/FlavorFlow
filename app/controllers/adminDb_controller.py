@@ -13,7 +13,7 @@ async def admin_dashboard(request: Request):
     user = get_current_user(request)
 
     if not user:
-        return RedirectResponse(url="/")  # Not logged in → redirect to login
+        return RedirectResponse(url="/authenticate")  # Not logged in → redirect to login
 
     if not user["is_admin"]:
         return RedirectResponse(url="/index")  # Logged in but not admin → redirect home
