@@ -1,0 +1,147 @@
+{% extends "base/base.html" %}
+
+{% block title %}Generate Recipe | FlavorFlow{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FlavorFlow - Generate Recipe</title>
+    <link rel="stylesheet" href="/static/css/gr.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <main class="main">
+        <!-- LEFT SIDE -->
+        <aside class="side-ing">
+            <h2>Select Ingredients</h2>
+
+            <div class="section">
+                <h3>Vegetables</h3>
+                <div class="button-group">
+                    <button class="item active" data-name="tomato">Tomato</button>
+                    <button class="item active" data-name="onion">Onion</button>
+                    <button class="item" data-name="garlic">Garlic</button>
+                    <button class="item" data-name="carrot">Carrot</button>
+                    <button class="item" data-name="chocolate">Chocolate</button>
+                    <button class="item" data-name="flour">Flour</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Proteins</h3>
+                <div class="button-group">
+                    <button class="item active" data-name="chicken">Chicken</button>
+                    <button class="item" data-name="beef">Beef</button>
+                    <button class="item" data-name="egg">Egg</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT SIDE -->
+        <section class="content">
+
+            <!-- Upload Box -->
+            <div class="upload-box">
+                <h2>Upload your ingredients</h2>
+                <p>Take a photo of your fridge or pantry.</p>
+                <input type="file" id="imageInput" accept="image/*">
+            </div>
+
+            <!-- Basket -->
+            <div class="basket">
+                <h2>Your Basket</h2>
+                <p>No ingredients selected yet.</p>
+            </div>
+
+            <!-- Recipe Output -->
+            <div class="recipe-output">
+                <h2>Generated Recipe</h2>
+                <pre id="recipeText">Your recipe will appear here...</pre>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="generate-area">
+                <button class="generate-btn">Generate Recipe</button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- SCRIPT -->
+    <script>
+        const buttons = document.querySelectorAll(".item");
+        const generateBtn = document.querySelector(".generate-btn");
+
+        // Toggle ingredient selection
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                btn.classList.toggle("active");
+            });
+        });
+
+        generateBtn.addEventListener("click", async () => {
+            let selected = [];
+
+            document.querySelectorAll(".item.active").forEach(btn => {
+                selected.push(btn.dataset.name);
+            });
+
+            let formData = new FormData();
+
+            // Send ingredients properly for FastAPI
+            selected.forEach(i => formData.append("ingredients", i));
+
+            let fileInput = document.getElementById("imageInput");
+            if (fileInput.files[0]) {
+                formData.append("image", fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch("api/v1/generate_recipe/generate", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                console.log(data); // 👈 ADD THIS FOR DEBUG
+
+                if (!data.success) {
+                    alert(data.error || "Failed to generate recipe");
+                    return;
+                }
+
+                // access nested response
+                const result = data.data;
+
+                // Show ingredients in basket
+                document.querySelector(".basket").innerHTML =
+                    "<h2>Your Basket</h2>" +
+                    result.ingredients.map(i => `<p>${i}</p>`).join("");
+
+                // Show recipe
+                document.getElementById("recipeText").textContent = result.recipe;
+
+
+            } catch (err) {
+                console.error(err);
+                alert("Something went wrong!");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
+
+{% endblock %}

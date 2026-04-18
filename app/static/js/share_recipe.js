@@ -1,191 +1,189 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // =========================
+  // ADD RECIPE
+  // =========================
+  const addForm = document.querySelector('.form-grid')
 
-    // =========================
-    // ADD RECIPE
-    // =========================
-    const addForm = document.querySelector(".form-grid");
+  if (addForm) {
+    addForm.addEventListener('submit', async e => {
+      e.preventDefault()
 
-    if (addForm) {
-        addForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+      const formData = new FormData(addForm)
 
-            const formData = new FormData(addForm);
+      const response = await fetch('/add-recipe', {
+        method: 'POST',
+        body: formData
+      })
 
-            const response = await fetch("/add-recipe", {
-                method: "POST",
-                body: formData
-            });
+      const data = await response.json()
 
-            const data = await response.json();
+      if (data.success) {
+        await Swal.fire({
+          title: 'Success!',
+          text: data.message,
+          icon: 'success'
+        })
 
-            if (data.success) {
-                await Swal.fire({
-                    title: "Success!",
-                    text: data.message,
-                    icon: "success"
-                });
+        window.location.href = data.redirect
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: data.error,
+          icon: 'error'
+        })
+      }
+    })
+  }
 
-                window.location.href = data.redirect;
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: data.error,
-                    icon: "error"
-                });
-            }
-        });
-    }
+  // =========================
+  // EDIT MODAL OPEN
+  // =========================
+  const modal = document.getElementById('editModal')
+  const editForm = document.querySelector('.user-form')
 
+  document.querySelectorAll('.edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!modal) return
 
-    // =========================
-    // EDIT MODAL OPEN
-    // =========================
-    const modal = document.getElementById("editModal");
-    const editForm = document.querySelector(".user-form");
+      modal.style.display = 'flex'
 
-    document.querySelectorAll(".edit").forEach(btn => {
-        btn.addEventListener("click", () => {
+      document.getElementById('edit-id').value = btn.dataset.id
+      document.getElementById('edit-title').value = btn.dataset.title
+      document.getElementById('edit-description').value =
+        btn.dataset.description
+      document.getElementById('edit-time').value = btn.dataset.time
+      document.getElementById('edit-difficulty').value = btn.dataset.difficulty
 
-            if (!modal) return;
+      document.getElementById('current-image').src = btn.dataset.image
+      document.getElementById('current-file').href = btn.dataset.file
+    })
+  })
 
-            modal.style.display = "flex";
+  // =========================
+  // CLOSE MODAL
+  // =========================
+  const closeBtn = document.getElementById('closeEditModal')
+  const cancelBtn = document.getElementById('cancelEditModal')
 
-            document.getElementById("edit-id").value = btn.dataset.id;
-            document.getElementById("edit-title").value = btn.dataset.title;
-            document.getElementById("edit-description").value = btn.dataset.description;
-            document.getElementById("edit-time").value = btn.dataset.time;
-            document.getElementById("edit-difficulty").value = btn.dataset.difficulty;
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => (modal.style.display = 'none'))
+  }
 
-            document.getElementById("current-image").src = btn.dataset.image;
-            document.getElementById("current-file").href = btn.dataset.file;
-        });
-    });
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => (modal.style.display = 'none'))
+  }
 
+  // =========================
+  // UPDATE RECIPE
+  // =========================
+  if (editForm) {
+    editForm.addEventListener('submit', async e => {
+      e.preventDefault()
 
-    // =========================
-    // CLOSE MODAL
-    // =========================
-    const closeBtn = document.getElementById("closeEditModal");
-    const cancelBtn = document.getElementById("cancelEditModal");
+      const formData = new FormData(editForm)
 
-    if (closeBtn) {
-        closeBtn.addEventListener("click", () => modal.style.display = "none");
-    }
+      try {
+        const response = await fetch('/update-recipe', {
+          method: 'POST',
+          body: formData
+        })
 
-    if (cancelBtn) {
-        cancelBtn.addEventListener("click", () => modal.style.display = "none");
-    }
+        const data = await response.json()
 
+        if (data.success) {
+          await Swal.fire({
+            title: 'Success!',
+            text: data.message,
+            icon: 'success'
+          })
 
-    // =========================
-    // UPDATE RECIPE
-    // =========================
-    if (editForm) {
-        editForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+          window.location.href = data.redirect
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: data.error || 'Update failed',
+            icon: 'error'
+          })
+        }
+      } catch (err) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Server error occurred',
+          icon: 'error'
+        })
+      }
+    })
+  }
 
-            const formData = new FormData(editForm);
+  // =========================
+  // DELETE RECIPE
+  // =========================
+  document.querySelectorAll('.delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const recipeId = btn.dataset.id
 
-            try {
-                const response = await fetch("/update-recipe", {
-                    method: "POST",
-                    body: formData
-                });
+      const result = await Swal.fire({
+        title: 'Delete this recipe?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it'
+      })
 
-                const data = await response.json();
+      if (!result.isConfirmed) return
 
-                if (data.success) {
-                    await Swal.fire({
-                        title: "Success!",
-                        text: data.message,
-                        icon: "success"
-                    });
+      const formData = new FormData()
+      formData.append('id', recipeId)
 
-                    window.location.href = data.redirect;
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: data.error || "Update failed",
-                        icon: "error"
-                    });
-                }
+      try {
+        const response = await fetch('/delete-recipe', {
+          method: 'POST',
+          body: formData
+        })
 
-            } catch (err) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Server error occurred",
-                    icon: "error"
-                });
-            }
-        });
-    }
+        const data = await response.json()
 
+        if (data.success) {
+          await Swal.fire('Deleted!', data.message, 'success')
 
-    // =========================
-    // DELETE RECIPE
-    // =========================
-    document.querySelectorAll(".delete").forEach(btn => {
-        btn.addEventListener("click", async () => {
+          // optional redirect OR reload
+          if (data.redirect) {
+            window.location.href = data.redirect
+          } else {
+            location.reload()
+          }
+        } else {
+          Swal.fire('Error', data.error || 'Delete failed', 'error')
+        }
+      } catch (err) {
+        Swal.fire('Error', 'Server error occurred', 'error')
+      }
+    })
+  })
 
-            const recipeId = btn.dataset.id;
+  // =========================
+  // DOWNLOAD FILE
+  // =========================
+  document.querySelectorAll('.download').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fileUrl = btn.dataset.file
 
-            const result = await Swal.fire({
-                title: "Delete this recipe?",
-                text: "This action cannot be undone.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, delete it"
-            });
-
-            if (result.isConfirmed) {
-
-                const formData = new FormData();
-                formData.append("id", recipeId);
-
-                const response = await fetch("/delete-recipe", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    await Swal.fire("Deleted!", data.message, "success");
-                    window.location.href = data.redirect;
-                } else {
-                    Swal.fire("Error", data.error, "error");
-                }
-            }
-        });
-    });
-
-
-    // =========================
-    // DOWNLOAD FILE
-    // =========================
-    document.querySelectorAll(".download").forEach(btn => {
-        btn.addEventListener("click", () => {
-
-            const fileUrl = btn.dataset.file;
-
-            Swal.fire({
-                title: "Download this recipe?",
-                text: "The recipe file will be downloaded.",
-                icon: "info",
-                showCancelButton: true,
-                confirmButtonText: "Yes, download"
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    const a = document.createElement("a");
-                    a.href = fileUrl;
-                    a.download = fileUrl.split("/").pop();
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-            });
-        });
-    });
-
-});
+      Swal.fire({
+        title: 'Download this recipe?',
+        text: 'The recipe file will be downloaded.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, download'
+      }).then(result => {
+        if (result.isConfirmed) {
+          const a = document.createElement('a')
+          a.href = fileUrl
+          a.download = fileUrl.split('/').pop()
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      })
+    })
+  })
+})

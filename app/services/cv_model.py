@@ -5,7 +5,7 @@ import torchvision.transforms as transforms
 from ultralytics import YOLO
 
 # Load YOLO model (object detection)
-yolo_model = YOLO("app/model/final_model.pt")
+yolo_model = YOLO("app/ml_models/final_model.pt")
 
 # Define your custom ingredient classes
 CLASS_NAMES = [

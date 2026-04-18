@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from app.controllers import auth_controller, adminDb_controller, cookbook_controller,  index_controller, ingredManage_controller, userManage_controller, shareRecipe_controller, page_controller, profile_controller, forgotpw_controller,  resetpw_controller, viewRecipe_controller, contactus_controller, messages_controller, generate_controller, logout_controller
+from app.api.v1.api import api_router
+from app.web.routes import (
+    admin_dashboard, authentication, contactus, cookbook, forgot_password, generate_recipe, google_oauth, index, ingredient, logout, messages, pages, profile, reset_password, share_recipe, user_manage, view_recipe
+)
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
@@ -14,8 +17,6 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 # Upload files
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 # Allow frontend to make requests
 app.add_middleware(
     CORSMiddleware,
@@ -25,26 +26,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# include routers
-app.include_router(auth_controller.router)
-app.include_router(adminDb_controller.router)
-app.include_router(cookbook_controller.router)
-app.include_router(index_controller.router)
-app.include_router(ingredManage_controller.router)
-app.include_router(page_controller.router)
-app.include_router(profile_controller.router)
-app.include_router(shareRecipe_controller.router)
-app.include_router(userManage_controller.router)
-app.include_router(forgotpw_controller.router)
-app.include_router(resetpw_controller.router)
-app.include_router(viewRecipe_controller.router)
-app.include_router(contactus_controller.router)
-app.include_router(messages_controller.router)
-app.include_router(generate_controller.router)
-app.include_router(logout_controller.router)
-# Login page (first page)
+# include api routers
+app.include_router(api_router, prefix="/api/v1")
 
-
+# include web routers
+app.include_router(admin_dashboard.router)
+app.include_router(authentication.router)
+app.include_router(contactus.router)
+app.include_router(cookbook.router) 
+app.include_router(forgot_password.router)
+app.include_router(generate_recipe.router)
+app.include_router(google_oauth.router)
+app.include_router(index.router)
+app.include_router(ingredient.router)
+app.include_router(logout.router)
+app.include_router(messages.router)
+app.include_router(pages.router)
+app.include_router(profile.router)
+app.include_router(reset_password.router)
+app.include_router(share_recipe.router)
+app.include_router(user_manage.router)
+app.include_router(view_recipe.router)
 
 
 """
@@ -88,7 +90,7 @@ async def login(
     if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
         return RedirectResponse(url="/?error=login", status_code=303)
 
-    redirect_url = "/admin-dashboard" if user["username"].lower() == "admin" else "/index"
+    redirect_url = "/admin_dashboard" if user["username"].lower() == "admin" else "/index"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 """

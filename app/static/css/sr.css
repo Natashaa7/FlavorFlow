@@ -106,7 +106,6 @@ body.dark .form-left textarea {
 }
 
 .submit-btn {
-    margin-top: 30px;
     background: #94a377;
     color: white;
     padding: 12px 40px;
@@ -116,6 +115,7 @@ body.dark .form-left textarea {
     letter-spacing: 3px;
     cursor: pointer;
     transition: 0.3s;
+    align-items: center;
 }
 
 .submit-btn:hover {
@@ -667,6 +667,8 @@ tr button {
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
+    height: 50px;
+    width: 100px;
 }
 
 .cancel-btn:hover {

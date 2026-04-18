@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 
 {% block title %}Profile | FlavorFlow{% endblock %}
 
@@ -262,8 +262,8 @@
 <script>
     window.addEventListener("load", function () {
 
-        const successMsg = "{{ success | default('') }}";
-        const errorMsg = "{{ error | default('') }}";
+        const successMsg = "{{ success | default('') | safe }}";
+        const errorMsg = "{{ error | default('') | safe }}";
 
         if (successMsg && successMsg !== "None") {
             Swal.fire({

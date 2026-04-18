@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-tokenizer = AutoTokenizer.from_pretrained("app/model/twelve_model")
-model = AutoModelForSeq2SeqLM.from_pretrained("app/model/twelve_model")
+tokenizer = AutoTokenizer.from_pretrained("app/ml_models/twelve_model")
+model = AutoModelForSeq2SeqLM.from_pretrained("app/ml_models/twelve_model")
 
 def generate_recipe(ingredients):
     prompt = f"""
