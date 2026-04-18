@@ -6,9 +6,12 @@ import bcrypt
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
 from app.utils.session_utils import create_session
+from app.utils.validation_utils import validate_password  # adjust path if needed
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+
 
 # -----------------------------
 # GET: Show Reset Password Page
@@ -16,6 +19,7 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/reset-password", response_class=HTMLResponse)
 async def reset_password_page(request: Request):
     return templates.TemplateResponse("pages/reset_password.html", {"request": request})
+
 
 # -----------------------------
 # POST: Handle Reset Password
@@ -26,13 +30,16 @@ async def reset_password(
     email: str = Form(...),
     code: str = Form(...),
     new_password: str = Form(...),
-    confirm_password: str = Form(...)
+    confirm_password: str = Form(...),
 ):
     # Validate passwords
     if new_password != confirm_password:
         return templates.TemplateResponse(
             "pages/reset_password.html",
-            {"request": request, "error": "New password and confirm password do not match."}
+            {
+                "request": request,
+                "errors": ["New password and confirm password do not match."],
+            },
         )
 
     conn = get_db_connection()
@@ -47,7 +54,7 @@ async def reset_password(
         conn.close()
         return templates.TemplateResponse(
             "pages/reset_password.html",
-            {"request": request, "error": "Invalid request. Email not registered."}
+            {"request": request, "errors": ["Invalid request. Email not registered."]},
         )
 
     # Validate code and expiry
@@ -56,7 +63,27 @@ async def reset_password(
         conn.close()
         return templates.TemplateResponse(
             "pages/reset_password.html",
-            {"request": request, "error": "Invalid or expired reset code."}
+            {"request": request, "errors": ["Invalid or expired reset code."]},
+        )
+
+    errors = []
+
+    # Check if passwords match
+    if new_password != confirm_password:
+        errors.append("Passwords do not match")
+
+    # Validate password strength
+    try:
+        validate_password(new_password)
+    except ValueError as e:
+        errors.append(str(e))
+
+    # If any errors → return to page
+    if errors:
+        return templates.TemplateResponse(
+            "pages/reset_password.html",
+            {"request": request, "errors": errors, "email": email},
+            status_code=400,
         )
 
     # Hash new password
@@ -64,13 +91,16 @@ async def reset_password(
 
     # Update password and reset code fields for this user
     # After updating password
-    cur.execute("""
+    cur.execute(
+        """
         UPDATE users
         SET password=%s,
             reset_code=NULL,
             reset_code_expiry=NULL
         WHERE email=%s
-    """, (hashed, email))
+    """,
+        (hashed, email),
+    )
     conn.commit()
 
     # Create a session for the user who reset the password
@@ -80,6 +110,6 @@ async def reset_password(
     conn.close()
 
     # Redirect to home page with session cookie
-    response = RedirectResponse(url="/index", status_code=303)
+    response = RedirectResponse(url="/index?login=reset_success", status_code=303)
     response.set_cookie(key="session_id", value=session_token, httponly=True)
     return response

@@ -3,6 +3,7 @@ body {
     margin: 0;
     background: #f8f9fa;
     color: #333;
+    margin-top: 165px;
 }
 
 body.dark {
@@ -503,13 +504,6 @@ tr:hover {
     color: white;
     background-color: #3f678c;
     cursor: pointer;
-}
-
-.edit button:hover {
-	color: #155724;
-	background-color: #d4edda;
-	border-radius: 5px;
-	border: 1 px solid #f8d7da;
 }
 
 tr button {

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from app.database.connection import get_db_connection
 from app.utils.session_utils import read_session
@@ -16,43 +16,53 @@ templates = Jinja2Templates(directory="app/templates")
 os.makedirs("uploads/images", exist_ok=True)
 os.makedirs("uploads/files", exist_ok=True)
 
+def get_user_role(cur, user_id: int):
+    cur.execute("SELECT is_admin FROM users WHERE id=%s", (user_id,))
+    user = cur.fetchone()
+    return user["is_admin"] if user else False
+
 
 # ===========================
 # SHARE RECIPE PAGE (GET)
 # ===========================
 @router.get("/share-recipe", response_class=HTMLResponse)
 async def share_recipe(request: Request):
-    # 🔹 read session like profile
+
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
+
     if not user_id:
         return RedirectResponse(url="/", status_code=303)
 
-    # fetch user recipes
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
+
     try:
-        cur.execute(
-            """
+        cur.execute("""
             SELECT id, title, description, image_path, file_path, cook_time, difficulty, created_at
             FROM recipe
             WHERE user_id=%s
             ORDER BY created_at DESC
-            """,
-            (user_id,)
-        )
+        """, (user_id,))
+
         recipes = cur.fetchall()
-    except Exception as e:
-        print("DB Error:", e)
-        recipes = []
+
+        is_admin = get_user_role(cur, user_id)
+
+        print("IS ADMIN:", is_admin)  # DEBUG
+
+        return templates.TemplateResponse(
+            "pages/admin_recipe.html" if is_admin else "pages/share-recipe.html",
+            {
+                "request": request,
+                "recipes": recipes
+            }
+        )
+
     finally:
         cur.close()
         conn.close()
 
-    return templates.TemplateResponse(
-        "pages/share-recipe.html",
-        {"request": request, "recipes": recipes}
-    )
 
 
 # ===========================
@@ -68,70 +78,57 @@ async def add_recipe(
     image: UploadFile = File(...),
     file: UploadFile = File(...)
 ):
-    # 🔹 read session like profile
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
+
     if not user_id:
-        return RedirectResponse(url="/", status_code=303)
+        return JSONResponse({"success": False, "redirect": "/"})
 
-    # validate difficulty
     if difficulty not in ["Easy", "Intermediate", "Hard"]:
-        return templates.TemplateResponse(
-            "pages/share-recipe.html",
-            {"request": request, "error": "Invalid difficulty level!"}
-        )
+        return JSONResponse({"success": False, "error": "Invalid difficulty level!"})
 
-    # create unique filenames
-    image_name = f"{uuid.uuid4()}_{os.path.basename(image.filename)}"
-    file_name = f"{uuid.uuid4()}_{os.path.basename(file.filename)}"
-    image_path = f"uploads/images/{image_name}"
-    file_path = f"uploads/files/{file_name}"
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    # save files
     try:
+        is_admin = get_user_role(cur, user_id)
+
+        image_name = f"{uuid.uuid4()}_{image.filename}"
+        file_name = f"{uuid.uuid4()}_{file.filename}"
+
+        image_path = f"uploads/images/{image_name}"
+        file_path = f"uploads/files/{file_name}"
+
         with open(image_path, "wb") as buffer:
             shutil.copyfileobj(image.file, buffer)
+
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-    except Exception as e:
-        print("File Save Error:", e)
-        return templates.TemplateResponse(
-            "pages/share-recipe.html",
-            {"request": request, "error": "Failed to save uploaded files!"}
-        )
-    finally:
-        image.file.close()
-        file.file.close()
 
-    # insert into DB
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            """
+        cur.execute("""
             INSERT INTO recipe
             (title, description, image_path, file_path, cook_time, difficulty, user_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """,
-            (title, description, "/" + image_path, "/" + file_path, cook_time, difficulty, user_id)
-        )
+        """, (title, description, "/" + image_path, "/" + file_path, cook_time, difficulty, user_id))
+
         conn.commit()
+
+        return JSONResponse({
+            "success": True,
+            "message": "Recipe added successfully!",
+            "redirect": "/share-recipe"
+        })
+
     except Exception as e:
         conn.rollback()
-        print("DB Error:", e)
-        return templates.TemplateResponse(
-            "pages/share-recipe.html",
-            {"request": request, "error": "Failed to add recipe to database!"}
-        )
+        print("Error:", e)
+        return JSONResponse({"success": False, "error": "Failed to add recipe"})
+
     finally:
         cur.close()
         conn.close()
 
-    # redirect back to GET page (like profile)
-    return RedirectResponse(url="/share-recipe?success=1", status_code=303)
 
-
-from typing import Optional
 
 @router.post("/update-recipe")
 async def update_recipe(
@@ -147,95 +144,102 @@ async def update_recipe(
 
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
-    if not user_id:
-        return RedirectResponse(url="/", status_code=303)
 
-    if difficulty not in ["Easy", "Intermediate", "Hard"]:
-        return templates.TemplateResponse(
-            "pages/share-recipe.html",
-            {"request": request, "error": "Invalid difficulty level!"}
-        )
+    if not user_id:
+        return JSONResponse({"success": False, "redirect": "/"})
 
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    # 🔹 Base fields (always updated)
-    fields = [
-        "title=%s",
-        "description=%s",
-        "cook_time=%s",
-        "difficulty=%s"
-    ]
-    values = [title, description, cook_time, difficulty]
+    try:
+        is_admin = get_user_role(cur, user_id)
 
-    # =========================
-    # IMAGE — only if uploaded
-    # =========================
-    if image and image.filename:
+        fields = ["title=%s", "description=%s", "cook_time=%s", "difficulty=%s"]
+        values = [title, description, cook_time, difficulty]
 
-        image_name = f"{uuid.uuid4()}_{os.path.basename(image.filename)}"
-        image_path = f"uploads/images/{image_name}"
+        if image and image.filename:
+            image_name = f"{uuid.uuid4()}_{image.filename}"
+            image_path = f"uploads/images/{image_name}"
 
-        with open(image_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
+            with open(image_path, "wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
 
-        fields.append("image_path=%s")
-        values.append("/" + image_path)
+            fields.append("image_path=%s")
+            values.append("/" + image_path)
 
-    # =========================
-    # FILE — only if uploaded
-    # =========================
-    if file and file.filename:
+        if file and file.filename:
+            file_name = f"{uuid.uuid4()}_{file.filename}"
+            file_path = f"uploads/files/{file_name}"
 
-        file_name = f"{uuid.uuid4()}_{os.path.basename(file.filename)}"
-        file_path = f"uploads/files/{file_name}"
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
 
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            fields.append("file_path=%s")
+            values.append("/" + file_path)
 
-        fields.append("file_path=%s")
-        values.append("/" + file_path)
+        values.extend([id, user_id])
 
-    # WHERE clause
-    values.extend([id, user_id])
+        cur.execute(f"""
+            UPDATE recipe
+            SET {', '.join(fields)}
+            WHERE id=%s AND user_id=%s
+        """, values)
 
-    cur.execute(
-        f"""
-        UPDATE recipe
-        SET {', '.join(fields)}
-        WHERE id=%s AND user_id=%s
-        """,
-        values
-    )
+        conn.commit()
 
-    conn.commit()
-    cur.close()
-    conn.close()
+        return JSONResponse({
+            "success": True,
+            "message": "Recipe updated successfully!",
+            "redirect": "/share-recipe"
+        })
 
-    return RedirectResponse(url="/share-recipe", status_code=303)
+    except Exception as e:
+        conn.rollback()
+        print("Error:", e)
+        return JSONResponse({"success": False, "error": "Failed to update recipe"})
+
+    finally:
+        cur.close()
+        conn.close()
+
 
 @router.post("/delete-recipe")
-async def delete_recipe(
-    request: Request,
-    id: int = Form(...)
-):
+async def delete_recipe(request: Request, id: int = Form(...)):
+
     session_token = request.cookies.get("session_id")
     user_id = read_session(session_token)
 
     if not user_id:
-        return RedirectResponse(url="/", status_code=303)
+        return JSONResponse({"success": False, "redirect": "/"})
 
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute(
-        "DELETE FROM recipe WHERE id=%s AND user_id=%s",
-        (id, user_id)
-    )
+    try:
+        is_admin = get_user_role(cur, user_id)
 
-    conn.commit()
-    cur.close()
-    conn.close()
+        if is_admin:
+            cur.execute("DELETE FROM recipe WHERE id=%s", (id,))
+        else:
+            cur.execute("DELETE FROM recipe WHERE id=%s AND user_id=%s", (id, user_id))
 
-    return RedirectResponse(url="/share-recipe", status_code=303)
+        conn.commit()
 
+        return JSONResponse({
+            "success": True,
+            "message": "Recipe deleted successfully!",
+            "redirect": "/share-recipe"
+        })
+
+    except Exception as e:
+        conn.rollback()
+        print("Delete error:", e)
+
+        return JSONResponse({
+            "success": False,
+            "error": "Failed to delete recipe!"
+        })
+
+    finally:
+        cur.close()
+        conn.close()

@@ -122,10 +122,11 @@ body {
     display: flex;
     padding: 40px;
     gap: 40px;
+    margin-top: 165px;
 }
 
 /* SIDEBAR */
-.sidebar {
+.side-ing {
     width: 30%;
     background-color: white;
     padding: 20px;

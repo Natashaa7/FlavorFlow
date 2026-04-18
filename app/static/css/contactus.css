@@ -3,6 +3,7 @@ body {
     margin: 0;
     background: #FDFBF7;
     color: #333;
+    margin-top: 165px;
 }
 
 body.dark {

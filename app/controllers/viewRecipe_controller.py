@@ -9,24 +9,46 @@ templates = Jinja2Templates(directory="app/templates")
 
 def get_recipe_by_id(recipe_id: int):
     conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)  # <- important
-    cur.execute("""
-        SELECT id, title, description, file_path
-        FROM recipe
-        WHERE id = %s
-    """, (recipe_id,))
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    return row  # already a dict
+    try:
+        # 🔥 increase views
+        cur.execute("""
+            UPDATE recipe
+            SET views = views + 1
+            WHERE id = %s
+        """, (recipe_id,))
+
+        # get recipe
+        cur.execute("""
+            SELECT id, title, description, file_path, views
+            FROM recipe
+            WHERE id = %s
+        """, (recipe_id,))
+
+        recipe = cur.fetchone()
+        conn.commit()
+
+        return recipe
+
+    finally:
+        cur.close()
+        conn.close()
+
 
 @router.get("/view-recipe/{recipe_id}", response_class=HTMLResponse)
 def view_recipe(request: Request, recipe_id: int):
+
     recipe = get_recipe_by_id(recipe_id)
+
     if not recipe:
         return HTMLResponse("Recipe not found", status_code=404)
+
     return templates.TemplateResponse(
         "pages/view_recipe.html",
-        {"request": request, "recipe": recipe}
+        {
+            "request": request,
+            "recipe": recipe
+        }
     )
+

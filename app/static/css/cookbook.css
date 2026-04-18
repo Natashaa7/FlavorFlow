@@ -23,6 +23,7 @@ body {
     background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
     color: #1E293B; /* dark text */
     min-height: 100vh;
+    margin-top: 190px;
 }
 
 body.dark {

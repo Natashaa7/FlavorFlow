@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from app.controllers import auth_controller, adminDb_controller, adminProfile_controller, cookbook_controller, generateRecipe_controller, index_controller, ingredManage_controller, userManage_controller, shareRecipe_controller, page_controller, profile_controller, forgotpw_controller,  resetpw_controller, viewRecipe_controller, contactus_controller, messages_controller
+from app.controllers import auth_controller, adminDb_controller, cookbook_controller,  index_controller, ingredManage_controller, userManage_controller, shareRecipe_controller, page_controller, profile_controller, forgotpw_controller,  resetpw_controller, viewRecipe_controller, contactus_controller, messages_controller, generate_controller, logout_controller
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
@@ -28,9 +28,7 @@ app.add_middleware(
 # include routers
 app.include_router(auth_controller.router)
 app.include_router(adminDb_controller.router)
-app.include_router(adminProfile_controller.router)
 app.include_router(cookbook_controller.router)
-app.include_router(generateRecipe_controller.router)
 app.include_router(index_controller.router)
 app.include_router(ingredManage_controller.router)
 app.include_router(page_controller.router)
@@ -42,8 +40,9 @@ app.include_router(resetpw_controller.router)
 app.include_router(viewRecipe_controller.router)
 app.include_router(contactus_controller.router)
 app.include_router(messages_controller.router)
+app.include_router(generate_controller.router)
+app.include_router(logout_controller.router)
 # Login page (first page)
-
 
 
 

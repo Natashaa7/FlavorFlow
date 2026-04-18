@@ -21,7 +21,7 @@ def home(request: Request):
 
     # Fetch recipes, username, and whether they are favorited by this user
     cur.execute("""
-        SELECT r.id, r.title, r.description, r.cook_time, r.difficulty, r.image_path, u.username,
+        SELECT r.id, r.title, r.description, r.cook_time, r.difficulty, r.image_path, r.views, u.username,
                CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorited
         FROM recipe r
         JOIN users u ON r.user_id = u.id

@@ -12,7 +12,16 @@
 <div id="login-popup" class="login-popup">
     Welcome back to FlavorFlow. You’re logged in. <br>Time to create delicious magic ✨
 </div>
+{% elif request.query_params.get("login") == "reset_success" %}
+<div class="login-popup" id="login-popup">
+  Password reset successful! You’re now logged in 🔐
+</div>
+{% elif request.query_params.get("login") == "google_success" %}
+<div class="login-popup" id="login-popup">
+  Logged in with Google successfully ✨
+</div>
 {% endif %}
+
 <main style="padding: 20px 30px;">
     <!-- Top Actions 
         <div class="top-actions">

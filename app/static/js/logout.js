@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    window.location.href = "/?logout=success";
+                    window.location.href = "/logout";
                 }
 
             });

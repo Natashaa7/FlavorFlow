@@ -11,11 +11,13 @@ from app.models.user_model import SignupForm
 import os
 from dotenv import load_dotenv
 from authlib.integrations.starlette_client import OAuth
+from psycopg2 import errors
 import secrets
 
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+
 
 @router.get("/users")
 def read_users():
@@ -27,15 +29,14 @@ def read_users():
     conn.close()
     return users
 
+
 @router.get("/authenticate", response_class=HTMLResponse)
 async def authenticate(request: Request):
     return templates.TemplateResponse(
         "pages/authenticate.html",
-        {
-            "request": request,
-            "active_form": "login"   # default form
-        }
+        {"request": request, "active_form": "login"},  # default form
     )
+
 
 @router.post("/signup")
 async def signup(
@@ -44,81 +45,101 @@ async def signup(
     username: str = Form(...),
     email: str = Form(...),
     phonenumber: str = Form(...),
-    dob: str = Form(...),
     password: str = Form(...),
-    confirm_password: str = Form(...)
+    confirm_password: str = Form(...),
 ):
-    # 1️⃣ Validate form
+    # Validate form
     try:
         form = SignupForm(
             name=name,
             username=username,
             email=email,
             phonenumber=phonenumber,
-            dob=dob,
             password=password,
-            confirm_password=confirm_password
+            confirm_password=confirm_password,
         )
     except ValidationError as e:
         # Collect all error messages
-        error_messages = [err['msg'] for err in e.errors()]
+        error_messages = [err["msg"].replace("Value error, ", "") for err in e.errors()]
 
-        # 2️⃣ Log JSON response in backend
+        # Log JSON response in backend
         json_error = {"errors": error_messages}
         print(JSONResponse(status_code=422, content=json_error).body)  # backend log
 
-        # 3️⃣ Return HTML page to user
+        form_data = await request.form()
+        print(dict(form_data))
+
+        # Return HTML page to user
         return templates.TemplateResponse(
-            "pages/authenticate.html",  # your signup form template
+            "pages/authenticate.html",
             {
                 "request": request,
                 "errors": error_messages,
+                "active_form": "signup",
                 "name": name,
                 "username": username,
                 "email": email,
                 "phonenumber": phonenumber,
-                "dob": dob
             },
-            status_code=422
+            status_code=422,
         )
 
-    # 4️⃣ Hash password
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+    # Hash password
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode()
 
-    # 5️⃣ Insert into database
+    # Insert into database
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute(
             """
-            INSERT INTO users (name, email, username, phonenumber, dob, password, is_admin, oauth_provider)
-            VALUES (%s, %s, %s, %s, %s, %s, FALSE, %s)
+            INSERT INTO users (name, email, username, phonenumber, password, is_admin, oauth_provider)
+            VALUES (%s, %s, %s, %s, %s, FALSE, %s)
             RETURNING id
             """,
-            (name, email, username, phonenumber, dob, hashed_password, 'local')
+            (name, email, username, phonenumber, hashed_password, "local"),
         )
         user_id = cur.fetchone()["id"]
 
-        cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id))
+        cur.execute(
+            "UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id)
+        )
         conn.commit()
+    except errors.UniqueViolation as e:
+        conn.rollback()
+
+        if "email" in str(e):
+            error_messages = "Email already registered"
+        elif "username" in str(e):
+            error_messages = "Username already taken"
+        else:
+            error_messages = "User already exists"
+
+        return templates.TemplateResponse(
+            "pages/authenticate.html",
+            {
+                "request": request,
+                "errors": [error_messages],
+                "active_form": "signup",
+                "name": name,
+                "username": username,
+                "email": email,
+                "phonenumber": phonenumber,
+            },
+            status_code=400,
+        )
     finally:
         cur.close()
         conn.close()
 
-    # 6️⃣ Return success HTML page or JSON
-    return templates.TemplateResponse(
-        "pages/authenticate.html",  # your success template
-        {"request": request, "user_id": user_id, "message": "Account created successfully!"},
-        status_code=201
+    # Return success HTML page or JSON
+    return RedirectResponse(
+        url="/authenticate?success=account_created", status_code=303
     )
 
-    
+
 @router.post("/login")
-async def login(
-    request: Request,
-    username: str = Form(...),
-    password: str = Form(...)
-):
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("SELECT * FROM users WHERE username=%s", (username,))
@@ -128,7 +149,9 @@ async def login(
 
     errors = []
 
-    if not user or not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
+    if not user or not bcrypt.checkpw(
+        password.encode("utf-8"), user["password"].encode("utf-8")
+    ):
         errors.append("Invalid username or password")
         return templates.TemplateResponse(
             "pages/authenticate.html",
@@ -136,15 +159,17 @@ async def login(
                 "request": request,
                 "errors": errors,
                 "active_form": "login",
-                "form_data": {"username": username}
-            }
+                "form_data": {"username": username},
+            },
         )
 
     # Update last login
     conn = get_db_connection()
     cur = conn.cursor()
 
-    cur.execute("UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user["id"]))
+    cur.execute(
+        "UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user["id"])
+    )
     conn.commit()
     cur.close()
     conn.close()
@@ -156,12 +181,14 @@ async def login(
         redirect_url = "/index?login=success"
 
     response = templates.TemplateResponse(
-        "pages/authenticate.html", {"request": request}  # Temporary, cookie will redirect
+        "pages/authenticate.html",
+        {"request": request},  # Temporary, cookie will redirect
     )
     session_token = create_session(user["id"])
     redirect_response = RedirectResponse(url=redirect_url, status_code=303)
     redirect_response.set_cookie(key="session_id", value=session_token, httponly=True)
     return redirect_response
+
 
 # --- OAuth setup (placeholders) ---
 
@@ -169,32 +196,29 @@ load_dotenv("/Users/natashababu/Documents/FYP/flavorflow/app/secret.env")
 
 oauth = OAuth()
 oauth.register(
-    name='google',
+    name="google",
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
     client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={
-        'scope': 'openid email profile'
-    }
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
 )
+
 
 # --- OAuth PLACEHOLDERS ---
 @router.get("/auth/google")
 async def google_login(request: Request):
     redirect_uri = request.url_for("google_callback")
     return await oauth.google.authorize_redirect(
-        request, 
-        redirect_uri,
-        prompt="select_account"   # forces account selection
+        request, redirect_uri, prompt="select_account"  # forces account selection
     )
+
 
 @router.get("/auth/google/callback")
 async def google_callback(request: Request):
 
     token = await oauth.google.authorize_access_token(request)
     resp = await oauth.google.get(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        token=token
+        "https://www.googleapis.com/oauth2/v3/userinfo", token=token
     )
     user_info = resp.json()
 
@@ -211,19 +235,21 @@ async def google_callback(request: Request):
 
     if not user:
         # Insert user without a password
-        cur.execute("""
+        cur.execute(
+            """
             INSERT INTO users (name, email, username, password, is_admin, oauth_provider)
             VALUES (%s, %s, %s, NULL, FALSE, %s)
             RETURNING id
-        """, (name, email, username, 'google'))
+        """,
+            (name, email, username, "google"),
+        )
         user_id = cur.fetchone()["id"]
         conn.commit()
     else:
         user_id = user["id"]
 
     cur.execute(
-        "UPDATE users SET last_login=%s WHERE id=%s",
-        (datetime.utcnow(), user_id)
+        "UPDATE users SET last_login=%s WHERE id=%s", (datetime.utcnow(), user_id)
     )
 
     conn.commit()
@@ -234,9 +260,7 @@ async def google_callback(request: Request):
     session_token = create_session(user_id)
 
     # Redirect based on admin status
-    redirect_url = "/admin-dashboard" if user and user.get("is_admin") else "/index"
+    redirect_url = "/admin-dashboard?login=google_success" if user and user.get("is_admin") else "/index?login=google_success"
     response = RedirectResponse(redirect_url, status_code=303)
     response.set_cookie(key="session_id", value=session_token, httponly=True)
     return response
-
-

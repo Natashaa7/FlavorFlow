@@ -10,16 +10,51 @@ body {
     border-radius: 10px;
     font-weight: 500;
     text-align: center;
+    margin-left: 55px;
+    margin-right: 55px;
+}
+
+.error-msg {
+    background: #f8d7da;
+	border: 1px solid #f5c6cb;       
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-align: center;
+    margin-left: 75px;
+    margin-right: 75px;
+}
+
+.error-msg p {
+    color: #721c24;
 }
 
 .error-message {
 	background: #f8d7da;
-	color: #721c24;
 	border: 1px solid #f5c6cb;
     padding: 0px 25px;
 	border-radius: 10px;
 	font-weight: 500;
     text-align: center;
+    width: 270px;
+}
+
+.error-message p {
+    color: #721c24;
+}
+
+.register-error {
+	background: #f8d7da;
+	border: 1px solid #f5c6cb;
+    padding: 0px 25px;
+	border-radius: 10px;
+	font-weight: 500;
+    text-align: center;
+    margin: 0 20px 25px 20px;
+}
+
+.register-error p {
+    color: #721c24;
 }
 
 .fa-google {
@@ -113,6 +148,16 @@ h2 {
     color: white;
     font-size: 15px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.log-input button:active{
+    transform: translateY(0);
+}
+
+.log-input button:hover{
+    transform: translateY(-1px);
 }
 
 #left-panel,
@@ -166,7 +211,7 @@ h2 {
 .form-split {
     display: flex;
     gap: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 
 .split {
@@ -183,6 +228,16 @@ h2 {
     color: white;
     font-size: 15px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.sign-input button:active{
+    transform: translateY(0);
+}
+
+.sign-input button:hover{
+    transform: translateY(-1px);
 }
 
 span {
@@ -190,7 +245,50 @@ span {
 }
 
 .logo-button {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.logo-button a {
+    text-decoration: none;
+}
+
+.logo-button button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     
+    width: 250px;
+    padding: 12px 20px;
+    
+    background-color: #ffffff;
+    color: #444;
+    
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.logo-button button:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+.logo-button button:active {
+    transform: translateY(0);
+}
+
+.logo-button i {
+    font-size: 18px;
 }
 
 .logo img {
@@ -265,3 +363,43 @@ span {
 .auth.signup-mode #signup {     /* slide in from right */
     transform: translateX(0); 
 } 
+
+p {
+    margin: 10px 0;
+    font-size: 15px;
+    color: #3f5f4a; /* deep sage green text */
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+p a,
+p span {
+    color: #6b3f1f; /* dark earthy brown-orange */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+p a:hover,
+p span:hover {
+    color: #4e2d14; /* darker hover */
+    text-decoration: underline;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #3f5f4a;
+    padding-right: 10px;
+}
+
+

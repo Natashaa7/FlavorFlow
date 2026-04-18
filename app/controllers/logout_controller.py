@@ -8,7 +8,10 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 # Logout
-@router.post("/logout")
-def logout(response: Response):
-    response.delete_cookie("session_id")
-    return RedirectResponse(url="/", status_code=303)
+@router.get("/logout")
+def logout():
+    response = RedirectResponse(url="/authenticate?logout=success", status_code=302)
+    response.delete_cookie("session_id", path="/")
+    return response
+
+

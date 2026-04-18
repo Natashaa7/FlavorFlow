@@ -14,7 +14,8 @@
 }
 
 .footer {
-    background: white;
+    background: linear-gradient(135deg, #fdf6ec, #d1fae5); /* beige → white → soft green */
+    color: #064e3b;
     padding: 80px 20px 20px;
     border-top: 1px solid #eee;
 }
@@ -40,7 +41,11 @@ body.dark .footer {
     display: block;
     margin-bottom: 10px;
     text-decoration: none;
-    color: gray;
+    color: #064e3b;
+}
+
+.footer-grid a:hover {
+    color: #10b981;
 }
 
 .footer-bottom {

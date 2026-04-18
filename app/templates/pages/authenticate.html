@@ -6,6 +6,8 @@
     <title>Login Page</title>
     <link rel="stylesheet" type="text/css" href="/static/css/authenticate.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
@@ -20,16 +22,20 @@
         <div id="left-panel">
             <div id="login" class="panel-content">
                 <h2 style="margin-top: 50px;">Welcome Cooks</h2>
+                <!-- Display login errors -->
+                {% if errors and active_form=='login' %}
+                <div class="error-msg" id="error-message">
+                    {% for err in errors %}
+                    <p>{{ err }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if request.query_params.get("success") == "account_created" %}
+                <p class="success-msg" id="signup-success">Account created successfully! Please login.</p>
+                {% endif %}
                 <form class="log-input {% if active_form == 'signup' %}hidden{% endif %}" id="login-form"
                     action="/login" method="POST">
-                    <!-- Display login errors -->
-                    {% if errors and active_form=='login' %}
-                    <div class="error-message">
-                        {% for err in errors %}
-                        <p>{{ err }}</p>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
 
                     {% if request.query_params.get("logout") == "success" %}
                     <div id="logout-success" class="success-msg">
@@ -37,15 +43,23 @@
                     </div>
                     {% endif %}
                     <input type="text" name="username"
-                        value="{{ form_data.username if form_data and form_data.username }}" placeholder="Username"
+                        value="{{ form_data.username if form_data and form_data.username }}"" placeholder=" Username"
                         required>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <div class="password-container">
+                        <input type="password" class="password-field" name="password" placeholder="Password" required>
+                        <i class="fi fi-rr-eyelashes togglePassword"></i>
+                    </div>
+
+
                     <button type="submit">Login</button>
                 </form>
                 <p><a href="/forgot-password">Forgot password?</a></p>
                 <p>Don't have an account?
                     <span onclick="showSignup()">Sign Up</span>
                 </p>
+                <div class="logo-button">
+                    <a href="/auth/google"><button><i class="fab fa-google fa-1x"></i> Continue with Google</button></a>
+                </div>
             </div>
             <div id="ff-left" class="panel-content">
                 <div style="display: flex; margin-top: 30px;">
@@ -80,58 +94,70 @@
             <div id="signup" class="panel-content">
                 <h2 style="margin-top: 50px;">Create Account</h2>
                 <!-- Display signup errors -->
-                {% if errors and active_form=='signup' %}
+                <!--{% if errors and active_form=='signup' %}
                 <div class="error-messages">
                     {% for err in errors %}
                     <p style="color:red;">{{ err }}</p>
                     {% endfor %}
                 </div>
-                {% endif %}
-
-                {% if success %}
-                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}-->
+                {% if errors %}
+                <div class="register-error" id="register-error">
+                    {% for err in errors %}
+                    <p>{{ err }}</p>
+                    {% endfor %}
+                </div>
                 {% endif %}
 
                 <form class="sign-input {% if active_form == 'login' %}hidden{% endif %}" id="signup-form"
                     action="/signup" method="POST">
                     <div class="form-split">
                         <div class="split">
-                            <input type="text" name="name" value="{{ form_data.name if form_data else '' }}"
-                                placeholder="Full Name" required>
-                            <input type="text" name="username" value="{{ form_data.username if form_data else '' }}"
-                                placeholder="Username" required>
-                            <input type="email" name="email" value="{{ form_data.email if form_data else '' }}"
-                                placeholder="Email" required>
-                            <input type="tel" name="phonenumber"
-                                value="{{ form_data.phonenumber if form_data else '' }}" placeholder="Phone Number"
-                                required>
+                            <input type="text" name="name" placeholder="Full Name" value="{{ name or '' }}">
+                            <input type="text" name="username" placeholder="Username" value="{{ username or '' }}">
+                            <input type="email" name="email" placeholder="Email" value="{{ email or '' }}">
                         </div>
                         <div class="split">
-                            <input type="date" name="dob" value="{{ form_data.dob if form_data else '' }}" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                            <input type="tel" name="phonenumber" placeholder="Phone Number"
+                                value="{{ phonenumber or '' }}">
+                            <div class="password-container">
+                                <input type="password" class="password-field" name="password" placeholder="Password"
+                                    required>
+                                <i class="fi fi-rr-eyelashes togglePassword"></i>
+                            </div>
+
+                            <div class="password-container">
+                                <input type="password" class="password-field" name="confirm_password"
+                                    placeholder="Confirm Password" required>
+                                <i class="fi fi-rr-eyelashes togglePassword"></i>
+                            </div>
+
                         </div>
                     </div>
                     <button type="submit">Sign Up</button>
-                    {% if request.query_params.get("success") == "account_created" %}
-                    <p class="success">Account created successfully! Please login.</p>
-                    {% endif %}
 
                 </form>
                 <p>Already have an account?
                     <span onclick="showLogin()">Login</span>
                 </p>
-                <div class="logo-button">
-                    <a href="/auth/google"><button><i class="fab fa-google fa-1x"></i> Continue with Google</button></a>
-                    <a href="/auth/apple"><button><i class="fa fa-apple" aria-hidden="true"></i> Continue with
-                            Apple</button></a>
-                </div>
             </div>
         </div>
     </div>
 
 
     </div>
+    <script>
+        const successMsg = document.getElementById("signup-success");
+
+        if (successMsg) {
+            setTimeout(() => {
+                successMsg.style.opacity = "0";
+                successMsg.style.transition = "opacity 0.5s";
+                setTimeout(() => successMsg.remove(), 500);
+            }, 5000);
+        }
+
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             window.showSignup = function () {
@@ -154,6 +180,38 @@
             }, 5000); // 5 seconds
         }
     </script>
+    <script>
+        const toggles = document.querySelectorAll(".togglePassword");
+
+        toggles.forEach(toggle => {
+            toggle.addEventListener("click", () => {
+                const password = toggle.previousElementSibling;
+
+                // toggle password visibility
+                password.type = password.type === "password" ? "text" : "password";
+
+                // toggle icon
+                toggle.classList.toggle("fi-rr-eyes");
+                toggle.classList.toggle("fi-rr-eyelashes");
+            });
+        });
+    </script>
+
+    <script>
+        const errorMsg = document.getElementById("error-message");
+
+        if (errorMsg) {
+            setTimeout(() => {
+                errorMsg.style.opacity = "0";
+                errorMsg.style.transition = "opacity 0.5s";
+
+                setTimeout(() => errorMsg.remove(), 500);
+            }, 5000); // 5 seconds
+        }
+    </script>
+
+
+
 
 </body>
 
