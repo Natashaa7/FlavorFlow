@@ -2,7 +2,6 @@ import bcrypt
 from psycopg2.extras import RealDictCursor
 from app.db.session import get_db_connection
 
-
 def get_user_role(cur, user_id):
     cur.execute("SELECT is_admin FROM users WHERE id=%s", (user_id,))
     user = cur.fetchone()
@@ -80,31 +79,63 @@ def update_profile(user_id, data):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
+    errors = []
+
     try:
+        # Get user
         cur.execute("SELECT password FROM users WHERE id=%s", (user_id,))
         user = cur.fetchone()
 
-        if user is None:
-            return {"success": False, "message": "User not found"}
+        if not user:
+            return {"success": False, "errors": ["User not found"]}
 
         stored_password = user["password"]
 
+        # -------------------------
+        # DUPLICATE CHECKS (simple)
+        # -------------------------
+        for field in ["email", "phonenumber", "username"]:
+            if data.get(field):
+                cur.execute(
+                    f"SELECT 1 FROM users WHERE {field}=%s AND id != %s",
+                    (data[field], user_id)
+                )
+                if cur.fetchone():
+                    errors.append(f"{field.capitalize()} already exists")
+
+        # -------------------------
+        # PASSWORD CHECK
+        # -------------------------
         if data.get("password"):
-            if not bcrypt.checkpw(
+            if not data.get("current_password"):
+                errors.append("Current password required")
+            elif not bcrypt.checkpw(
                 data["current_password"].encode(),
                 stored_password.encode()
             ):
-                return {"success": False, "message": "Wrong current password"}
+                errors.append("Wrong current password")
 
-            if data["password"] != data["confirm_password"]:
-                return {"success": False, "message": "Passwords do not match"}
+            if data["password"] != data.get("confirm_password"):
+                errors.append("Passwords do not match")
 
+        # -------------------------
+        # RETURN ERRORS
+        # -------------------------
+        if errors:
+            return {"success": False, "errors": errors}
+
+        # -------------------------
+        # HASH PASSWORD (if needed)
+        # -------------------------
+        hashed_password = stored_password
+        if data.get("password"):
             hashed_password = bcrypt.hashpw(
                 data["password"].encode(), bcrypt.gensalt()
             ).decode()
-        else:
-            hashed_password = stored_password
 
+        # -------------------------
+        # UPDATE
+        # -------------------------
         cur.execute("""
             UPDATE users
             SET name=%s, username=%s, email=%s,
@@ -123,6 +154,7 @@ def update_profile(user_id, data):
     finally:
         cur.close()
         conn.close()
+
 
 
 def delete_user(user_id):

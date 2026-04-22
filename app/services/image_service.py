@@ -5,18 +5,20 @@ from io import BytesIO
 from app.db.session import get_db_connection
 
 
-def process_image(file):
-    contents = file.file.read()
+def process_image(image):
+    try:
+        contents = image.file.read()  
+        img = Image.open(BytesIO(contents))
 
-    if not contents:
+        img = ImageOps.exif_transpose(img)
+        img = img.convert("RGB")
+        img.thumbnail((512, 512))
+
+        return img
+
+    except Exception:
         return None
 
-    img = Image.open(BytesIO(contents))
-    img = ImageOps.exif_transpose(img)
-    img = img.convert("RGB")
-    img.thumbnail((512, 512))
-
-    return img
 
 
 def save_profile_image(img):
@@ -24,9 +26,9 @@ def save_profile_image(img):
     os.makedirs(upload_dir, exist_ok=True)
 
     filename = f"{uuid4().hex}.jpg"
-    path = os.path.join(upload_dir, filename)
+    file_path = os.path.join(upload_dir, filename)
 
-    img.save(path, "JPEG", quality=85)
+    img.save(file_path, "JPEG", quality=85)
 
     return f"/static/profile_images/{filename}"
 

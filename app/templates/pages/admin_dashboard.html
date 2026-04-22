@@ -1,98 +1,113 @@
 {% extends "pages/ad-base.html" %}
 
-{% block title %}FlavorFlow - My Cookbook Gallery{% endblock %}
+{% block title %}FlavorFlow - Admin Dashboard{% endblock %}
 
 {% block content %}
 
 <title>FlavorFlow Admin Dashboard</title>
 <link rel="stylesheet" href="/static/css/ad.css">
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% if request.query_params.get("login") == "success" %}
-<div id="login-popup" class="login-popup">
-    Welcome back to FlavorFlow. You’re logged in. <br>Time to create delicious magic ✨
-</div>
-{% elif request.query_params.get("login") == "reset_success" %}
-<div class="login-popup" id="login-popup">
-  Password reset successful! You’re now logged in 🔐
-</div>
-{% elif request.query_params.get("login") == "google_success" %}
-<div class="login-popup" id="login-popup">
-  Logged in with Google successfully ✨
+<div class="login-popup">
+    Welcome back to FlavorFlow. You’re logged in ✨
 </div>
 {% endif %}
 
 <main style="padding: 20px 30px;">
-    <!-- Top Actions 
-        <div class="top-actions">
-            <button class="btn-primary">Export Report</button>
-            <button>Notifications</button>
-        </div> -->
 
-    <!-- Metrics Cards -->
+    <!-- ================= METRIC CARDS ================= -->
     <div class="card-container">
+
         <div class="card">
-            <div class="card-title">Total Users</div>
-            <div class="card-value">12,482</div>
+            <div class="card-title">Users</div>
+            <div class="card-value">{{ stats.users or 0 }}</div>
         </div>
-        <div class="card">
-            <div class="card-title">Total Recipes</div>
-            <div class="card-value">4,892</div>
-        </div>
+
+        <!--<div class="card">
+            <div class="card-title">Recipes</div>
+            <div class="card-value">{{ stats.recipes or 0 }}</div>
+        </div>-->
+
         <div class="card">
             <div class="card-title">Ingredients</div>
-            <div class="card-value">850</div>
+            <div class="card-value">{{ stats.ingredients or 0 }}</div>
         </div>
+
         <div class="card">
-            <div class="card-title">Top Recipe</div>
-            <div class="card-value">Tiramisu Fusion</div>
+            <div class="card-title">Recipes This Week</div>
+            <div class="card-value">{{ stats.recipes_this_week or 0 }}</div>
         </div>
+
+        <div class="card">
+            <div class="card-title">Top User</div>
+            <div class="card-value">{{ active_user.name or "-" }}</div>
+        </div>
+
     </div>
 
-    <!-- Chart Area -->
+    <!-- ================= CHART ================= -->
     <div class="chart-box">
-        <div class="chart-title">Engagement Activity</div>
-        <p> canvas or SVG </p>
+        <div class="chart-title">Ingredient Category Distribution</div>
+        <canvas id="barChart"></canvas>
     </div>
 
-    <!-- Popular Ingredients -->
+    <!-- ================= TOP INGREDIENTS ================= -->
     <div class="ingredient-list">
-        <h3 style="margin-bottom:15px;">Popular Pantry</h3>
+        <h3>Pantry Count</h3>
+
+        {% for ing in top_ingredients %}
         <div class="ingredient-item">
-            <span>Tomato</span>
-            <span>+4%</span>
+            <span>{{ ing.name }}</span>
+            <span>{{ ing.usage_count }}</span>
         </div>
-        <div class="ingredient-item">
-            <span>Onion</span>
-            <span>+2%</span>
-        </div>
-        <div class="ingredient-item">
-            <span>Garlic</span>
-            <span>0%</span>
-        </div>
-        <div class="ingredient-item">
-            <span>Basil</span>
-            <span>-1%</span>
-        </div>
-        <div class="ingredient-item">
-            <span>Lemon</span>
-            <span>+8%</span>
-        </div>
+        {% endfor %}
+
     </div>
 
 </main>
 
+<!-- ================= CHART SCRIPT ================= -->
 <script>
-    const popup = document.getElementById("login-popup");
+    const categories = JSON.parse('{{ ingredient_categories | tojson | safe }}');
 
-    if (popup) {
-        setTimeout(() => {
-            popup.style.opacity = "0";
-            popup.style.transition = "opacity 0.5s";
+    const labels = categories.map(x => x.category ?? "Unknown");
+    const values = categories.map(x => Number(x.total ?? 0));
 
-            setTimeout(() => popup.remove(), 500);
-        }, 5000); // 5 seconds
+    if (categories.length === 0) {
+        labels.push("No Data");
+        values.push(1);
     }
+
+    const ctx = document.getElementById("barChart");
+
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: [
+                    "#4A5D3F",
+                    "#B47321",
+                    "#8b5cf6",
+                    "#ef4444",
+                    "#10b981",
+                    "#f59e0b"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "70%",
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
 </script>
 
 {% endblock %}

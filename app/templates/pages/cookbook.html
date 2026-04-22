@@ -55,7 +55,8 @@
                         <div class="recipe-info">
                             <span><span class="material-symbols-outlined">schedule</span> {{ recipe.cook_time }}
                                 mins</span>
-                            <span><span class="material-symbols-outlined">restaurant</span>{{ recipe.difficulty }}</span>
+                            <span><span class="material-symbols-outlined">restaurant</span>{{ recipe.difficulty
+                                }}</span>
                         </div>
                     </div>
                 </div>
@@ -73,23 +74,43 @@
 
             const recipeId = btn.dataset.id;
 
-            const response = await fetch(`/toggle-favorite/${recipeId}`, {
+            const response = await fetch(`/favorite/${recipeId}`, {
                 method: 'POST'
             });
 
             const data = await response.json();
 
-            if (data.status === "removed") {
-                // Remove card from UI (better UX)
+            if (data.action === "removed") {
                 btn.closest('.recipe-item').remove();
             } else {
                 btn.classList.toggle('active');
             }
+
         });
     });
 
 
+    document.addEventListener("DOMContentLoaded", () => {
+        const input = document.querySelector(".search-bar input");
+        const recipes = document.querySelectorAll(".recipe-item");
+
+        input.addEventListener("input", () => {
+            const query = input.value.toLowerCase().trim();
+
+            recipes.forEach(card => {
+                const title = card.querySelector(".recipe-title")?.innerText.toLowerCase() || "";
+                const desc = card.querySelector(".recipe-description")?.innerText.toLowerCase() || "";
+
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
 </script>
+
 
 </html>
 

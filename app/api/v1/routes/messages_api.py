@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 
 from app.core.security import read_session
@@ -36,42 +36,37 @@ def delete_message_api(message_id: int, request: Request):
 
     session_token = request.cookies.get("session_id")
 
+    # ---------------- AUTH ----------------
     if not session_token:
-        return JSONResponse({"error": "unauthorized"}, status_code=401)
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
     user_id = read_session(session_token)
 
     if not user_id:
-        return JSONResponse({"error": "invalid session"}, status_code=401)
+        raise HTTPException(status_code=401, detail="Invalid session")
 
-    delete_message(message_id)
+    # ---------------- DELETE ----------------
+    result = delete_message(message_id)
 
-    return {
-        "status": "success",
-        "message": "Message deleted"
-    }
+    # ---------------- ERROR HANDLING ----------------
+    if not result.get("success"):
 
+        error_msg = str(result.get("error") or "").lower()
 
-""" from fastapi import APIRouter, HTTPException
-from app.services.message_service import get_all_messages, delete_message
-from app.core.security import read_session
+        if "not found" in error_msg:
+            raise HTTPException(
+                status_code=404,
+                detail="Message not found"
+            )
 
-router = APIRouter()
-
-
-@router.get("/")
-async def get_messages_api():
-    return {
-        "success": True,
-        "data": get_all_messages()
-    }
-
-
-@router.delete("/{message_id}")
-async def delete_message_api(message_id: int):
-    delete_message(message_id)
+        raise HTTPException(
+            status_code=500,
+            detail=result.get("error") or "Internal server error"
+        )
 
     return {
         "success": True,
-        "message": "Message deleted"
-    }"""
+        "message": "Message deleted successfully"
+    }
+
+

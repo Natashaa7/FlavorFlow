@@ -21,12 +21,19 @@ async def forgot_password_page(request: Request):
 @router.post("/forgot-password")
 async def forgot_password(request: Request, email: str = Form(...)):
 
+    # Check empty email manually
+    if not email.strip():
+        return templates.TemplateResponse(
+            "pages/forgot_password.html",
+            {"request": request, "error": "Email field cannot be empty."},
+        )
+
     code = create_reset_code(email)
 
     if not code:
         return templates.TemplateResponse(
             "pages/forgot_password.html",
-            {"request": request, "error": "This email is not registered in the app."},
+            {"request": request, "error": "This email is not registered."},
         )
 
     send_reset_email(email, code)

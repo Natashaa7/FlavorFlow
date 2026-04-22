@@ -36,7 +36,7 @@ async def google_callback(request: Request):
     session_token = create_session(user["id"])
 
     redirect_url = (
-        "/admin_dashboard?login=google_success"
+        "/admin/admin_dashboard?login=google_success"
         if user["is_admin"]
         else "/index?login=google_success"
     )

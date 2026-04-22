@@ -1,23 +1,27 @@
+# app/services/nlp_model.py
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-tokenizer = AutoTokenizer.from_pretrained("app/ml_models/twelve_model")
-model = AutoModelForSeq2SeqLM.from_pretrained("app/ml_models/twelve_model")
+tokenizer = AutoTokenizer.from_pretrained("app/ml_models/nlp_model")
+model = AutoModelForSeq2SeqLM.from_pretrained("app/ml_models/nlp_model")
 
 def generate_recipe(ingredients):
+    if not ingredients:
+        return "No ingredients provided"
+
     prompt = f"""
-        You are a professional chef.
+You are a professional chef.
 
-        Create a recipe using:
-        {', '.join(ingredients)}
+Create a recipe using:
+{', '.join(ingredients)}
 
-        Include:
-        - Ingredients list
-        - Step-by-step instructions
-        - Cooking time
-        - Tips
+Include:
+- Ingredients list
+- Step-by-step instructions
+- Cooking time
+- Tips
 
-        Recipe:
-        """
+Recipe:
+"""
 
     inputs = tokenizer(prompt, return_tensors="pt")
 
@@ -30,4 +34,3 @@ def generate_recipe(ingredients):
     )
 
     return tokenizer.decode(outputs[0], skip_special_tokens=True)
-

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Request, Form, File, UploadFile
+from fastapi import APIRouter, Request, Form, File, UploadFile, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
-from app.core.security import read_session
+
+from app.core.security import require_user
 from app.services.recipe_service import (
     get_user_recipes,
     add_recipe_db,
@@ -12,35 +13,24 @@ from app.services.recipe_service import (
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-
-# ===========================
-# SHARE PAGE (HTML ONLY)
-# ===========================
 @router.get("/share_recipe", response_class=HTMLResponse)
-async def share_recipe(request: Request):
+async def share_recipe(request: Request, user=Depends(require_user)):
 
-    session_id = request.cookies.get("session_id")
-    if not session_id:
-        return RedirectResponse("/", status_code=303)
-
-    user_id = read_session(session_id)
-    if not user_id:
-        return RedirectResponse("/", status_code=303)
-
-    recipes = get_user_recipes(user_id)
+    recipes = get_user_recipes(user["id"])
 
     return templates.TemplateResponse(
-        "pages/share_recipe.html",
-        {"request": request, "recipes": recipes}
+        "pages/admin_recipe.html" if user.get("is_admin") else "pages/share_recipe.html",
+        {
+            "request": request,
+            "recipes": recipes,
+            "user": user
+        }
     )
 
 
-# ===========================
-# ADD RECIPE (JSON FIXED)
-# ===========================
 @router.post("/add-recipe")
 async def add_recipe(
-    request: Request,
+    user=Depends(require_user),
     title: str = Form(...),
     description: str = Form(...),
     cook_time: int = Form(...),
@@ -48,14 +38,6 @@ async def add_recipe(
     image: UploadFile = File(...),
     file: UploadFile = File(...)
 ):
-
-    session_id = request.cookies.get("session_id")
-    if not session_id:
-        return JSONResponse({"success": False, "error": "Not authenticated"})
-
-    user_id = read_session(session_id)
-    if not user_id:
-        return JSONResponse({"success": False, "error": "Invalid session"})
 
     result = add_recipe_db(
         {
@@ -66,25 +48,23 @@ async def add_recipe(
         },
         image,
         file,
-        user_id
+        user["id"]
     )
 
     if not result["success"]:
         return JSONResponse(result)
 
+    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+
     return JSONResponse({
         "success": True,
         "message": "Recipe created successfully",
-        "redirect": "/share_recipe"
+        "redirect": redirect_url
     })
 
-
-# ===========================
-# UPDATE RECIPE (JSON FIXED)
-# ===========================
 @router.post("/update-recipe")
 async def update_recipe(
-    request: Request,
+    user=Depends(require_user),
     id: int = Form(...),
     title: str = Form(...),
     description: str = Form(...),
@@ -93,14 +73,6 @@ async def update_recipe(
     image: UploadFile = File(None),
     file: UploadFile = File(None)
 ):
-
-    session_id = request.cookies.get("session_id")
-    if not session_id:
-        return JSONResponse({"success": False, "error": "Not authenticated"})
-
-    user_id = read_session(session_id)
-    if not user_id:
-        return JSONResponse({"success": False, "error": "Invalid session"})
 
     result = update_recipe_db(
         id,
@@ -112,42 +84,35 @@ async def update_recipe(
         },
         image,
         file,
-        user_id
+        user["id"]
     )
 
     if not result["success"]:
         return JSONResponse(result)
 
+    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+
     return JSONResponse({
         "success": True,
         "message": "Recipe updated successfully",
-        "redirect": "/share_recipe"
+        "redirect": redirect_url
     })
 
-
-# ===========================
-# DELETE RECIPE (FIXED)
-# ===========================
 @router.post("/delete-recipe")
-async def delete_recipe(request: Request, id: int = Form(...)):
+async def delete_recipe(
+    user=Depends(require_user),
+    id: int = Form(...)
+):
 
-    session_id = request.cookies.get("session_id")
-    if not session_id:
-        return JSONResponse({"success": False, "error": "Not authenticated"})
-
-    user_id = read_session(session_id)
-    if not user_id:
-        return JSONResponse({"success": False, "error": "Invalid session"})
-
-    is_admin = False
-
-    result = delete_recipe_db(id, user_id, is_admin)
+    result = delete_recipe_db(id, user["id"], user.get("is_admin", False))
 
     if not result["success"]:
         return JSONResponse(result)
 
+    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+
     return JSONResponse({
         "success": True,
         "message": "Recipe deleted successfully",
-        "redirect": "/share_recipe"
+        "redirect": redirect_url
     })

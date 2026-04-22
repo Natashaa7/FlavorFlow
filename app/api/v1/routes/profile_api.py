@@ -10,6 +10,14 @@ from app.services.image_service import (
     save_profile_image,
     update_profile_image
 )
+from app.utils.validation import (
+    validate_email,
+    validate_phone,
+    validate_password,
+    validate_dob
+)
+from datetime import datetime
+from fastapi import File, UploadFile
 
 router = APIRouter()
 
@@ -45,22 +53,72 @@ async def update_profile_api(payload: dict, request: Request):
 
     user_id = read_session(session_id)
 
+    # -------------------------
+    # VALIDATION
+    # -------------------------
+    errors = []
+
+    try:
+        validate_email(payload.get("email", ""))
+    except ValueError as e:
+        errors.append(str(e))
+
+    try:
+        validate_phone(payload.get("phonenumber", ""))
+    except ValueError as e:
+        errors.append(str(e))
+
+    try:
+        dob = payload.get("dob")
+        if dob:
+            dob_date = datetime.strptime(dob, "%Y-%m-%d").date()
+            validate_dob(dob_date)
+
+    except ValueError as e:
+        errors.append(str(e))
+
+    if payload.get("password"):
+        try:
+            validate_password(payload["password"])
+        except ValueError as e:
+            errors.append(str(e))
+
+    # -------------------------
+    # RETURN VALIDATION ERRORS
+    # -------------------------
+    if errors:
+        raise HTTPException(status_code=422, detail=errors)
+
+    # -------------------------
+    # UPDATE PROFILE
+    # -------------------------
     result = update_profile(user_id, payload)
 
     if not result["success"]:
-        raise HTTPException(status_code=400, detail=result["message"])
+        errors = result.get("errors", [])
+        errors = list(map(str, errors))
 
+        raise HTTPException(
+            status_code=409 if any("exists" in e.lower() for e in errors) else 422,
+            detail=errors
+        )
+
+    # SUCCESS RESPONSE (THIS FIXES NULL ISSUE)
     return {
         "success": True,
-        "message": "Profile updated"
+        "message": "Profile updated successfully"
     }
+
 
 
 # =========================
 # UPLOAD IMAGE (API)
 # =========================
 @router.post("/upload-image")
-async def upload_image_api(request: Request, image: bytes):
+async def upload_image_api(
+    request: Request,
+    image: UploadFile = File(...)
+):
 
     session_id = request.cookies.get("session_id")
     if not session_id:
@@ -68,7 +126,7 @@ async def upload_image_api(request: Request, image: bytes):
 
     user_id = read_session(session_id)
 
-    img = process_image(image)
+    img = process_image(image)  # 👈 pass UploadFile directly
 
     if not img:
         raise HTTPException(status_code=400, detail="Invalid image")
@@ -78,8 +136,10 @@ async def upload_image_api(request: Request, image: bytes):
 
     return {
         "success": True,
+        "message": "Profile image updated successfully",
         "image_url": url
     }
+
 
 
 # =========================

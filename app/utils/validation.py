@@ -48,3 +48,28 @@ def validate_dob(dob: date):
     if dob >= date.today():
         raise ValueError("DOB must be in the past.")
     return dob
+
+def validate_recipe(data: dict):
+    errors = []
+
+    title = data.get("title")
+    description = data.get("description")
+    cook_time = data.get("cook_time")
+    difficulty = data.get("difficulty")
+
+    if not title:
+        errors.append("Title is required")
+
+    if not description:
+        errors.append("Description is required")
+
+    if not cook_time or cook_time <= 0:
+        errors.append("Cook time must be greater than 0")
+
+    if not difficulty:
+        errors.append("Difficulty is required")
+    elif difficulty not in ["Easy", "Intermediate", "Hard"]:
+        errors.append("Difficulty must be Easy, Intermediate, or Hard")
+
+    if errors:
+        raise ValueError(errors)

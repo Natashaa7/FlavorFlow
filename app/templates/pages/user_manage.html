@@ -12,22 +12,15 @@
     <title>Admin User Management - FlavorFlow</title>
     <link rel="stylesheet" href="/static/css/user_manage.css">
 
-    <!-- Google Fonts -->
-    <!--<link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap"
-        rel="stylesheet">-->
-
-    <!-- Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
 
-
-    <!-- MAIN -->
     <main class="main">
 
-        <!-- ADD USER MODAL -->
+        <!-- ================= ADD USER MODAL ================= -->
         <div class="modal" id="addUserModal">
             <div class="modal-box">
 
@@ -39,7 +32,8 @@
                     <button class="close-btn" id="closeAddModal">X</button>
                 </div>
 
-                <form class="user-form" action="/add-users" method="post">
+                <!-- ❌ removed action/method -->
+                <form class="user-form" id="addUserForm">
 
                     <div class="modal-grid">
 
@@ -89,114 +83,98 @@
             </div>
         </div>
 
-
+        <!-- ================= PAGE TOP ================= -->
         <div class="page-top">
+
             <div>
                 <h2 class="page-title">User Management</h2>
                 <p class="page-sub">Manage registered users and control access.</p>
             </div>
 
-            <input type="text" class="search-box" placeholder="Search users...">
+            <input type="text" id="userSearch" class="search-box" placeholder="Search users...">
+
             <button id="openModal" class="submit-btn">Add User</button>
         </div>
 
+        <!-- ================= TABLE ================= -->
+        <div class="table-wrapper">
+            <table class="user-table">
 
-        <!-- STATS -->
-        <div class="stats">
-            <div class="stat-card">
-                <p>Total Users</p>
-                <h3>1,248</h3>
-            </div>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Phone</th>
+                        <th>Full Name</th>
+                        <th>DOB</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-            <div class="stat-card">
-                <p>Active Today</p>
-                <h3>412</h3>
-            </div>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.username }}</td>
 
-            <div class="stat-card">
-                <p>New This Week</p>
-                <h3>56</h3>
-            </div>
+                        <td>
+                            {% if user.is_admin %}
+                            <span class="role admin">Admin</span>
+                            {% else %}
+                            <span class="role user">User</span>
+                            {% endif %}
+                        </td>
 
-            <div class="stat-card highlight">
-                <p>Pending Reports</p>
-                <h3>3</h3>
-            </div>
+                        <td>{{ user.phonenumber }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.dob }}</td>
+
+                        <td>
+                            {% if user.last_login %}
+                            {{ user.last_login.strftime('%b %d, %Y') }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <button type="button" class="edit" data-id="{{ user.id }}" data-email="{{ user.email }}"
+                                data-username="{{ user.username }}" data-name="{{ user.name }}"
+                                data-phn="{{ user.phonenumber }}" data-dob="{{ user.dob }}">
+                                <i class="fi fi-rr-edit"></i>
+                            </button>
+
+                            <button type="button" class="delete" data-id="{{ user.id }}">
+                                <i class="fi fi-rr-trash"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
         </div>
 
-
-        <!-- TABLE -->
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th>Phone</th>
-                    <th>Full Name</th>
-                    <th>DOB</th>
-                    <th>Last Login</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>
-                        {% if user.is_admin %}
-                        <span class="role admin">Admin</span>
-                        {% else %}
-                        <span class="role user">User</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ user.phonenumber }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.dob }}</td>
-                    <td>
-                        {% if user.last_login %}
-                        {{ user.last_login.strftime('%b %d, %Y') }}
-                        {% else %}
-                        N/A
-                        {% endif %}
-                    </td>
-                    <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
-
-                    <td>
-                        <button type="button" class="edit" data-id="{{ user.id }}" data-email="{{ user.email }}"
-                            data-username="{{ user.username }}" data-name="{{ user.name }}"
-                            data-phn="{{ user.phonenumber }}" data-dob="{{ user.dob }}">
-                            <i class="fi fi-rr-edit"></i>
-                        </button>
-
-                        <button type="button" class="delete" data-id="{{ user.id }}">
-                            <i class="fi fi-rr-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
+        <!-- ================= EDIT MODAL ================= -->
         <div class="modal" id="editModal">
             <div class="modal-box">
 
                 <div class="modal-header">
                     <div>
-                        <h2 class="modal-title">Add New User</h2>
-                        <p class="modal-subtitle">Create a new account manually.</p>
+                        <h2 class="modal-title">Edit User</h2>
+                        <p class="modal-subtitle">Update user details.</p>
                     </div>
                     <button class="close-btn" id="closeEditModal">X</button>
                 </div>
 
-                <form class="user-form" action="/update-users" method="post">
+                <!-- ❌ removed action -->
+                <form class="user-form" id="editUserForm">
 
-                    <!-- Hidden recipe ID -->
                     <input type="hidden" name="id" id="edit-id">
 
                     <div class="modal-grid">
@@ -230,121 +208,141 @@
 
                     <div class="form-buttons">
                         <button type="button" class="cancel-btn" id="cancelEditModal">Cancel</button>
-                        <button type="submit" class="submit-btn">Create User</button>
+                        <button type="submit" class="submit-btn">Update User</button>
                     </div>
 
                 </form>
+
             </div>
         </div>
+
     </main>
+
+    <!-- ================= JS ================= -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // =========================
+            // MODAL LOGIC (ADD)
+            // =========================
+            const addModal = document.getElementById("addUserModal");
+            const openAddBtn = document.getElementById("openModal");
+            const closeAddBtn = document.getElementById("closeAddModal");
+            const cancelAddBtn = document.getElementById("cancelAddModal");
+
+            openAddBtn.onclick = () => addModal.style.display = "flex";
+            closeAddBtn.onclick = cancelAddBtn.onclick = () => addModal.style.display = "none";
+
+
+            // =========================
+            // MODAL LOGIC (EDIT)
+            // =========================
+            const editModal = document.getElementById("editModal");
+            const closeEditBtn = document.getElementById("closeEditModal");
+            const cancelEditBtn = document.getElementById("cancelEditModal");
+
+            const closeEdit = () => editModal.classList.remove("show");
+
+            closeEditBtn.onclick = cancelEditBtn.onclick = closeEdit;
+
+
+            document.querySelectorAll(".edit").forEach(btn => {
+                btn.addEventListener("click", () => {
+
+                    document.getElementById("edit-id").value = btn.dataset.id;
+                    document.getElementById("edit-username").value = btn.dataset.username;
+                    document.getElementById("edit-name").value = btn.dataset.name;
+                    document.getElementById("edit-email").value = btn.dataset.email;
+                    document.getElementById("edit-phn").value = btn.dataset.phn;
+                    document.getElementById("edit-dob").value = btn.dataset.dob;
+
+                    editModal.classList.add("show");
+                });
+            });
+
+
+            // =========================
+            // SWEETALERT FROM URL (FIXED)
+            // =========================
+            const params = new URLSearchParams(window.location.search);
+
+            const success = params.get("success");
+            const error = params.get("error");
+
+            // SUCCESS
+            if (success) {
+                let msg = "Operation successful";
+
+                if (success === "added") msg = "User added successfully!";
+                if (success === "updated") msg = "User updated successfully!";
+                if (success === "deleted") msg = "User deleted successfully!";
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: msg
+                });
+            }
+
+            // ERROR
+            if (error) {
+
+                let msg = decodeURIComponent(error);
+
+                if (error === "password-mismatch") msg = "Passwords do not match!";
+                if (error === "email-exists") msg = "Email already exists!";
+                if (error === "username-exists") msg = "Username already exists!";
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: msg
+                });
+            }
+
+
+            // =========================
+            // CLEAN URL (IMPORTANT FIX)
+            // =========================
+            if (success || error) {
+                window.history.replaceState({}, document.title, "/admin/user_manage");
+            }
+
+
+        });
+
+        // =========================
+        // USER SEARCH FILTER
+        // =========================
+        const searchInput = document.getElementById("userSearch");
+
+        searchInput.addEventListener("keyup", () => {
+
+            const value = searchInput.value.toLowerCase().trim();
+
+            const rows = document.querySelectorAll(".user-table tbody tr");
+
+            rows.forEach(row => {
+
+                const email = row.children[1].textContent.toLowerCase();
+                const username = row.children[2].textContent.toLowerCase();
+                const name = row.children[5].textContent.toLowerCase();
+                const phone = row.children[4].textContent.toLowerCase();
+
+                const match =
+                    email.includes(value) ||
+                    username.includes(value) ||
+                    name.includes(value) ||
+                    phone.includes(value);
+
+                row.style.display = match ? "" : "none";
+            });
+        });
+
+    </script>
 
 </body>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const addModal = document.getElementById("addUserModal");
-        const closeAddBtn = document.getElementById("closeAddModal");
-        const cancelAddBtn = document.getElementById("cancelAddModal");
-        const openAddBtn = document.getElementById("openModal");
-
-        openAddBtn.addEventListener("click", () => {
-            addModal.style.display = "flex";
-        });
-
-        closeAddBtn.onclick = () => addModal.style.display = "none";
-        cancelAddBtn.onclick = () => addModal.style.display = "none";
-
-        const editModal = document.getElementById("editModal");
-        const closeEditBtn = document.getElementById("closeEditModal");
-        const cancelEditBtn = document.getElementById("cancelEditModal");
-
-        closeEditBtn.onclick = () => editModal.classList.remove("show");
-        cancelEditBtn.onclick = () => editModal.classList.remove("show");
-
-        // ===== OPEN MODAL + PREFILL =====
-        document.querySelectorAll(".edit").forEach(btn => {
-            btn.addEventListener("click", () => {
-
-                document.getElementById("edit-id").value = btn.dataset.id;
-                document.getElementById("edit-username").value = btn.dataset.username;
-                document.getElementById("edit-name").value = btn.dataset.name;
-                document.getElementById("edit-email").value = btn.dataset.email;
-                document.getElementById("edit-phn").value = btn.dataset.phn;
-                document.getElementById("edit-dob").src = btn.dataset.dob;
-                editModal.classList.add("show");
-            });
-        });
-
-        // ===== CLOSE FUNCTIONS =====
-        function closeModal() {
-            editModal.classList.remove("show");
-        }
-
-        closeEditBtn.onclick = closeModal;
-        cancelEditBtn.onclick = closeModal;
-
-        // Click outside modal
-        window.onclick = (e) => {
-            if (e.target === editModal) closeModal();
-        };
-
-        // ESC key
-        document.addEventListener("keydown", e => {
-            if (e.key === "Escape") closeModal();
-        });
-
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-    document.querySelectorAll(".delete").forEach(btn => {
-        btn.addEventListener("click", () => {
-
-            const userId = btn.dataset.id;
-
-            Swal.fire({
-                title: "Delete this user?",
-                text: "This action cannot be undone.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#e63946",
-                cancelButtonColor: "#6c757d",
-                confirmButtonText: "Yes, delete it",
-                cancelButtonText: "Cancel",
-                background: "#4f261c",
-                color: "#fff",
-
-                didOpen: (popup) => {
-                    popup.style.borderRadius = "30px";
-                }
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-
-                    // Create hidden form to submit POST
-                    const form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = "/delete-users";
-
-                    const input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "id";
-                    input.value = userId;
-
-                    form.appendChild(input);
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-
-            });
-        });
-    });
-</script>
-
-
 </html>
-
 
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base/base.html" %} 
+{% extends "base/base.html" %}
 
 {% block title %}Home | FlavorFlow{% endblock %}
 
@@ -10,30 +10,29 @@
 	rel="stylesheet" />
 <link rel="stylesheet" href="/static/css/index.css" />
 
-{% if request.query_params.get("login") == "success" %}
+<!-- ================= LOGIN POPUP (FIXED: COOKIE BASED) ================= -->
+{% if login_success or request.query_params.get("login") %}
 <div class="login-popup" id="login-popup">
-	Welcome back to FlavorFlow. You’re logged in. ✨
+	Welcome back to FlavorFlow. You’re logged in ✨
 </div>
-
 {% elif request.query_params.get("login") == "reset_success" %}
 <div class="login-popup" id="login-popup">
 	Password reset successful! You’re now logged in 🔐
 </div>
-
 {% elif request.query_params.get("login") == "google_success" %}
 <div class="login-popup" id="login-popup">
 	Logged in with Google successfully ✨
 </div>
-
 {% endif %}
 
-<!-- Hero Section -->
+<!-- ================= HERO ================= -->
 <section class="hero">
 	<img class="hero-bg" src="/static/images/index.jpg" alt="Gourmet Background" />
 	<div class="hero-gradient"></div>
 	<div class="hero-content">
 		<span>Master the Art of Cooking</span>
 		<h1>BE YOUR OWN CHEF</h1>
+
 		<div class="hero-buttons">
 			<button class="primary-btn">
 				<a href="/generate_recipe">GET STARTED</a>
@@ -41,61 +40,48 @@
 			<button class="secondary-btn">Explore Menu</button>
 		</div>
 	</div>
-	<!--<div class="hero-scroll">
-        <span class="material-symbols-outlined">expand_more</span>
-    </div>-->
 </section>
 
-<!-- Features Section -->
+<!-- ================= FEATURES ================= -->
 <section class="features">
 	<div class="container">
 		<div class="features-grid">
+
 			<div class="feature-text">
 				<span>Innovation in the Kitchen</span>
 				<h2>Your AI-Powered Kitchen Assistant</h2>
-				<p>
-					FlavorFlow helps you reduce food waste by generating recipes based on
-					your ingredients.
-				</p>
-				<p>
-					Share your culinary masterpieces, get inspired, and save favorites in
-					your personal cookbook.
-				</p>
-				<button class="learn-more">
-					Learn more about our mission
-					<span class="material-symbols-outlined">arrow_right_alt</span>
-				</button>
+				<p>FlavorFlow helps you reduce food waste by generating recipes based on your ingredients.</p>
+				<p>Share your culinary masterpieces and save favorites easily.</p>
 			</div>
+
 			<div class="feature-cards">
-				<div class="card">
-					<div class="icon">
-						<span class="material-symbols-outlined">eco</span>
-					</div>
+
+				<div class="feature-card">
+					<div class="icon"><span class="material-symbols-outlined">eco</span></div>
 					<h4>Reduce Waste</h4>
-					<p>Use what you have with smart ingredient-to-recipe mapping.</p>
+					<p>Use what you have smartly.</p>
 				</div>
-				<div class="card">
-					<div class="icon">
-						<span class="material-symbols-outlined">psychology</span>
-					</div>
+
+				<div class="feature-card">
+					<div class="icon"><span class="material-symbols-outlined">psychology</span></div>
 					<h4>AI Generation</h4>
-					<p>Create gourmet meals instantly with our AI chef engine.</p>
+					<p>Generate recipes instantly.</p>
 				</div>
-				<div class="card">
-					<div class="icon">
-						<span class="material-symbols-outlined">menu_book</span>
-					</div>
-					<h4>Personal Cookbook</h4>
-					<p>Save and refine your favorite recipes easily.</p>
+
+				<div class="feature-card">
+					<div class="icon"><span class="material-symbols-outlined">menu_book</span></div>
+					<h4>Cookbook</h4>
+					<p>Save your favorite recipes.</p>
 				</div>
-				<div class="card">
-					<div class="icon">
-						<span class="material-symbols-outlined">group</span>
-					</div>
-					<h4>Community Hub</h4>
-					<p>Connect with cooks worldwide and share your secrets.</p>
+
+				<div class="feature-card">
+					<div class="icon"><span class="material-symbols-outlined">group</span></div>
+					<h4>Community</h4>
+					<p>Share with others.</p>
 				</div>
+
 			</div>
+
 		</div>
 	</div>
 </section>
@@ -104,152 +90,195 @@
 <section class="page-header">
 	<h1>Community Creations</h1>
 	<p>Discover recipes shared by home chefs around the world</p>
-
 	<div class="recipes-header">
-		<h2>Top 3 Trending Recipes</h2>
-		<button class="btn-primary">Explore All</button>
+		<h2>Top 3 Trending Recipes</h2> <button class="btn-primary">Explore All</button>
 	</div>
 </section>
 
-<!-- ===== COMMUNITY SECTION ===== -->
+<!-- ================= COMMUNITY ================= -->
 <section class="community">
 	<div class="community-grid">
-		<!-- CARD 1 -->
-		{% for recipe in recipes %}
+
+		{% for recipe in top_recipes %}
 		<div class="community-card">
+
 			<img src="{{ recipe.image_path }}" alt="{{ recipe.title }}" />
-			<button class="favorite-btn {% if recipe.is_favorited %}active{% endif %}" data-id="{{ recipe.id }}">
+
+			<button class="favorite-btn active" data-id="{{ recipe.id }}">
 				<span class="material-symbols-outlined">favorite</span>
 			</button>
+
 			<div class="card-content">
 				<h3>{{ recipe.title }}</h3>
 				<p>{{ recipe.description }}</p>
-				<!--<p>{{ recipe.cook_time }} mins |
-                        <span class="badge {{ recipe.difficulty | lower }}">{{ recipe.difficulty }}</span>
-                    </p>-->
 
 				<div class="card-footer">
 					<span>By {{ recipe.username }}</span>
 					<a href="/view-recipe/{{ recipe.id }}" class="btn-small">View</a>
 				</div>
+
 				<p>👁 {{ recipe.views }} views</p>
 			</div>
+
 		</div>
 		{% endfor %}
+
 	</div>
 </section>
 
-<!-- Recipes Section -->
+<!-- ================= RECIPES ================= -->
 <section class="recipes">
 	<div class="container">
+
 		<div class="recipes-header">
 			<h2>Discover More</h2>
+
+			<!--
 			<div class="recipe-filters">
 				<button class="filter-btn active">All Recipes</button>
 				<button class="filter-btn">Breakfast</button>
 				<button class="filter-btn">Desserts</button>
 				<button class="filter-btn">Healthy</button>
-			</div>
+			</div>-->
+
 			<div class="recipe-search">
-				<input type="text" placeholder="Search recipes..." />
+				<input type="text" id="recipe-search-input" placeholder="Search recipes..." />
 				<span class="material-symbols-outlined">search</span>
 			</div>
+
 		</div>
+
 		<div class="recipe-list">
-			{% for recipe in recipes %}
+
+			{% for recipe in all_recipes %}
 			<div class="recipe-item">
+
 				<img src="{{ recipe.image_path }}" alt="{{ recipe.title }}" />
+
 				<div class="recipe-info">
 					<h3>{{ recipe.title }}</h3>
-					<p class="recipe-description">{{ recipe.description[:80] }}...</p>
+					<p>{{ recipe.description[:80] }}...</p>
+
 					<div class="recipe-meta">
 						<span>⏱ {{ recipe.cook_time }} mins</span>
 						<span>⭐ {{ recipe.difficulty }}</span>
 						<span>👁 {{ recipe.views }} views</span>
 					</div>
 				</div>
+
 				<button class="favorite-btn {% if recipe.is_favorited %}active{% endif %}" data-id="{{ recipe.id }}">
 					<span class="material-symbols-outlined">favorite</span>
 				</button>
-				<button class="btn-outline">Cook Now</button>
+
+				<div>
+					<a href="/view-recipe/{{ recipe.id }}" class="btn-outline">View Now</a>
+				</div>
+
 			</div>
 			{% endfor %}
+
+
 		</div>
+
 	</div>
 </section>
-<div style="text-align: center; margin-top: 20px">
+
+<div style="text-align:center; margin-top:20px;">
 	<button id="load-more-btn" class="btn-primary">Load More</button>
 </div>
 
+<!-- ================= SCRIPTS ================= -->
+
 <script>
+	/* ================= LOGIN POPUP AUTO HIDE ================= */
 	const popup = document.getElementById("login-popup");
 
 	if (popup) {
 		setTimeout(() => {
 			popup.style.opacity = "0";
-			popup.style.transition = "opacity 0.5s";
-
+			popup.style.transition = "0.5s";
 			setTimeout(() => popup.remove(), 500);
-		}, 5000); // 5 seconds
+		}, 5000);
 	}
-</script>
 
-<script>
+	/* ================= FIXED FAVORITE TOGGLE ================= */
 	document.querySelectorAll(".favorite-btn").forEach((btn) => {
 		btn.addEventListener("click", async () => {
+
 			const recipeId = btn.dataset.id;
-			console.log("Recipe ID:", recipeId);
 
-			const response = await fetch(`/toggle-favorite/${recipeId}`, {
-				method: "POST",
-			});
+			try {
+				const response = await fetch(`/favorite/${recipeId}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					}
+				});
 
-			const data = await response.json();
+				if (!response.ok) throw new Error("Request failed");
 
-			// Toggle appearance
-			if (data.status === "added") {
-				btn.classList.add("active");
-			} else {
-				btn.classList.remove("active");
+				const data = await response.json();
+
+				// FIX: backend uses "action", not "status"
+				if (data.action === "added") {
+					btn.classList.add("active");
+				} else {
+					btn.classList.remove("active");
+				}
+
+			} catch (err) {
+				console.error("Favorite toggle error:", err);
 			}
 		});
 	});
-</script>
 
-<script>
+	/* ================= LOAD MORE FIX ================= */
 	document.addEventListener("DOMContentLoaded", () => {
+
 		const recipes = document.querySelectorAll(".recipe-item");
-		const loadMoreBtn = document.getElementById("load-more-btn");
+		const btn = document.getElementById("load-more-btn");
 
-		const ROWS_PER_CLICK = 3; // 3 rows per click
-		const COLS = 2; // 2 columns
-		const ITEMS_PER_BATCH = ROWS_PER_CLICK * COLS; // 6 recipes per batch
+		const PER_BATCH = 6;
+		let visible = 0;
 
-		let visibleCount = 0;
+		function showMore() {
+			visible += PER_BATCH;
 
-		function showNextBatch() {
-			const nextCount = visibleCount + ITEMS_PER_BATCH;
-			recipes.forEach((recipe, index) => {
-				if (index < nextCount) {
-					recipe.style.display = "flex";
-				}
+			recipes.forEach((r, i) => {
+				if (i < visible) r.style.display = "flex";
 			});
-			visibleCount += ITEMS_PER_BATCH;
 
-			// Hide button if all recipes are visible
-			if (visibleCount >= recipes.length) {
-				loadMoreBtn.style.display = "none";
+			if (visible >= recipes.length) {
+				btn.style.display = "none";
 			}
 		}
 
-		// Initially hide all recipes
-		recipes.forEach((recipe) => (recipe.style.display = "none"));
+		recipes.forEach(r => r.style.display = "none");
+		showMore();
 
-		// Show first batch
-		showNextBatch();
+		btn.addEventListener("click", showMore);
+	});
 
-		// Load more on click
-		loadMoreBtn.addEventListener("click", showNextBatch);
+	document.addEventListener("DOMContentLoaded", () => {
+
+		const searchInput = document.getElementById("recipe-search-input");
+		const recipes = document.querySelectorAll(".recipe-item");
+
+		searchInput.addEventListener("input", () => {
+			const query = searchInput.value.toLowerCase().trim();
+
+			recipes.forEach((recipe) => {
+				const title = recipe.querySelector("h3")?.innerText.toLowerCase() || "";
+				const desc = recipe.querySelector("p")?.innerText.toLowerCase() || "";
+
+				if (title.includes(query) || desc.includes(query)) {
+					recipe.style.display = "flex";
+				} else {
+					recipe.style.display = "none";
+				}
+			});
+		});
+
 	});
 </script>
 

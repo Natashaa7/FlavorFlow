@@ -5,15 +5,15 @@ from psycopg2.extras import RealDictCursor
 # -------------------------
 # CREATE
 # -------------------------
-def create_ingredient(name, quantity, unit):
+def create_ingredient(name, category, usage_count):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     cur.execute("""
-        INSERT INTO ingredients (name, quantity, unit)
+        INSERT INTO ingredients (name, category, usage_count)
         VALUES (%s, %s, %s)
         RETURNING *
-    """, (name, quantity, unit))
+    """, (name, category, usage_count))
 
     result = cur.fetchone()
     conn.commit()
@@ -56,16 +56,16 @@ def get_ingredient_by_id(ingredient_id):
 # -------------------------
 # UPDATE
 # -------------------------
-def update_ingredient(ingredient_id, name, quantity, unit):
+def update_ingredient(ingredient_id, name, category, usage_count):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     cur.execute("""
         UPDATE ingredients
-        SET name=%s, quantity=%s, unit=%s
+        SET name=%s, category=%s, usage_count=%s
         WHERE id=%s
         RETURNING *
-    """, (name, quantity, unit, ingredient_id))
+    """, (name, category, usage_count, ingredient_id))
 
     result = cur.fetchone()
     conn.commit()

@@ -114,6 +114,7 @@ async def login(
         redirect_url = "/index"
 
     response = RedirectResponse(url=redirect_url, status_code=303)
+    response.set_cookie("login_success", "1", max_age=5)
     response.set_cookie(
         key="session_id",
         value=session_token,

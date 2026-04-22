@@ -23,11 +23,23 @@ def delete_message(message_id: int):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    cur.execute(
-        "DELETE FROM messages WHERE id = %s",
-        (message_id,)
-    )
+    try:
+        cur.execute("DELETE FROM messages WHERE id=%s", (message_id,))
+        conn.commit()
 
-    conn.commit()
-    cur.close()
-    conn.close()
+        if cur.rowcount == 0:
+            return {
+                "success": False,
+                "error": "Message not found"
+            }
+
+        return {"success": True}
+
+    except Exception as e:
+        conn.rollback()
+        return {"success": False, "error": str(e)}
+
+    finally:
+        cur.close()
+        conn.close()
+

@@ -90,7 +90,7 @@ async def login(
     if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
         return RedirectResponse(url="/?error=login", status_code=303)
 
-    redirect_url = "/admin_dashboard" if user["username"].lower() == "admin" else "/index"
+    redirect_url = "/admin/admin_dashboard" if user["username"].lower() == "admin" else "/index"
     return RedirectResponse(url=redirect_url, status_code=303)
 
 """

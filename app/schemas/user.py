@@ -21,7 +21,7 @@ class SignupForm(BaseModel):
         if 'password' in values and v != values['password']:
             raise ValueError('Passwords do not match')
         return v
-
+    
 class UserCreate(BaseModel):
     name: str
     username: str

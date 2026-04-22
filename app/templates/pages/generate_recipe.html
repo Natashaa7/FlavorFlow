@@ -4,144 +4,268 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
+<link rel="stylesheet" href="/static/css/gr.css" />
 
-<head>
-    <meta charset="UTF-8">
-    <title>FlavorFlow - Generate Recipe</title>
-    <link rel="stylesheet" href="/static/css/gr.css">
+<div class="recipe-container">
 
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
-</head>
+    <!-- LEFT COLUMN: INGREDIENTS -->
+    <aside class="column ingredients-sidebar">
+        <h2>Ingredients</h2>
+        <p class="hint">Click to add/remove from your pantry</p>
 
-<body>
-    <main class="main">
-        <!-- LEFT SIDE -->
-        <aside class="side-ing">
-            <h2>Select Ingredients</h2>
-
+        {% if ingredients %}
+            {% for category, items in ingredients.items() %}
             <div class="section">
-                <h3>Vegetables</h3>
+                <h3>{{ category }}</h3>
+
                 <div class="button-group">
-                    <button class="item active" data-name="tomato">Tomato</button>
-                    <button class="item active" data-name="onion">Onion</button>
-                    <button class="item" data-name="garlic">Garlic</button>
-                    <button class="item" data-name="carrot">Carrot</button>
-                    <button class="item" data-name="chocolate">Chocolate</button>
-                    <button class="item" data-name="flour">Flour</button>
+                    {% for item in items %}
+                    <button class="item" data-name="{{ item }}">
+                        {{ item }}
+                    </button>
+                    {% endfor %}
                 </div>
             </div>
+            {% endfor %}
+        {% else %}
+            <p>No ingredients found</p>
+        {% endif %}
+    </aside>
 
-            <div class="section">
-                <h3>Proteins</h3>
-                <div class="button-group">
-                    <button class="item active" data-name="chicken">Chicken</button>
-                    <button class="item" data-name="beef">Beef</button>
-                    <button class="item" data-name="egg">Egg</button>
-                </div>
+
+    <!-- MIDDLE COLUMN -->
+    <main class="column main-generator">
+
+        <!-- Upload -->
+        <div class="upload-box">
+            <h2>Upload Ingredients</h2>
+            <p>Select one or more photos of your fridge.</p>
+
+            <label for="imageInput" class="custom-file-upload">Upload Photos</label>
+            <input type="file" id="imageInput" accept="image/*" multiple>
+
+            <div id="imagePreviewContainer" class="image-preview-grid"></div>
+        </div>
+
+        <!-- Generate -->
+        <div class="generate-area">
+            <button class="generate-btn" id="generateBtn">
+                Generate & Save Recipe
+            </button>
+        </div>
+
+        <!-- ✅ DETECTED INGREDIENTS -->
+        <div class="detected-box">
+            <h3>Detected Ingredients</h3>
+            <div id="detectedList">
+                <p class="placeholder-text">No detection yet</p>
             </div>
-        </aside>
+        </div>
 
-        <!-- RIGHT SIDE -->
-        <section class="content">
-
-            <!-- Upload Box -->
-            <div class="upload-box">
-                <h2>Upload your ingredients</h2>
-                <p>Take a photo of your fridge or pantry.</p>
-                <input type="file" id="imageInput" accept="image/*">
+        <!-- Recipe Output -->
+        <div class="current-recipe-display">
+            <h2>Current Recipe</h2>
+            <div id="recipeOutput" class="recipe-card-main">
+                <p class="placeholder-text">
+                    Select ingredients and click generate...
+                </p>
             </div>
-
-            <!-- Basket -->
-            <div class="basket">
-                <h2>Your Basket</h2>
-                <p>No ingredients selected yet.</p>
-            </div>
-
-            <!-- Recipe Output -->
-            <div class="recipe-output">
-                <h2>Generated Recipe</h2>
-                <pre id="recipeText">Your recipe will appear here...</pre>
-            </div>
-
-            <!-- Generate Button -->
-            <div class="generate-area">
-                <button class="generate-btn">Generate Recipe</button>
-            </div>
-
-        </section>
+        </div>
 
     </main>
 
-    <!-- SCRIPT -->
-    <script>
-        const buttons = document.querySelectorAll(".item");
-        const generateBtn = document.querySelector(".generate-btn");
 
-        // Toggle ingredient selection
-        buttons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                btn.classList.toggle("active");
+    <!-- RIGHT COLUMN -->
+    <aside class="column history-sidebar">
+        <h2>History</h2>
+        <div id="historyList" class="history-list"></div>
+    </aside>
+
+</div>
+
+
+<script>
+const API_BASE = "/api/v1/generate-recipe";
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadHistory();
+    attachIngredientListeners();
+});
+
+
+/* -------------------------
+   INGREDIENT TOGGLE
+------------------------- */
+function attachIngredientListeners() {
+    document.querySelectorAll(".item").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const name = btn.dataset.name;
+            const action = btn.classList.contains("active") ? "remove" : "add";
+
+            const res = await fetch(`${API_BASE}/ingredients/toggle`, {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ingredient_name: name,
+                    action: action
+                })
             });
+
+            if (res.ok) btn.classList.toggle("active");
+        });
+    });
+}
+
+
+/* -------------------------
+   IMAGE UPLOAD
+------------------------- */
+document.getElementById("imageInput").addEventListener("change", async (e) => {
+    for (let file of e.target.files) {
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch(`${API_BASE}/images/upload`, {
+            method: "POST",
+            body: formData
         });
 
-        generateBtn.addEventListener("click", async () => {
-            let selected = [];
+        const data = await res.json();
 
-            document.querySelectorAll(".item.active").forEach(btn => {
-                selected.push(btn.dataset.name);
-            });
-
-            let formData = new FormData();
-
-            // Send ingredients properly for FastAPI
-            selected.forEach(i => formData.append("ingredients", i));
-
-            let fileInput = document.getElementById("imageInput");
-            if (fileInput.files[0]) {
-                formData.append("image", fileInput.files[0]);
-            }
-
-            try {
-                const res = await fetch("api/v1/generate_recipe/generate", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const data = await res.json();
-
-                console.log(data); // 👈 ADD THIS FOR DEBUG
-
-                if (!data.success) {
-                    alert(data.error || "Failed to generate recipe");
-                    return;
-                }
-
-                // access nested response
-                const result = data.data;
-
-                // Show ingredients in basket
-                document.querySelector(".basket").innerHTML =
-                    "<h2>Your Basket</h2>" +
-                    result.ingredients.map(i => `<p>${i}</p>`).join("");
-
-                // Show recipe
-                document.getElementById("recipeText").textContent = result.recipe;
+        if (data.success) {
+            renderImagePreview(data.image_id, data.url);
+        }
+    }
+});
 
 
-            } catch (err) {
-                console.error(err);
-                alert("Something went wrong!");
-            }
-        });
-    </script>
+function renderImagePreview(id, url) {
+    const container = document.getElementById("imagePreviewContainer");
 
-</body>
+    const div = document.createElement("div");
+    div.className = "image-preview-item";
 
-</html>
+    div.innerHTML = `
+        <img src="${url}" class="preview-img"/>
+        <button class="delete-img">×</button>
+    `;
+
+    div.querySelector(".delete-img").addEventListener("click", async () => {
+        await deleteImage(id, div);
+    });
+
+    container.appendChild(div);
+}
+
+
+async function deleteImage(id, el) {
+    const res = await fetch(`${API_BASE}/images/${id}`, {
+        method: "DELETE"
+    });
+
+    if (res.ok) el.remove();
+}
+
+
+/* -------------------------
+   GENERATE RECIPE
+------------------------- */
+document.getElementById("generateBtn").addEventListener("click", async () => {
+
+    const btn = document.getElementById("generateBtn");
+    btn.innerText = "Generating...";
+
+    const res = await fetch(`${API_BASE}/generate`, {
+        method: "POST"
+    });
+
+    const data = await res.json();
+
+    console.log("API RESPONSE:", data); // 🔍 DEBUG
+
+    if (data.success) {
+
+        displayRecipe(data.data.recipe);
+
+        // ✅ SHOW DETECTED INGREDIENTS
+        displayDetected(data.data.detected);
+
+        loadHistory();
+
+        // clear UI
+        document.querySelectorAll(".item").forEach(i => i.classList.remove("active"));
+        document.getElementById("imagePreviewContainer").innerHTML = "";
+    }
+
+    btn.innerText = "Generate & Save Recipe";
+});
+
+
+/* -------------------------
+   DISPLAY DETECTED
+------------------------- */
+function displayDetected(detected) {
+
+    const container = document.getElementById("detectedList");
+
+    if (!detected || Object.keys(detected).length === 0) {
+        container.innerHTML = "<p>No ingredients detected</p>";
+        return;
+    }
+
+    container.innerHTML = Object.entries(detected).map(([name, count]) => `
+        <div class="detected-item">
+            <strong>${name}</strong> : ${count}
+        </div>
+    `).join("");
+}
+
+
+/* -------------------------
+   DISPLAY RECIPE
+------------------------- */
+function displayRecipe(text) {
+    document.getElementById("recipeOutput").innerHTML =
+        text.replace(/\n/g, '<br>');
+}
+
+
+/* -------------------------
+   HISTORY
+------------------------- */
+async function loadHistory() {
+
+    const res = await fetch(`${API_BASE}/history`);
+    const recipes = await res.json();
+
+    const list = document.getElementById("historyList");
+
+    list.innerHTML = recipes.map(r => `
+        <div class="history-card">
+            <button class="delete-history"
+                onclick="deleteRecipe(${r.id}, event)">×</button>
+
+            <div onclick="displayRecipe(\`${r.recipe.replace(/`/g, "'")}\`)">
+                <strong>${r.title}</strong>
+                <p>${r.created_at.split('T')[0]}</p>
+            </div>
+        </div>
+    `).join("");
+}
+
+
+async function deleteRecipe(id, event) {
+    event.stopPropagation();
+
+    if (!confirm("Delete this recipe?")) return;
+
+    await fetch(`${API_BASE}/history/${id}`, {
+        method: "DELETE"
+    });
+
+    loadHistory();
+}
+</script>
 
 {% endblock %}

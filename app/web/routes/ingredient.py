@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 from app.services.ingredient_service import (
@@ -12,23 +12,23 @@ from app.services.ingredient_service import (
 from app.core.security import require_admin
 
 router = APIRouter(
-    prefix="/admin",  # 🔒 IMPORTANT: ADMIN AREA
-    dependencies=[Depends(require_admin)]  # 🔒 BLOCK NON-ADMINS
+    prefix="/admin",
+    dependencies=[Depends(require_admin)]
 )
 
 templates = Jinja2Templates(directory="app/templates")
 
 
 # -------------------------
-# LIST PAGE (ADMIN ONLY)
+# PAGE VIEW
 # -------------------------
-@router.get("/ingredients", response_class=HTMLResponse)
-async def ingredients_page(request: Request):
+@router.get("/ingredient_manage", response_class=HTMLResponse)
+async def ingredient_page(request: Request):
 
     data = get_all_ingredients()
 
     return templates.TemplateResponse(
-        "pages/ingredients.html",
+        "pages/ingredient_manage.html",
         {
             "request": request,
             "ingredients": data
@@ -37,36 +37,50 @@ async def ingredients_page(request: Request):
 
 
 # -------------------------
-# CREATE (ADMIN ONLY)
+# CREATE
 # -------------------------
-@router.post("/ingredients/add")
+@router.post("/ingredient_manage/add")
 async def add_ingredient_web(
     name: str = Form(...),
-    quantity: str = Form(...),
-    unit: str = Form(...)
+    category: str = Form(...),
+    usage_count: int = Form(...)
 ):
-    create_ingredient(name, quantity, unit)
-    return RedirectResponse("/admin/ingredients", status_code=303)
 
+    create_ingredient(name, category, usage_count)
+
+    return JSONResponse({
+        "success": True,
+        "message": "Ingredient added successfully",
+        "redirect": "/admin/ingredient_manage"
+    })
 
 # -------------------------
-# UPDATE (ADMIN ONLY)
+# UPDATE
 # -------------------------
-@router.post("/ingredients/update/{id}")
+@router.post("/ingredient_manage/update/{id}")
 async def update_ingredient_web(
     id: int,
     name: str = Form(...),
-    quantity: str = Form(...),
-    unit: str = Form(...)
+    category: str = Form(...),
+    usage_count: int = Form(...)
 ):
-    update_ingredient(id, name, quantity, unit)
-    return RedirectResponse("/admin/ingredients", status_code=303)
+
+    update_ingredient(id, name, category, usage_count)
+
+    return JSONResponse({
+        "success": True,
+        "message": "Ingredient updated successfully",
+        "redirect": "/admin/ingredient_manage"
+    })
 
 
-# -------------------------
-# DELETE (ADMIN ONLY)
-# -------------------------
-@router.get("/ingredients/delete/{id}")
+@router.post("/ingredient_manage/delete/{id}")
 async def delete_ingredient_web(id: int):
+
     delete_ingredient(id)
-    return RedirectResponse("/admin/ingredients", status_code=303)
+
+    return JSONResponse({
+        "success": True,
+        "message": "Ingredient deleted successfully",
+        "redirect": "/admin/ingredient_manage"
+    })

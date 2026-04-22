@@ -9,25 +9,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/ingredient_manage.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-
-<!-- MAIN -->
 <main class="main">
+
+    <!-- HEADER + ACTION BAR -->
     <div class="main-header">
-        <h1>Ingredient Management</h1>
-        <p>Add, edit or remove ingredients from the global database.</p>
-        <button class="add-btn" id="openModal"><span class="material-icons">add</span> Add New Ingredient</button>
+
+        <div class="header-text">
+            <h1>Ingredient Management</h1>
+            <p>Add, edit or remove ingredients from the global database.</p>
+        </div>
+
+        <!-- ACTION BAR (SEARCH + BUTTON SIDE BY SIDE) -->
+        <div class="action-bar">
+
+            <div class="search-box">
+                <input type="text" id="ingredientSearch" placeholder="Search ingredients...">
+            </div>
+
+            <button class="add-btn" id="openModal">
+                <span class="material-icons">add</span> Add New Ingredient
+            </button>
+
+        </div>
+
     </div>
 
-    <!-- ADD INGREDIENT MODAL -->
-    <div class="modal">
+
+    <!-- ================= ADD MODAL ================= -->
+    <div class="modal" id="addModal">
         <div class="modal-box">
 
             <div class="modal-header">
                 <div>
                     <h2 class="modal-title">Add New Ingredient</h2>
-                    <p class="modal-subtitle">Expand the global database with a new culinary item.</p>
+                    <p class="modal-subtitle">Expand the global database.</p>
                 </div>
                 <button class="close-btn" id="closeModal">X</button>
             </div>
@@ -37,14 +55,13 @@
                 <div class="form-grid">
 
                     <div class="form-group full-width">
-                        <label for="name">Ingredient Name</label>
-                        <input type="text" id="name" placeholder="Heirloom Tomato">
+                        <label>Ingredient Name</label>
+                        <input type="text" name="name" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category">
-                            <option>Select Category</option>
+                        <label>Category</label>
+                        <select name="category" required>
                             <option>Vegetables</option>
                             <option>Fruits</option>
                             <option>Proteins</option>
@@ -54,27 +71,118 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="usage">Initial Usage Count</label>
-                        <input type="number" id="usage" min="0" value="0">
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="description">Description (Optional)</label>
-                        <textarea id="description" placeholder="Brief notes about flavor or uses..."
-                            rows="3"></textarea>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Ingredient Icon</label>
-                        <input type="file" id="icon">
+                        <label>Usage Count</label>
+                        <input type="number" name="usage_count" value="0">
                     </div>
 
                 </div>
 
                 <div class="form-buttons">
                     <button type="button" class="cancel-btn" id="cancelModal">Cancel</button>
-                    <button class="add-btn" id="openModal"><span class="material-icons">add</span> Add New Ingredient</button>
+                    <button type="submit" class="add-btn">
+                        <span class="material-icons">add</span> Add Ingredient
+                    </button>
+                </div>
 
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <div class="table-container">
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Usage</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for ing in ingredients %}
+                <tr class="ingredient-row">
+
+                    <td>{{ ing.name }}</td>
+
+                    <td>
+                        <span class="status-badge">{{ ing.category }}</span>
+                    </td>
+
+                    <td>{{ ing.created_at }}</td>
+
+                    <td>{{ ing.usage_count }}</td>
+
+                    <td class="table-actions">
+
+                        <!-- EDIT -->
+                        <button type="button" class="icon-btn edit-ing-btn" data-id="{{ ing.id }}"
+                            data-name="{{ ing.name }}" data-category="{{ ing.category }}"
+                            data-usage="{{ ing.usage_count }}">
+                            <i class="fi fi-rr-edit"></i>
+                        </button>
+
+                        <!-- DELETE -->
+                        <button type="button" class="icon-btn delete-ing-btn" data-id="{{ ing.id }}">
+                            <i class="fi fi-rr-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- ================= EDIT MODAL ================= -->
+    <div class="modal" id="editIngredientModal">
+        <div class="modal-box">
+
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">Edit Ingredient</h2>
+                    <p class="modal-subtitle">Update ingredient details.</p>
+                </div>
+                <button class="close-btn" id="closeIngredientEdit">X</button>
+            </div>
+
+            <form class="ingredient-edit-form">
+
+                <input type="hidden" id="edit-ing-id" name="id">
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+                        <label>Name</label>
+                        <input type="text" id="edit-ing-name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="edit-ing-category" name="category">
+                            <option>Vegetables</option>
+                            <option>Fruits</option>
+                            <option>Proteins</option>
+                            <option>Spices</option>
+                            <option>Dairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Usage Count</label>
+                        <input type="number" id="edit-ing-usage" name="usage_count">
+                    </div>
+
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="cancel-btn" id="cancelIngredientEdit">Cancel</button>
+                    <button type="submit" class="submit-btn">Update Ingredient</button>
                 </div>
 
             </form>
@@ -82,93 +190,149 @@
         </div>
     </div>
 
-    <!-- Search & Filter -->
-    <div class="search-container">
-        <div class="search-box">
-            <!--<span class="material-icons">search</span>-->
-            <input type="text" placeholder="Search ingredients...">
-        </div>
-        <div class="filter-buttons">
-            <select>
-                <option>All Categories</option>
-                <option>Vegetables</option>
-                <option>Fruits</option>
-                <option>Proteins</option>
-                <option>Dairy</option>
-                <option>Grains</option>
-                <option>Spices</option>
-            </select>
-            <button><span class="material-icons">filter_list</span></button>
-        </div>
-    </div>
-
-    <!-- Table -->
-    <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Ingredient Name</th>
-                    <th>Category</th>
-                    <th>Created Date</th>
-                    <th>Usage Count</th>
-                    <th class="text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div class="w-10 h-10 bg-primary flex items-center justify-center"></div>
-                            <span>Tomato</span>
-                        </div>
-                    </td>
-                    <td><span class="status-badge vegetable">Vegetable</span></td>
-                    <td>Oct 12, 2024</td>
-                    <td>1,240</td>
-                    <td class="table-actions">
-                        <button class="edit-btn" title="Edit"><span class="material-icons">edit</span></button>
-                        <button class="delete-btn" title="Delete"><span
-                                class="material-icons">delete_outline</span></button>
-                    </td>
-                </tr>
-                <!-- Repeat other rows similarly -->
-            </tbody>
-        </table>
-
-        <div class="pagination">
-            <button>Previous</button>
-            <button>Next</button>
-        </div>
-    </div>
 </main>
 
+<!-- ================= JS ================= -->
 <script>
-    const modal = document.querySelector(".modal");
-    const openBtn = document.getElementById("openModal");
-    const closeBtn = document.getElementById("closeModal");
-    const cancelBtn = document.getElementById("cancelModal");
+    document.addEventListener('DOMContentLoaded', () => {
 
-    // Show modal when clicking "Add New Ingredient"
-    openBtn.addEventListener("click", function () {
-        modal.style.display = "flex";
+        // ================= ADD MODAL =================
+        const addModal = document.getElementById('addModal');
+        const openBtn = document.getElementById('openModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelModal');
+
+        openBtn.onclick = () => addModal.style.display = 'flex';
+        closeBtn.onclick = cancelBtn.onclick = () => addModal.style.display = 'none';
+
+        addModal.onclick = (e) => {
+            if (e.target === addModal) addModal.style.display = 'none';
+        };
+
+        // ================= ADD =================
+        const addForm = document.querySelector('.ingredient-form');
+
+        addForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const res = await fetch('/admin/ingredient_manage/add', {
+                method: 'POST',
+                body: new FormData(addForm)
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                await Swal.fire('Success', data.message, 'success');
+                location.reload();
+            } else {
+                Swal.fire('Error', data.error, 'error');
+            }
+        });
+
+        // ================= EDIT MODAL =================
+        const editModal = document.getElementById('editIngredientModal');
+
+        document.querySelectorAll('.edit-ing-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+
+                editModal.style.display = 'flex';
+
+                document.getElementById('edit-ing-id').value = btn.dataset.id;
+                document.getElementById('edit-ing-name').value = btn.dataset.name;
+                document.getElementById('edit-ing-category').value = btn.dataset.category;
+                document.getElementById('edit-ing-usage').value = btn.dataset.usage;
+            });
+        });
+
+        const closeEdit = document.getElementById('closeIngredientEdit');
+        const cancelEdit = document.getElementById('cancelIngredientEdit');
+
+        const closeEditModal = () => editModal.style.display = 'none';
+
+        closeEdit.onclick = cancelEdit.onclick = closeEditModal;
+
+        editModal.onclick = (e) => {
+            if (e.target === editModal) closeEditModal();
+        };
+
+        // ================= UPDATE =================
+        const editForm = document.querySelector('.ingredient-edit-form');
+
+        editForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('edit-ing-id').value;
+
+            const res = await fetch(`/admin/ingredient_manage/update/${id}`, {
+                method: 'POST',
+                body: new FormData(editForm)
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                await Swal.fire('Updated', data.message, 'success');
+                location.reload();
+            } else {
+                Swal.fire('Error', data.error, 'error');
+            }
+        });
+
+        // ================= DELETE =================
+        document.querySelectorAll('.delete-ing-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+
+                const id = btn.dataset.id;
+
+                const result = await Swal.fire({
+                    title: 'Delete ingredient?',
+                    text: "This cannot be undone",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes delete'
+                });
+
+                if (!result.isConfirmed) return;
+
+                const res = await fetch(`/admin/ingredient_manage/delete/${id}`, {
+                    method: 'POST'
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    await Swal.fire('Deleted', data.message, 'success');
+                    location.reload();
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            });
+        });
+
+    });
+    // =========================
+    // INGREDIENT SEARCH FILTER
+    // =========================
+
+    const searchInput = document.getElementById("ingredientSearch");
+    const rows = document.querySelectorAll(".ingredient-row");
+
+    searchInput.addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+
+        rows.forEach(row => {
+            const name = row.children[0].textContent.toLowerCase();
+            const category = row.children[1].textContent.toLowerCase();
+
+            if (name.includes(value) || category.includes(value)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
     });
 
-    // Hide modal when clicking "X" or Cancel
-    closeBtn.addEventListener("click", function () {
-        modal.style.display = "none";
-    });
-
-    cancelBtn.addEventListener("click", function () {
-        modal.style.display = "none";
-    });
-
-    // Optional: close modal by clicking outside modal-box
-    modal.addEventListener("click", function(e) {
-        if (e.target === modal) {
-            modal.style.display = "none";
-        }
-    });
 </script>
-
 
 {% endblock %}

@@ -1,34 +1,36 @@
-# app/services/pipeline.py
 import os
+from typing import List
 from app.services.cv_model import predict_ingredients
-from app.services.nlp_model import generate_recipe  # your text recipe generator
+from app.services.nlp_model import generate_recipe
 
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+UPLOAD_FOLDER = "static/uploads"
 
-async def process_request(user_ingredients, image):
-    image_ingredients = []
+async def process_request(user_ingredients: List[str], images: List[str]):
+    image_ingredients = {}
+    
+    if images:
+        for image_path in images:
+            if not os.path.exists(image_path):
+                print(f"File not found: {image_path}")
+                continue
 
-    if image:
-        file_path = os.path.join(UPLOAD_FOLDER, image.filename)
+            detected = predict_ingredients(image_path)
 
-        # Save uploaded image
-        with open(file_path, "wb") as f:
-            f.write(await image.read())
+            if isinstance(detected, dict):
+                for key, val in detected.items():
+                    image_ingredients[key] = image_ingredients.get(key, 0) + val
 
-        # Predict ingredients from image
-        image_ingredients = predict_ingredients(file_path)
-
-    # Combine user input and detected ingredients
-    all_ingredients = list(set(user_ingredients + image_ingredients))
+    # merge manual + detected
+    all_ingredients = list(set(user_ingredients + list(image_ingredients.keys())))
 
     if not all_ingredients:
-        return {"error": "No ingredients provided"}
+        return {"success": False, "error": "No ingredients provided"}
 
-    # Generate recipe using NLP model
     recipe = generate_recipe(all_ingredients)
 
     return {
+        "success": True,
         "ingredients": all_ingredients,
+        "detected": image_ingredients,   
         "recipe": recipe
     }

@@ -1,140 +1,54 @@
-/*.gr-reci {
-    width: 100vw;
-    height: 600px;
+/* 1. RESET & LAYOUT FIXES */
+* {
+    box-sizing: border-box;
 }
 
-.gr-reci img{
-    width: 100vw;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gr-reci h1 {
-    position: absolute;
-    color: white;
-    text-align: center;
-    top: 36rem;
-    left: 23%;
-    padding: 10px 20px;
-    font-size: 5rem;
-    font-family: didot, serif;
-}
-
-.up-file {
-    padding: 100px;
-    height: 500px;
-    justify-content: center;
-    background-color: #EDE7D1;
-}
-
-.up-file p{
-    font-size: 40px;
-    text-align: center;
-}
-
-.um {
-    height: 300px;
-    padding: 32px;
-    border-radius: 40px;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    font-family: system-ui, sans-serif;
-    gap: 20px;
-
-    /* SVG dashed rounded border 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect x='1.5' y='1.5' width='calc(100%25 - 3px)' height='calc(100%25 - 3px)' rx='40' ry='40' fill='none' stroke='%238fa06a' stroke-width='3' stroke-dasharray='14 10'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-
-.um i{
-    font-size: 50px;
-    color: #8E9B6A;
-}
-
-.um i:hover {
-    color: #D9822B;
-}
-
-.um p {
-    font-size: 20px;
-}
-
-/* Hide the actual file input 
-.file-icon input[type="file"] {
-    display: none;
-}
-
-/* Style the icon container *
-.file-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 999px; /* pill shape *
-    color: #fff;
-    font-size: 16px;
-    gap: 8px; /* space between icon and text if needed *
-    transition: background 0.2s ease;
-}
-
-/* Content styling *
-.up-file label {
-    display: block;
-    margin: 24px 0 8px;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.select {
-    background-color: #EDE7D1;
-    padding: 10px 100px 100px 100px;
-}
-
-.box {
-    display: flex;
-    gap: 10px;
-}
-
-.ing {
-    background-color: #D9822B;
-    width: 80px;
-    height: 50px;
-    text-align: center;
-    border-radius: 20px;
-    padding-top: 1px;
-    margin-top: 30px;
-}*/
-
-/* GENERAL */
 body {
-    margin: 0;
-    background-color: #FAFAFA;
-    color: #333;
+    padding-top: 100px; /* match your header height */
 }
 
-
-
-/* MAIN LAYOUT */
-.main {
+/* Container for the 3-column layout */
+.recipe-container {
     display: flex;
-    padding: 40px;
-    gap: 40px;
-    margin-top: 165px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 120px auto 40px; /* Top margin to clear your navbar */
+    padding: 0 20px;
+    height: 80vh; /* Keeps the columns from stretching infinitely */
+    font-family: 'Montserrat', sans-serif;
 }
 
-/* SIDEBAR */
-.side-ing {
-    width: 30%;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+/* 2. SHARED COLUMN STYLES */
+.column {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    height: 100%; /* Fill the container height */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. LEFT COLUMN: INGREDIENTS (Width: 25%) */
+.ingredients-sidebar {
+    flex: 0 0 25%;
+    overflow-y: auto;
 }
 
 .section {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
+}
+
+.section h3 {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 12px;
+    border-left: 4px solid #8B9D77;
+    padding-left: 10px;
 }
 
 .button-group {
@@ -144,72 +58,307 @@ body {
 }
 
 .item {
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    background-color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    background-color: #fff;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.item:hover {
+    border-color: #8B9D77;
 }
 
 .item.active {
     background-color: #8B9D77;
     color: white;
-    border: none;
+    border-color: #8B9D77;
+    box-shadow: 0 2px 5px rgba(139, 157, 119, 0.4);
 }
 
-/* CONTENT */
-.content {
-    width: 70%;
+/* 4. MIDDLE COLUMN: GENERATOR (Width: 45%) */
+.main-generator {
+    flex: 0 0 45%;
+    overflow-y: auto;
 }
 
-/* UPLOAD BOX */
 .upload-box {
     background-color: #DEE5D4;
-    padding: 40px;
+    padding: 30px;
+    border-radius: 12px;
     text-align: center;
-    border-radius: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-.upload-btn {
-    padding: 10px 20px;
-    background-color: white;
-    border: 2px solid #8B9D77;
-    border-radius: 20px;
-    color: #8B9D77;
+.custom-file-upload {
+    display: inline-block;
+    padding: 12px 24px;
     cursor: pointer;
+    background: #ffffff;
+    border-radius: 30px;
+    color: #8B9D77;
+    font-weight: 700;
+    margin: 15px 0 5px;
+    border: 2px solid #8B9D77;
+    transition: 0.3s;
 }
 
-/* BASKET */
-.basket {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+.custom-file-upload:hover {
+    background: #8B9D77;
+    color: white;
 }
 
-.basket-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
+#imageInput {
+    display: none;
 }
 
-.qty-buttons button {
-    padding: 5px 10px;
-    margin-left: 5px;
+#fileName {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
 }
 
-/* GENERATE BUTTON */
 .generate-area {
-    text-align: center;
-    margin-top: 30px;
+    margin-bottom: 25px;
 }
 
 .generate-btn {
-    padding: 15px 40px;
+    width: 100%;
+    padding: 18px;
     background-color: #D4923D;
     color: white;
     border: none;
     border-radius: 30px;
-    font-size: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
     cursor: pointer;
+    box-shadow: 0 4px 10px rgba(212, 146, 61, 0.3);
+}
+
+.generate-btn:hover {
+    background-color: #bc7e2f;
+}
+
+.generate-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Current Recipe Result Area */
+.recipe-card-main {
+    background: #fffcf7;
+    border: 1px solid #f0e0cc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.ing-tags {
+    color: #8B9D77;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+/* 5. RIGHT COLUMN: HISTORY (Width: 25%) */
+.history-sidebar {
+    flex: 0 0 25%;
+}
+
+.history-list {
+    overflow-y: auto;
+    flex-grow: 1;
+    margin-top: 15px;
+}
+
+.history-card {
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.history-card:hover {
+    background: #f4f4f4;
+    border-color: #8B9D77;
+}
+
+.history-card strong {
+    color: #333;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.history-date {
+    font-size: 0.75rem;
+    color: #999;
+    float: right;
+}
+
+.history-card p {
+    font-size: 0.8rem;
+    color: #777;
+    margin: 5px 0 0;
+}
+
+/* 6. TYPOGRAPHY & DECORATION */
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-top: 0;
+    color: #222;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.placeholder-text {
+    color: #aaa;
+    text-align: center;
+    padding: 40px 0;
+}
+
+/* Custom Scrollbar for sidebars */
+.column::-webkit-scrollbar {
+    width: 5px;
+}
+.column::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+/* Responsive: Stack columns on smaller screens */
+@media (max-width: 1024px) {
+    .recipe-container {
+        flex-direction: column;
+        height: auto;
+        margin-top: 80px;
+    }
+    .column {
+        flex: 1 1 auto;
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ... [Previous CSS from before] ... */
+
+/* IMAGE PREVIEW GRID */
+.image-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.image-thumb {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.delete-img {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 18px;
+    text-align: center;
+}
+
+/* HISTORY DELETE BUTTON */
+.history-card {
+    position: relative; /* For the X button positioning */
+}
+
+.delete-history {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.delete-history:hover {
+    color: #ff4444;
+}
+
+.hint {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.image-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+}
+
+.delete-img {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
+.detected-box {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+
+.detected-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
 }

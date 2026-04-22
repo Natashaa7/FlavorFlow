@@ -60,9 +60,13 @@ def add_recipe_db(data, image, file, user_id):
             (title, description, image_path, file_path, cook_time, difficulty, user_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (
-            data["title"], data["description"],
-            "/" + image_path, "/" + file_path,
-            data["cook_time"], data["difficulty"], user_id
+            data["title"],
+            data["description"],
+            "/" + image_path,
+            "/" + file_path,
+            data["cook_time"],
+            data["difficulty"],
+            user_id
         ))
 
         conn.commit()
@@ -75,6 +79,7 @@ def add_recipe_db(data, image, file, user_id):
     finally:
         cur.close()
         conn.close()
+
 
 
 # ---------------------------
