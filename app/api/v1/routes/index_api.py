@@ -31,9 +31,6 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
-# -------------------------
-# INDEX PAGE (USER ONLY)
-# -------------------------
 @router.get("/index", response_class=HTMLResponse)
 def home(request: Request, user=Depends(require_user)):
 

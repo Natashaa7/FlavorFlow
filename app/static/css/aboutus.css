@@ -117,3 +117,77 @@ h2 {
     margin-left: 15px;
 }
 
+/* =========================
+   ABOUT PAGE DARK MODE
+========================= */
+
+body.dark {
+    background: #221910;
+    color: #eaeaea;
+}
+
+/* headings */
+body.dark h2 {
+    color: #ffffff;
+}
+
+/* hero */
+body.dark .hero-overlay {
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+}
+
+/* mission */
+body.dark .mission {
+    background: transparent;
+}
+
+/* two column section */
+body.dark .two-column {
+    background: transparent;
+}
+
+body.dark .column-text {
+    color: #eaeaea;
+}
+
+/* vision section */
+body.dark .vision {
+    background: #2a1f1a;
+}
+
+body.dark .vision-content {
+    color: #eaeaea;
+}
+
+/* team section */
+body.dark .team {
+    background: transparent;
+}
+
+body.dark .team-card {
+    background: #1e1e1e;
+    color: #eaeaea;
+    border: 1px solid #333;
+}
+
+/* CTA section */
+body.dark .cta {
+    background: #2a1f1a;
+}
+
+body.dark .secondary-btn {
+    background: #1e1e1e;
+    color: #f1f1f1;
+    border: 1px solid #f48c25;
+}
+
+body.dark .secondary-btn:hover {
+    background: #f48c25;
+    color: white;
+}
+
+/* images subtle fix (optional but improves look) */
+body.dark img {
+    filter: brightness(0.9);
+}

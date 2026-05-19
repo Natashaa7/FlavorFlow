@@ -44,6 +44,14 @@ body.dark .footer {
     color: #064e3b;
 }
 
+body.dark .footer-grid a {
+    color: #94a377;
+}
+
+body.dark .footer-grid {
+    color: #94a377;
+}
+
 .footer-grid a:hover {
     color: #10b981;
 }

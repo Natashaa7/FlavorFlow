@@ -37,7 +37,7 @@
 			<button class="primary-btn">
 				<a href="/generate_recipe">GET STARTED</a>
 			</button>
-			<button class="secondary-btn">Explore Menu</button>
+			<a href="#recipe-section" class="secondary-btn">Explore Menu</a>
 		</div>
 	</div>
 </section>
@@ -91,7 +91,7 @@
 	<h1>Community Creations</h1>
 	<p>Discover recipes shared by home chefs around the world</p>
 	<div class="recipes-header">
-		<h2>Top 3 Trending Recipes</h2> <button class="btn-primary">Explore All</button>
+		<h2>Top 3 Trending Recipes</h2> <a href="#recipe-section" class="btn-primary">Explore All</a>
 	</div>
 </section>
 
@@ -148,7 +148,7 @@
 
 		</div>
 
-		<div class="recipe-list">
+		<div id="recipe-section" class="recipe-list">
 
 			{% for recipe in all_recipes %}
 			<div class="recipe-item">
@@ -183,11 +183,9 @@
 	</div>
 </section>
 
-<div style="text-align:center; margin-top:20px;">
+<div style="text-align:center; background:#F9F6F0;">
 	<button id="load-more-btn" class="btn-primary">Load More</button>
 </div>
-
-<!-- ================= SCRIPTS ================= -->
 
 <script>
 	/* ================= LOGIN POPUP AUTO HIDE ================= */

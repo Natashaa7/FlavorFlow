@@ -22,9 +22,7 @@ from fastapi import File, UploadFile
 router = APIRouter()
 
 
-# =========================
 # GET PROFILE (API)
-# =========================
 @router.get("/")
 async def get_profile_api(request: Request):
 
@@ -40,10 +38,7 @@ async def get_profile_api(request: Request):
     }
 
 
-
-# =========================
 # UPDATE PROFILE (API)
-# =========================
 @router.post("/update")
 async def update_profile_api(payload: dict, request: Request):
 
@@ -53,9 +48,7 @@ async def update_profile_api(payload: dict, request: Request):
 
     user_id = read_session(session_id)
 
-    # -------------------------
     # VALIDATION
-    # -------------------------
     errors = []
 
     try:
@@ -83,15 +76,9 @@ async def update_profile_api(payload: dict, request: Request):
         except ValueError as e:
             errors.append(str(e))
 
-    # -------------------------
-    # RETURN VALIDATION ERRORS
-    # -------------------------
     if errors:
         raise HTTPException(status_code=422, detail=errors)
 
-    # -------------------------
-    # UPDATE PROFILE
-    # -------------------------
     result = update_profile(user_id, payload)
 
     if not result["success"]:
@@ -110,10 +97,7 @@ async def update_profile_api(payload: dict, request: Request):
     }
 
 
-
-# =========================
 # UPLOAD IMAGE (API)
-# =========================
 @router.post("/upload-image")
 async def upload_image_api(
     request: Request,
@@ -142,9 +126,7 @@ async def upload_image_api(
 
 
 
-# =========================
 # DELETE ACCOUNT (API)
-# =========================
 @router.delete("/")
 async def delete_account_api(request: Request):
 

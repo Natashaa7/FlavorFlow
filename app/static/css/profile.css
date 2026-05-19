@@ -384,3 +384,146 @@ input:checked+.slider {
     background-color: #991b1b;
     /* darker red on hover */
 }
+
+/* =========================
+   PROFILE PAGE DARK MODE
+========================= */
+
+body.dark {
+    background-color: #0f0f10;
+    color: #eaeaea;
+}
+
+/* main card */
+body.dark .profile-card {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* banner */
+body.dark .profile-banner {
+    background-color: #063326;
+}
+
+body.dark .profile-banner .banner-gradient {
+    opacity: 0.2;
+}
+
+body.dark .profile-banner .banner-text {
+    color: rgba(255,255,255,0.08);
+}
+
+/* profile pic border */
+body.dark .profile-pic {
+    border: 8px solid #1e1e1e;
+}
+
+/* text */
+body.dark .user-details h1 {
+    color: #ffffff;
+}
+
+body.dark .user-details p {
+    color: #aaa;
+}
+
+/* buttons */
+body.dark .settings-btn {
+    border: 1px solid #444;
+    color: #ccc;
+    background: transparent;
+}
+
+body.dark .settings-btn:hover {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+body.dark .edit-btn {
+    background-color: #065f46;
+}
+
+body.dark .edit-btn:hover {
+    background-color: #10b981;
+}
+
+/* stats */
+body.dark .stats-grid {
+    border-top: 1px solid #2a2a2a;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+body.dark .stats-grid div p {
+    color: #fb923c;
+}
+
+body.dark .stats-grid div span {
+    color: rgba(16, 185, 129, 0.5);
+}
+
+/* form inputs */
+body.dark .form-group input,
+body.dark .form-group textarea {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: #eaeaea;
+}
+
+body.dark .form-group input:focus,
+body.dark .form-group textarea:focus {
+    border-color: #10b981;
+}
+
+/* labels */
+body.dark .form-group label {
+    color: #aaa;
+}
+
+/* vault items */
+body.dark .vault-item {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+}
+
+/* switch */
+body.dark .slider {
+    background-color: #333;
+}
+
+/* admin card */
+body.dark .admin-card {
+    background-color: #063326;
+    color: #d1fae5;
+}
+
+/* footer actions */
+body.dark .footer-actions button:first-child {
+    background-color: #2a2a2a;
+    color: #ccc;
+}
+
+body.dark .footer-actions button:first-child:hover {
+    background-color: #3a3a3a;
+}
+
+/* danger zone */
+body.dark .danger-zone {
+    background-color: #2a1515;
+}
+
+body.dark .danger-zone h4 {
+    color: #ff6b6b;
+}
+
+body.dark .danger-zone p {
+    color: #ff9a9a;
+}
+
+body.dark .danger-zone button {
+    background-color: #b91c1c;
+}
+
+body.dark .danger-zone button:hover {
+    background-color: #7f1d1d;
+}

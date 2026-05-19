@@ -362,3 +362,141 @@ h2 {
     padding: 5px 0;
     border-bottom: 1px solid #ddd;
 }
+
+/* =========================
+   DARK MODE (RECIPE PAGE ONLY)
+========================= */
+
+body.dark {
+    background: #121212;
+    color: #eaeaea;
+}
+
+/* columns */
+body.dark .column {
+    background: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* headings */
+body.dark h2 {
+    color: #f1f1f1;
+    border-bottom: 2px solid #333;
+}
+
+/* sections */
+body.dark .section h3 {
+    color: #ccc;
+}
+
+/* ingredient items */
+body.dark .item {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    color: #eaeaea;
+}
+
+body.dark .item:hover {
+    border-color: #8B9D77;
+}
+
+body.dark .item.active {
+    background-color: #8B9D77;
+    color: #fff;
+}
+
+/* upload box */
+body.dark .upload-box {
+    background-color: #232323;
+}
+
+/* file upload button */
+body.dark .custom-file-upload {
+    background: #1e1e1e;
+    border: 2px solid #8B9D77;
+    color: #8B9D77;
+}
+
+body.dark .custom-file-upload:hover {
+    background: #8B9D77;
+    color: white;
+}
+
+/* generate button */
+body.dark .generate-btn {
+    background-color: #D4923D;
+}
+
+body.dark .generate-btn:hover {
+    background-color: #bc7e2f;
+}
+
+body.dark .generate-btn:disabled {
+    background-color: #333;
+}
+
+/* recipe result card */
+body.dark .recipe-card-main {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    color: #eaeaea;
+}
+
+/* tags */
+body.dark .ing-tags {
+    color: #8B9D77;
+}
+
+/* history sidebar */
+body.dark .history-card {
+    background: #1e1e1e;
+    border: 1px solid #333;
+}
+
+body.dark .history-card:hover {
+    background: #2a2a2a;
+    border-color: #8B9D77;
+}
+
+body.dark .history-card strong {
+    color: #f1f1f1;
+}
+
+body.dark .history-card p {
+    color: #aaa;
+}
+
+body.dark .history-date {
+    color: #888;
+}
+
+/* scrollbar */
+body.dark .column::-webkit-scrollbar-thumb {
+    background: #444;
+}
+
+/* image preview */
+body.dark .image-thumb img,
+body.dark .preview-img {
+    border: 2px solid #333;
+    box-shadow: none;
+}
+
+/* detected box */
+body.dark .detected-box {
+    background: #1e1e1e;
+    border: 1px solid #333;
+}
+
+body.dark .detected-item {
+    border-bottom: 1px solid #333;
+}
+
+/* delete buttons */
+body.dark .delete-history {
+    color: #777;
+}
+
+body.dark .delete-history:hover {
+    color: #ff4444;
+}

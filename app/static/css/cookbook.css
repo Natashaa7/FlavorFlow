@@ -43,6 +43,10 @@ body.dark {
     color: black;
 }
 
+body.dark .main-title {
+    color: #D9822B;
+}
+
 .main-subtitle {
     text-align: center;
     color: #6B7280;

@@ -27,13 +27,6 @@
             <span class="material-symbols-outlined">search</span>
         </div>
 
-        <!--<div class="filter-buttons">
-            <button class="active">All</button>
-            <button>Breakfast</button>
-            <button>Lunch</button>
-            <button>Dinner</button>
-            <button>Desserts</button>
-        </div>-->
 
         <div class="recipe-grid">
             {% for recipe in recipes %}
@@ -46,9 +39,10 @@
                         </button>
                     </div>
                     <div class="recipe-content">
-                        <div class="recipe-category">Dessert
-                            <button title="Download PDF"><span
-                                    class="material-symbols-outlined">picture_as_pdf</span></button>
+                        <div class="recipe-actions">
+                            <a href="/view-recipe/{{ recipe.id }}" class="pdf-icon" title="View PDF">
+                                <span class="material-symbols-outlined">picture_as_pdf</span>
+                            </a>
                         </div>
                         <h3 class="recipe-title">{{ recipe.title }}</h3>
                         <p class="recipe-description">{{ recipe.description }}</p>
