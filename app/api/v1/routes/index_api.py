@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from app.core.security import read_session
-from app.services.index_service import get_all_recipes, toggle_favorite_db
+
+from app.core.security import require_user
+from app.services.index_service import get_all_recipes, toggle_favorite_db, get_recipe_by_id
 
 router = APIRouter()
-
+templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/recipes")
 async def get_recipes_api(request: Request):
@@ -17,18 +21,6 @@ async def get_recipes_api(request: Request):
         "success": True,
         "data": recipes
     }
-
-
-from fastapi import APIRouter, Request, Depends, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from app.core.security import read_session
-
-from app.core.security import require_user
-from app.services.index_service import get_all_recipes, toggle_favorite_db, get_recipe_by_id
-
-router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/index", response_class=HTMLResponse)
