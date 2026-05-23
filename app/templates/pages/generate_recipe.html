@@ -87,6 +87,8 @@
 
 const API_BASE = "/api/v1/generate-recipe";
 
+let _recipesCache = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     loadHistory();
     attachIngredientListeners();
@@ -173,7 +175,6 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
 
     if (data.success) {
 
-        // ✅ TITLE + RECIPE
         document.getElementById("recipeOutput").innerHTML =
             `<h2>${data.data.title}</h2><br>` +
             data.data.recipe.replace(/\n/g, "<br>");
@@ -211,7 +212,7 @@ function displayDetected(detected) {
 
 
 /* -------------------------
-   NUTRITION DISPLAY (FIXED)
+   NUTRITION DISPLAY
 ------------------------- */
 function renderNutrition(nutrition) {
 
@@ -223,7 +224,7 @@ function renderNutrition(nutrition) {
         ${
             Object.keys(nutrition || {}).length === 0
             ? "<p>No nutrition data</p>"
-            : Object.entries(nutrition).map(([k,v]) =>
+            : Object.entries(nutrition).map(([k, v]) =>
                 `<div><strong>${k}</strong>: ${v}</div>`
               ).join("")
         }
@@ -241,14 +242,29 @@ async function loadHistory() {
     const res = await fetch(`${API_BASE}/history`);
     const recipes = await res.json();
 
+    _recipesCache = recipes;
+
     const list = document.getElementById("historyList");
 
     list.innerHTML = recipes.map(r => `
 
         <div class="history-card">
 
-            <button class="delete-history"
-                onclick="deleteRecipe(${r.id}, event)">×</button>
+            <div class="history-actions">
+
+                <button class="download"
+                    data-id="${r.id}"
+                    title="Download Recipe">
+                    ⬇
+                </button>
+
+                <button class="delete-history"
+                    onclick="deleteRecipe(${r.id}, event)"
+                    title="Delete Recipe">
+                    ×
+                </button>
+
+            </div>
 
             <div onclick='openHistoryRecipe(${JSON.stringify(r)})'>
                 <strong>${r.title}</strong>
@@ -258,6 +274,8 @@ async function loadHistory() {
         </div>
 
     `).join("");
+
+    attachDownloadListeners();
 }
 
 
@@ -276,7 +294,7 @@ function openHistoryRecipe(r) {
 
     displayDetected(r.detected);
     renderNutrition(r.nutrition);
-    renderHistoryImages(r.images);
+    renderHistoryImages(r.images);   // ← always called; images come from the history object
 }
 
 
@@ -291,11 +309,67 @@ function renderHistoryImages(images) {
     if (!images || images.length === 0) return;
 
     images.forEach(url => {
-        container.innerHTML += `
-            <div class="image-preview-item">
-                <img src="${url}" class="preview-img"/>
-            </div>
-        `;
+        const div = document.createElement("div");
+        div.className = "image-preview-item";
+        div.innerHTML = `<img src="${url}" class="preview-img"/>`;
+        container.appendChild(div);
+    });
+}
+
+
+/* -------------------------
+   DOWNLOAD FILE
+   Reads from _recipesCache — no stale-closure risk
+------------------------- */
+function attachDownloadListeners() {
+
+    document.querySelectorAll('.download').forEach(btn => {
+
+        btn.addEventListener('click', (event) => {
+
+            event.stopPropagation();
+
+            const recipeId = btn.dataset.id;
+            const recipe = _recipesCache.find(r => r.id == recipeId);
+
+            if (!recipe) return;
+
+            Swal.fire({
+                title: 'Download this recipe?',
+                text: 'The recipe will be downloaded as a TXT file.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, download'
+            }).then(result => {
+
+                if (result.isConfirmed) {
+
+                    const content = `Title: ${recipe.title}
+
+Recipe:
+${recipe.recipe}
+
+Ingredients:
+${recipe.ingredients.join(", ")}
+
+Nutrition:
+${JSON.stringify(recipe.nutrition, null, 2)}
+`;
+
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${recipe.title}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    URL.revokeObjectURL(url);
+                }
+            });
+        });
     });
 }
 
@@ -304,13 +378,12 @@ function renderHistoryImages(images) {
    DELETE HISTORY
 ------------------------- */
 async function deleteRecipe(id, event) {
+
     event.stopPropagation();
 
     if (!confirm("Delete this recipe?")) return;
 
-    await fetch(`${API_BASE}/history/${id}`, {
-        method: "DELETE"
-    });
+    await fetch(`${API_BASE}/history/${id}`, { method: "DELETE" });
 
     loadHistory();
 }

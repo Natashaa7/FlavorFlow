@@ -175,6 +175,10 @@ body {
     margin-top: 15px;
 }
 
+.history-actions {
+    margin-left: 13rem;
+}
+
 .history-card {
     background: #fdfdfd;
     border: 1px solid #eee;

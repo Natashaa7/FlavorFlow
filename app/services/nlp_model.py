@@ -27,7 +27,7 @@ Recipe:
 
     outputs = model.generate(
         **inputs,
-        max_length=300,
+        max_length=800,
         temperature=0.8,
         do_sample=True,
         pad_token_id=tokenizer.eos_token_id
