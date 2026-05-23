@@ -172,7 +172,7 @@
                     <button class="close-btn" id="closeEditModal">X</button>
                 </div>
 
-                <!-- ❌ removed action -->
+                <!-- removed action -->
                 <form class="user-form" id="editUserForm">
 
                     <input type="hidden" name="id" id="edit-id">
@@ -233,6 +233,15 @@
             openAddBtn.onclick = () => addModal.style.display = "flex";
             closeAddBtn.onclick = cancelAddBtn.onclick = () => addModal.style.display = "none";
 
+            // Submit add form to correct endpoint
+            document.getElementById("addUserForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const form = e.target;
+                form.action = "/admin/add-users";
+                form.method = "post";
+                form.submit();
+            });
+
 
             // =========================
             // MODAL LOGIC (EDIT)
@@ -241,104 +250,111 @@
             const closeEditBtn = document.getElementById("closeEditModal");
             const cancelEditBtn = document.getElementById("cancelEditModal");
 
-            const closeEdit = () => editModal.classList.remove("show");
-
-            closeEditBtn.onclick = cancelEditBtn.onclick = closeEdit;
-
+            closeEditBtn.onclick = cancelEditBtn.onclick = () => editModal.classList.remove("show");
 
             document.querySelectorAll(".edit").forEach(btn => {
                 btn.addEventListener("click", () => {
-
                     document.getElementById("edit-id").value = btn.dataset.id;
                     document.getElementById("edit-username").value = btn.dataset.username;
                     document.getElementById("edit-name").value = btn.dataset.name;
                     document.getElementById("edit-email").value = btn.dataset.email;
                     document.getElementById("edit-phn").value = btn.dataset.phn;
                     document.getElementById("edit-dob").value = btn.dataset.dob;
-
                     editModal.classList.add("show");
                 });
             });
 
+            // Submit edit form to correct endpoint
+            document.getElementById("editUserForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const form = e.target;
+                form.action = "/admin/update-users";
+                form.method = "post";
+                form.submit();
+            });
+
 
             // =========================
-            // SWEETALERT FROM URL (FIXED)
+            // Delete → POST to /admin/delete-users
+            // =========================
+            document.querySelectorAll(".delete").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const userId = btn.dataset.id;
+
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Delete User?",
+                        text: "This action cannot be undone.",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete",
+                        confirmButtonColor: "#e53935"
+                    }).then(result => {
+                        if (!result.isConfirmed) return;
+
+                        const form = document.createElement("form");
+                        form.method = "post";
+                        form.action = "/admin/delete-users";
+
+                        const input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "id";
+                        input.value = userId;
+
+                        form.appendChild(input);
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
+                });
+            });
+
+
+            // =========================
+            // SWEETALERT FROM URL
             // =========================
             const params = new URLSearchParams(window.location.search);
-
             const success = params.get("success");
             const error = params.get("error");
 
-            // SUCCESS
             if (success) {
-                let msg = "Operation successful";
-
-                if (success === "added") msg = "User added successfully!";
-                if (success === "updated") msg = "User updated successfully!";
-                if (success === "deleted") msg = "User deleted successfully!";
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Success",
-                    text: msg
-                });
+                const msgs = {
+                    added: "User added successfully!",
+                    updated: "User updated successfully!",
+                    deleted: "User deleted successfully!"
+                };
+                Swal.fire({ icon: "success", title: "Success", text: msgs[success] || "Operation successful" });
             }
 
-            // ERROR
             if (error) {
-
-                let msg = decodeURIComponent(error);
-
-                if (error === "password-mismatch") msg = "Passwords do not match!";
-                if (error === "email-exists") msg = "Email already exists!";
-                if (error === "username-exists") msg = "Username already exists!";
-
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: msg
-                });
+                const msgs = {
+                    "password-mismatch": "Passwords do not match!",
+                    "email-exists": "Email already exists!",
+                    "username-exists": "Username already exists!"
+                };
+                Swal.fire({ icon: "error", title: "Error", text: msgs[error] || decodeURIComponent(error) });
             }
 
-
-            // =========================
-            // CLEAN URL (IMPORTANT FIX)
-            // =========================
             if (success || error) {
                 window.history.replaceState({}, document.title, "/admin/user_manage");
             }
-
-
         });
+
 
         // =========================
         // USER SEARCH FILTER
         // =========================
-        const searchInput = document.getElementById("userSearch");
-
-        searchInput.addEventListener("keyup", () => {
-
-            const value = searchInput.value.toLowerCase().trim();
-
-            const rows = document.querySelectorAll(".user-table tbody tr");
-
-            rows.forEach(row => {
-
+        document.getElementById("userSearch").addEventListener("keyup", function () {
+            const value = this.value.toLowerCase().trim();
+            document.querySelectorAll(".user-table tbody tr").forEach(row => {
                 const email = row.children[1].textContent.toLowerCase();
                 const username = row.children[2].textContent.toLowerCase();
                 const name = row.children[5].textContent.toLowerCase();
                 const phone = row.children[4].textContent.toLowerCase();
-
-                const match =
-                    email.includes(value) ||
-                    username.includes(value) ||
-                    name.includes(value) ||
-                    phone.includes(value);
-
-                row.style.display = match ? "" : "none";
+                row.style.display = (
+                    email.includes(value) || username.includes(value) ||
+                    name.includes(value) || phone.includes(value)
+                ) ? "" : "none";
             });
         });
-
     </script>
 
 </body>

@@ -7,116 +7,6 @@
 <link rel="stylesheet" href="/static/css/sr.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<style>
-    /* ── Clickable upload boxes ── */
-    .upload-box {
-        position: relative;
-        border: 2px dashed #ccc;
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-        cursor: pointer;
-        transition: border-color 0.2s, background 0.2s;
-        overflow: hidden;
-        min-height: 140px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .upload-box:hover {
-        border-color: #888;
-        background: rgba(0, 0, 0, 0.02);
-    }
-
-    .upload-box.has-file {
-        border-style: solid;
-        border-color: #4caf50;
-    }
-
-    /* Hidden real input — covers entire box so any click triggers it */
-    .upload-box input[type="file"] {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 2;
-    }
-
-    .upload-box .upload-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.4rem;
-        pointer-events: none;
-    }
-
-    .upload-box .upload-placeholder i {
-        font-size: 2rem;
-        color: #aaa;
-    }
-
-    .upload-box .upload-placeholder span {
-        font-size: 0.85rem;
-        color: #999;
-    }
-
-    .upload-box .upload-label {
-        font-weight: 600;
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
-        pointer-events: none;
-    }
-
-    /* Image preview inside box */
-    .upload-box .preview-img {
-        width: 100%;
-        max-height: 160px;
-        object-fit: cover;
-        border-radius: 8px;
-        display: none;
-        pointer-events: none;
-        position: relative;
-        z-index: 1;
-    }
-
-    /* File preview (PDF/other) */
-    .upload-box .preview-file {
-        display: none;
-        align-items: center;
-        gap: 0.6rem;
-        background: #f5f5f5;
-        border-radius: 8px;
-        padding: 0.6rem 1rem;
-        font-size: 0.85rem;
-        color: #333;
-        max-width: 100%;
-        word-break: break-all;
-        pointer-events: none;
-        position: relative;
-        z-index: 1;
-    }
-
-    .upload-box .preview-file i {
-        font-size: 1.4rem;
-        color: #e53935;
-        flex-shrink: 0;
-    }
-
-    .upload-box .change-hint {
-        font-size: 0.75rem;
-        color: #888;
-        margin-top: 0.3rem;
-        pointer-events: none;
-        position: relative;
-        z-index: 1;
-    }
-</style>
-
 <body>
 
     <!-- HERO SECTION -->
@@ -126,7 +16,6 @@
             <h2>Your Art</h2>
         </div>
     </section>
-
 
     <!-- MAIN FORM -->
     <main class="main">

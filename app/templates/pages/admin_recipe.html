@@ -4,6 +4,7 @@
 
 {% block content %}
 
+
 <link rel="stylesheet" href="/static/css/sr.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -53,25 +54,46 @@
 
                 <!-- RIGHT SIDE -->
                 <div class="form-right">
-                    <div class="upload-box">
-                        <label>Upload Image</label>
-                        <label class="file-icon">
-                            <i class="fi fi-rr-images"><input type="file" name="image" accept="image/*" required></i>
-                        </label>
-                        <p>Only JPG, PNG and JPEG are supported</p>
+
+                    <!-- IMAGE UPLOAD BOX -->
+                    <div class="upload-box" id="imageUploadBox">
+                        <input type="file" name="image" id="imageInput" accept="image/*" required>
+
+                        <div class="upload-placeholder" id="imagePlaceholder">
+                            <i class="fi fi-rr-images"></i>
+                            <p class="upload-label">Upload Image</p>
+                            <span>Click anywhere to browse</span>
+                            <span>JPG, PNG, JPEG supported</span>
+                        </div>
+
+                        <img class="preview-img" id="imagePreview" alt="Image preview" />
+                        <p class="change-hint" id="imageChangeHint" style="display:none;">Click to change image</p>
                     </div>
-                    <div class="upload-box">
-                        <label>Upload File</label>
-                        <label class="file-icon">
-                            <i class="fi fi-rr-cloud-upload-alt"><input type="file" name="file" required></i>
-                        </label>
-                        <p>Only JPG, PNG, JPEG and PDF are supported</p>
+
+                    <!-- FILE UPLOAD BOX -->
+                    <div class="upload-box" id="fileUploadBox">
+                        <input type="file" name="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" required>
+
+                        <div class="upload-placeholder" id="filePlaceholder">
+                            <i class="fi fi-rr-cloud-upload-alt"></i>
+                            <p class="upload-label">Upload File</p>
+                            <span>Click anywhere to browse</span>
+                            <span>JPG, PNG, JPEG, PDF supported</span>
+                        </div>
+
+                        <div class="preview-file" id="filePreview">
+                            <i class="fi fi-rr-file-pdf"></i>
+                            <span id="filePreviewName"></span>
+                        </div>
+                        <p class="change-hint" id="fileChangeHint" style="display:none;">Click to change file</p>
                     </div>
+
                 </div>
 
             </form>
 
         </div>
+
         <!-- TABLE -->
         <div class="card">
 
@@ -113,9 +135,7 @@
                             <button type="button" class="download" data-file="{{ recipe.file_path }}">
                                 <i class="fi fi-rr-file-download"></i>
                             </button>
-
                         </td>
-
                     </tr>
                     {% else %}
                     <tr>
@@ -125,6 +145,8 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- EDIT MODAL -->
         <div class="modal" id="editModal">
             <div class="modal-box">
 
@@ -138,7 +160,6 @@
 
                 <form class="user-form" action="/update-recipe" method="post" enctype="multipart/form-data">
 
-                    <!-- Hidden recipe ID -->
                     <input type="hidden" name="id" id="edit-id">
 
                     <div class="modal-grid">
@@ -170,36 +191,23 @@
 
                         <div class="form-group">
                             <label>Current Image</label><br>
-
-                            <!-- 🔹 Show existing image -->
                             <img id="current-image" src="" width="120" style="margin-bottom:10px; border-radius: 20px;">
-
-                            <!-- 🔹 Upload new image -->
                             <input type="file" name="image" id="edit-image" accept="image/*">
-
                             <small>Leave empty to keep current image</small>
                         </div>
+
                         <div class="form-group">
                             <label>Current File</label><br>
-
                             <a id="current-file" href="" target="_blank">View Current File</a><br><br>
-
                             <input type="file" name="file" id="edit-file">
-
                             <small>Leave empty to keep current file</small>
                         </div>
-
 
                     </div>
 
                     <div class="form-buttons">
-                        <button type="button" class="cancel-btn" id="cancelEditModal">
-                            Cancel
-                        </button>
-
-                        <button type="submit" class="submit-btn">
-                            Update Recipe
-                        </button>
+                        <button type="button" class="cancel-btn" id="cancelEditModal">Cancel</button>
+                        <button type="submit" class="submit-btn">Update Recipe</button>
                     </div>
                 </form>
             </div>
@@ -207,11 +215,61 @@
     </main>
 </body>
 
-</html>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="/static/js/share_recipe.js"></script>
 
+<script>
+    /* ── IMAGE UPLOAD PREVIEW ── */
+    document.getElementById('imageInput').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const box = document.getElementById('imageUploadBox');
+        const placeholder = document.getElementById('imagePlaceholder');
+        const preview = document.getElementById('imagePreview');
+        const hint = document.getElementById('imageChangeHint');
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+            hint.style.display = 'block';
+            box.classList.add('has-file');
+        };
+        reader.readAsDataURL(file);
+    });
+
+
+    /* ── FILE UPLOAD PREVIEW ── */
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const box = document.getElementById('fileUploadBox');
+        const placeholder = document.getElementById('filePlaceholder');
+        const preview = document.getElementById('filePreview');
+        const previewName = document.getElementById('filePreviewName');
+        const hint = document.getElementById('fileChangeHint');
+
+        const isPdf = file.type === 'application/pdf';
+        const icon = preview.querySelector('i');
+
+        // swap icon depending on file type
+        if (isPdf) {
+            icon.className = 'fi fi-rr-file-pdf';
+            icon.style.color = '#e53935';
+        } else {
+            icon.className = 'fi fi-rr-file-image';
+            icon.style.color = '#1e88e5';
+        }
+
+        previewName.textContent = file.name;
+        preview.style.display = 'flex';
+        placeholder.style.display = 'none';
+        hint.style.display = 'block';
+        box.classList.add('has-file');
+    });
+</script>
 
 {% endblock %}

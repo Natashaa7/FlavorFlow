@@ -54,7 +54,7 @@ async def add_recipe(
     if not result["success"]:
         return JSONResponse(result)
 
-    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+    redirect_url = "/share_recipe"
 
     return JSONResponse({
         "success": True,
@@ -90,7 +90,7 @@ async def update_recipe(
     if not result["success"]:
         return JSONResponse(result)
 
-    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+    redirect_url = "/share_recipe"
 
     return JSONResponse({
         "success": True,
@@ -109,7 +109,7 @@ async def delete_recipe(
     if not result["success"]:
         return JSONResponse(result)
 
-    redirect_url = "/admin/admin_recipe" if user.get("is_admin") else "/share_recipe"
+    redirect_url = "/share_recipe"
 
     return JSONResponse({
         "success": True,
